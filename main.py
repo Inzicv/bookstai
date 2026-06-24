@@ -77,6 +77,10 @@ def main() -> None:
     subparsers = parser.add_subparsers(dest="command")
     subparsers.add_parser("search", help="Recherche locale dans les fiches Markdown.")
     subparsers.add_parser("index", help="Reconstruit l'index local des fiches Markdown.")
+    subparsers.add_parser(
+        "memory",
+        help="Indexe les fiches puis affiche les résultats pertinents avec leurs sections.",
+    )
 
     args = parser.parse_args()
 
@@ -100,6 +104,27 @@ def main() -> None:
                 print(f"  {result.path}")
                 print(f"  score={result.score}")
                 print(f"  {result.snippet}")
+                print()
+            return
+
+        if args.command == "memory":
+            query = args.title or ask_text("Requête mémoire")
+            service = BookSearchService(books_dir=args.output_dir)
+            count = service.index_books()
+            print(f"\n[Index] {count} fiche(s) indexée(s).")
+            results = service.memory_search(query)
+            if not results:
+                print("\n[Aucun résultat]")
+                return
+            print()
+            for result, hits in results:
+                print(f"- {result.title}")
+                print(f"  {result.path}")
+                print(f"  score={result.score}")
+                print(f"  {result.snippet}")
+                for hit in hits[:3]:
+                    print(f"    · {hit.section} (score={hit.score})")
+                    print(f"      {hit.content}")
                 print()
             return
 

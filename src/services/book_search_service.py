@@ -10,6 +10,25 @@ from pathlib import Path
 
 SECTION_PATTERN = re.compile(r"^#{1,6}\s+(.+)$", flags=re.MULTILINE)
 
+SECTION_ALIASES: dict[str, str] = {
+    "personnages": "Personnages",
+    "personnages principaux": "Personnages",
+    "personnages (nom, prénom & description physique)": "Personnages",
+    "tropes": "Tropes",
+    "tropes littéraires": "Tropes",
+    "résumé": "Résumé",
+    "résumé du tome": "Résumé",
+    "résumé spoiler-free": "Résumé spoiler-free",
+    "citations": "Citations",
+    "citations clés": "Citations",
+    "timeline": "Timeline",
+    "timeline des événements": "Timeline",
+    "scènes importantes": "Scènes importantes",
+    "relations entre personnages": "Relations entre personnages",
+    "descriptions physiques": "Descriptions physiques",
+    "thèmes": "Thèmes",
+}
+
 
 @dataclass
 class SearchResult:
@@ -47,15 +66,22 @@ def split_markdown_sections(content: str) -> list[tuple[str, str, int]]:
         current_lines = []
 
     for line in lines:
-        if SECTION_PATTERN.match(line):
+        match = SECTION_PATTERN.match(line)
+        if match:
             if current_lines or not sections:
                 push_section()
-            current_section = SECTION_PATTERN.match(line).group(1).strip()
+            current_section = normalize_section_title(match.group(1).strip())
         else:
             current_lines.append(line)
 
     push_section()
     return [(section, text, index) for section, text, index in sections if text]
+
+
+def normalize_section_title(title: str) -> str:
+    lowered = re.sub(r"^\d+[\s\.\-\)]*", "", title.lower().strip())
+    lowered = re.sub(r"\s+", " ", lowered).strip()
+    return SECTION_ALIASES.get(lowered, title)
 
 
 def build_snippet(content: str, query: str, width: int = 180) -> str:
@@ -191,3 +217,7 @@ class BookSearchService:
 
         hits.sort(key=lambda item: (-item.score, item.section.lower()))
         return hits[:limit]
+
+    def memory_search(self, query: str, limit: int = 5) -> list[tuple[SearchResult, list[SectionHit]]]:
+        results = self.search(query, limit=limit)
+        return [(result, self.extract_section_hits(query, result.path)) for result in results]

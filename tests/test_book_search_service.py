@@ -7,7 +7,11 @@ import unittest
 from pathlib import Path
 
 from src.generators.markdown_generator import create_empty_book_template
-from src.services.book_search_service import BookSearchService, split_markdown_sections
+from src.services.book_search_service import (
+    BookSearchService,
+    normalize_section_title,
+    split_markdown_sections,
+)
 
 
 class TestBookSearchService(unittest.TestCase):
@@ -24,8 +28,13 @@ class TestBookSearchService(unittest.TestCase):
 """
         sections = split_markdown_sections(content)
         self.assertGreaterEqual(len(sections), 2)
-        self.assertTrue(any(section == "1. Personnages" for section, _, _ in sections))
+        self.assertTrue(any(section == "Personnages" for section, _, _ in sections))
+        self.assertTrue(any(section == "Tropes" for section, _, _ in sections))
         self.assertTrue(any("enemies-to-lovers" in text for _, text, _ in sections))
+
+    def test_normalize_section_title(self) -> None:
+        self.assertEqual(normalize_section_title("Personnages (Nom, Prénom & Description physique)"), "Personnages")
+        self.assertEqual(normalize_section_title("Timeline des Événements"), "Timeline")
 
     def test_index_and_section_hits(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -41,11 +50,13 @@ class TestBookSearchService(unittest.TestCase):
             service = BookSearchService(books_dir=str(books_dir), db_path=str(db_path))
             indexed = service.index_books()
             hits = service.extract_section_hits("enemies", file_path)
+            memory_results = service.memory_search("enemies")
 
             self.assertEqual(indexed, 1)
             self.assertGreaterEqual(len(hits), 1)
-            self.assertEqual(hits[0].section, "2. Tropes Littéraires")
+            self.assertEqual(hits[0].section, "Tropes")
             self.assertIn("enemies-to-lovers", hits[0].content)
+            self.assertEqual(len(memory_results), 1)
 
 
 if __name__ == "__main__":
