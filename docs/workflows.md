@@ -139,4 +139,8 @@ BookstAI ne remplace jamais la créativité.
 BookstAI propose.
 L'utilisateur décide.
 Les fichiers Markdown sont la source de vérité.
+<<<<<<< ours
 Les assistants s'appuient sur la mémoire existante plutôt que de réinventer les informations.
+=======
+Les assistants s'appuient sur la mémoire existante plutôt que de réinventer les informations.
+>>>>>>> theirs
