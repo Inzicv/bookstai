@@ -1,146 +1,126 @@
 # Workflows
-BookstAI est un studio créatif assisté.
-L'utilisateur reste toujours au centre du processus.
-Chaque workflow utilise :
-* la mémoire du projet ;
-* le RAG créatif ;
-* des assistants spécialisés ;
-* une validation humaine entre les étapes.
 
-# Review humoristique
-Objectif :
-Créer une review BookTok ou Bookstagram fidèle à mon ton.
-Workflow :
+Les fichiers Markdown restent la source de vérité.
+
+Human In The Loop partout.
+
+## Review humoristique
+
+Fichiers mémoire chargés :
+
+- `memory/books/<livre>.md`
+- `memory/reviews/reviews.md`
+- `memory/humor/references.md`
+
+Flux :
+
 Livre
 ↓
-memory/books/<livre>.md
+Librarian
 ↓
-RAG créatif
+Chargement des fichiers mémoire
 ↓
-Comedy Room
-↓
-Propositions :
-* pitch humoristique ;
-* hooks ;
-* analogies ;
-* références actuelles ;
-* punchlines.
+Comedy Room / Review Assistant
 ↓
 Validation humaine
 ↓
-Script final
+Review finale
 
-# Chanson parodique
-Objectif :
-Créer une chanson spoiler-free ou complète.
-Workflow :
+---
+
+## Song Writer
+
+Fichiers mémoire chargés :
+
+- `memory/books/<livre>.md`
+- `memory/songs/`
+
+Flux :
+
 Livre
 ↓
-memory/books/<livre>.md
+Librarian
 ↓
-RAG créatif
+Chargement des fichiers mémoire
 ↓
 Song Writer
 ↓
-Propositions :
-* structure ;
-* scènes importantes ;
-* idées ;
-* rimes ;
-* 2 à 3 exemples de paroles.
-↓
 Validation humaine
-↓
-Paroles finales
 ↓
 Suno
 ↓
-Musique finale
-
-# Création visuelle
-Objectif :
-Produire les assets visuels liés à une chanson ou une review.
-Workflow :
-Paroles ou script
+Art Director
 ↓
-RAG créatif
+Animator
+↓
+Montage final
+
+---
+
+## Art Director
+
+Fichiers mémoire chargés :
+
+- `memory/books/<livre>.md`
+- `memory/visual_style/`
+
+Flux :
+
+Livre
+↓
+Librarian
+↓
+Chargement des fichiers mémoire
 ↓
 Art Director
 ↓
-Propositions :
-* style visuel ;
-* storyboard ;
-* cadrages ;
-* plans ;
-* prompts image.
-↓
 Validation humaine
 ↓
-Assistant de création visuelle
-↓
-Production :
-* prompts image ;
-* prompts vidéo ;
-* mouvements ;
-* expressions ;
-* idées d'animation.
-↓
-Images et vidéos finales
+Prompts image / storyboard
 
-# Carrousel Instagram
-Objectif :
-Créer un carrousel éducatif ou humoristique.
-Workflow :
-Sujet
+---
+
+## Comedy Room
+
+Fichiers mémoire chargés :
+
+- `memory/books/<livre>.md`
+- `memory/reviews/reviews.md`
+- `memory/humor/references.md`
+
+Flux :
+
+Livre
 ↓
-RAG créatif
+Librarian
+↓
+Chargement des fichiers mémoire
 ↓
 Comedy Room
 ↓
-Propositions :
-* hooks ;
-* idées ;
-* analogies ;
-* structure du carrousel.
-↓
 Validation humaine
+↓
+Hooks / analogies / blagues / punchlines
+
+---
+
+## Social Media
+
+Fichiers mémoire chargés :
+
+- `memory/books/<livre>.md`
+- `memory/reviews/reviews.md`
+
+Flux :
+
+Livre
+↓
+Librarian
+↓
+Chargement des fichiers mémoire
 ↓
 Social Media
 ↓
-Production :
-* slides ;
-* titres ;
-* descriptions ;
-* légendes ;
-* hashtags.
+Validation humaine
 ↓
-Publication
-
-# Recherche dans la mémoire
-Objectif :
-Retrouver rapidement des informations utiles.
-Exemples :
-* "Quels tropes ai-je déjà lus ?"
-* "Montre-moi des chansons proches de Fourth Wing."
-* "Comment ai-je parlé des enemies-to-lovers ?"
-* "Trouve des références humoristiques similaires."
-Workflow :
-Question
-↓
-RAG créatif
-↓
-Contexte structuré
-↓
-Réponse
-
-# Principes
-Human In The Loop partout.
-BookstAI ne remplace jamais la créativité.
-BookstAI propose.
-L'utilisateur décide.
-Les fichiers Markdown sont la source de vérité.
-<<<<<<< ours
-Les assistants s'appuient sur la mémoire existante plutôt que de réinventer les informations.
-=======
-Les assistants s'appuient sur la mémoire existante plutôt que de réinventer les informations.
->>>>>>> theirs
+Descriptions / hashtags / hooks / carrousels
