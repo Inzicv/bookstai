@@ -12,6 +12,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from src.generators.markdown_generator import clean_filename, create_empty_book_template
 from src.services.book_search_service import BookSearchService
+from src.services.review_assistant_service import ReviewAssistantService
 
 
 def ask_text(prompt: str, default: str = "") -> str:
@@ -81,6 +82,23 @@ def main() -> None:
         "memory",
         help="Indexe les fiches puis affiche les résultats pertinents avec leurs sections.",
     )
+    review_parser = subparsers.add_parser(
+        "review",
+        help="Prépare un brouillon de review humoristique pour une fiche active.",
+    )
+    review_parser.add_argument(
+        "--book",
+        required=False,
+        help="Chemin vers la fiche Markdown active.",
+    )
+    review_parser.add_argument(
+        "--notes",
+        help="Notes brutes de l'utilisateur pour l'avis.",
+    )
+    review_parser.add_argument(
+        "--output",
+        help="Chemin optionnel pour enregistrer le brouillon.",
+    )
     context_parser = subparsers.add_parser(
         "context",
         help="Charge une fiche active et exporte son contexte prêt pour assistant.",
@@ -138,6 +156,30 @@ def main() -> None:
                     print(f"    · {hit.section} (score={hit.score})")
                     print(f"      {hit.content}")
                 print()
+            return
+
+        if args.command == "review":
+            book_path = args.book or ask_text("Chemin de la fiche Markdown active")
+            user_notes = args.notes or ask_text("Notes brutes pour l'avis")
+            assistant = ReviewAssistantService(book_path=book_path)
+            draft = assistant.build_draft(user_notes=user_notes)
+            print(f"\n[Book] {draft.book_title}\n")
+            print("## Hooks possibles")
+            for item in draft.hook_suggestions:
+                print(f"- {item}")
+            print()
+            print("## Idées de pitch")
+            for item in draft.pitch_ideas:
+                print(f"- {item}")
+            print()
+            print("## Mémo de travail")
+            for item in draft.review_notes:
+                print(f"- {item}")
+            print()
+            print(draft.final_script)
+            if args.output:
+                Path(args.output).write_text(draft.final_script, encoding="utf-8")
+                print(f"[Export] Brouillon écrit dans : {Path(args.output).resolve()}")
             return
 
         if args.command == "context":
