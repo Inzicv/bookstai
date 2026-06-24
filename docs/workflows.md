@@ -16,11 +16,9 @@ Flux :
 
 Livre
 ↓
-Librarian
-↓
 Chargement des fichiers mémoire
 ↓
-Comedy Room / Review Assistant
+Review Assistant / Comedy Room
 ↓
 Validation humaine
 ↓
@@ -34,12 +32,11 @@ Fichiers mémoire chargés :
 
 - `memory/books/<livre>.md`
 - `memory/songs/`
+- `memory/humor/references.md`
 
 Flux :
 
 Livre
-↓
-Librarian
 ↓
 Chargement des fichiers mémoire
 ↓
@@ -68,8 +65,6 @@ Flux :
 
 Livre
 ↓
-Librarian
-↓
 Chargement des fichiers mémoire
 ↓
 Art Director
@@ -92,8 +87,6 @@ Flux :
 
 Livre
 ↓
-Librarian
-↓
 Chargement des fichiers mémoire
 ↓
 Comedy Room
@@ -115,11 +108,9 @@ Flux :
 
 Livre
 ↓
-Librarian
-↓
 Chargement des fichiers mémoire
 ↓
-Social Media
+Social Media Assistant
 ↓
 Validation humaine
 ↓

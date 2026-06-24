@@ -1,6 +1,6 @@
 # Etat actuel
 
-Phase : Fiches Markdown comme source de vérité
+Phase : assistants spécialisés sur mémoire Markdown
 
 Déjà fait :
 
@@ -12,7 +12,11 @@ Arborescence créée.
 
 Prochaine tâche :
 
-Demander au lancement le fichier Markdown du livre, puis l'importer ou créer un template vide.
+Aligner l'implémentation sur la nouvelle architecture documentaire :
+
+- `memory/books/` comme source de vérité directe ;
+- assistants spécialisés uniquement ;
+- plus d'agent intermédiaire pour les livres.
 
 Documentation :
 

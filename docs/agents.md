@@ -1,20 +1,65 @@
 # Agents
 
-## Librarian V1
+## Comedy Room
 
-Entrée :
+Entrées :
 
-- fichier Markdown déjà rédigé ;
-- ou template vide.
+- `memory/books/<livre>.md`
+- `memory/reviews/reviews.md`
+- `memory/humor/references.md`
 
-Sortie :
-
-- fichier Markdown dans `memory/books/`.
-
-Il ne reconstruit pas les données du livre.
+Validation humaine.
 
 ---
 
-## Phase futures
+## Review Assistant
 
-Les autres agents utiliseront ensuite la fiche Markdown comme source de vérité.
+Entrées :
+
+- `memory/books/<livre>.md`
+- `memory/reviews/reviews.md`
+- `memory/humor/references.md`
+
+Validation humaine.
+
+---
+
+## Song Writer
+
+Entrées :
+
+- `memory/books/<livre>.md`
+- `memory/songs/`
+- `memory/humor/references.md`
+
+Validation humaine.
+
+---
+
+## Art Director
+
+Entrées :
+
+- `memory/books/<livre>.md`
+- `memory/visual_style/`
+
+Validation humaine.
+
+---
+
+## Social Media Assistant
+
+Entrées :
+
+- `memory/books/<livre>.md`
+- `memory/reviews/reviews.md`
+
+Validation humaine.
+
+---
+
+## Règle commune
+
+Les assistants lisent directement les fichiers mémoire utiles.
+
+Il n'existe plus d'agent intermédiaire chargé des livres.

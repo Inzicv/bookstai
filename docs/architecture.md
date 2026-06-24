@@ -4,25 +4,34 @@ Source de vérité :
 
 `memory/books/*.md`
 
-Flux principal :
+Principe général :
 
-Markdown manuel
+- les fichiers Markdown sont maintenus manuellement ;
+- ils sont consommés directement par les assistants spécialisés ;
+- aucun agent intermédiaire n'est chargé de gérer les livres ;
+- Human In The Loop partout.
+
+Flux global :
+
+Fichiers mémoire
 ↓
-BookstAI
+Assistants spécialisés
 ↓
-Import, template ou recherche locale
+Validation humaine
 ↓
-`memory/books/<slug>.md`
+Contenus finaux
 
-Principes :
+Références mémoire principales :
 
-- pas d'analyse automatique d'EPUB ;
-- pas d'appel LLM obligatoire ;
-- architecture simple ;
-- Python standard en priorité ;
-- réutiliser les fiches existantes ;
-- la recherche locale parcourt les Markdown sans reconstruire les données.
+- `memory/books/<livre>.md`
+- `memory/reviews/reviews.md`
+- `memory/humor/references.md`
+- `memory/songs/`
+- `memory/visual_style/`
 
-Human In The Loop partout.
+Objectif :
 
-Chaque module doit rester indépendant.
+- rester simple ;
+- éviter les couches inutiles ;
+- préserver la rapidité d'usage ;
+- garder l'architecture alignée avec le workflow agen.
