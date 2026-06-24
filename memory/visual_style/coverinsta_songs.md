@@ -1,0 +1,3 @@
+Cinematic overhead flat lay photography, centered composition, dark wooden table, vintage turntable with vinyl record in the middle, warm candlelight, cozy dark academia atmosphere.
+Surround the record player with carefully arranged objects inspired by the universe of [livre] de [auteur]. Include the book itself dont la cover est en [ref], a hot drink, candles, flowers, and symbolic objects associated with the story.
+Everything should feel like an elegant collector's edition vinyl album inspired by the book. Realistic photography, ultra detailed, soft cinematic lighting, luxurious and cozy mood, dark fantasy aesthetic, Instagram cover, vertical 4:5.
