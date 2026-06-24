@@ -47,6 +47,21 @@ class SectionHit:
     path: str
 
 
+@dataclass
+class BookContext:
+    title: str
+    path: str
+    sections: dict[str, str]
+
+    def export_text(self) -> str:
+        lines = [f"Title: {self.title}", f"Path: {self.path}", ""]
+        for name, content in self.sections.items():
+            lines.append(f"## {name}")
+            lines.append(content)
+            lines.append("")
+        return "\n".join(lines).rstrip() + "\n"
+
+
 def extract_title(content: str, fallback: str) -> str:
     match = re.search(r"^#\s+(.+)$", content, flags=re.MULTILINE)
     return match.group(1).strip() if match else fallback
@@ -55,9 +70,10 @@ def extract_title(content: str, fallback: str) -> str:
 def split_markdown_sections(content: str) -> list[tuple[str, str, int]]:
     lines = content.splitlines()
     sections: list[tuple[str, list[str], int]] = []
-    current_section = "Document"
+    current_section = "Front matter"
     current_lines: list[str] = []
     order = 0
+    seen_title = False
 
     def push_section() -> None:
         nonlocal order, current_lines
@@ -68,6 +84,9 @@ def split_markdown_sections(content: str) -> list[tuple[str, str, int]]:
     for line in lines:
         match = SECTION_PATTERN.match(line)
         if match:
+            if not seen_title and line.startswith("# "):
+                seen_title = True
+                continue
             if current_lines or not sections:
                 push_section()
             current_section = normalize_section_title(match.group(1).strip())
@@ -221,3 +240,19 @@ class BookSearchService:
     def memory_search(self, query: str, limit: int = 5) -> list[tuple[SearchResult, list[SectionHit]]]:
         results = self.search(query, limit=limit)
         return [(result, self.extract_section_hits(query, result.path)) for result in results]
+
+    def load_book_context(self, path: str) -> BookContext:
+        content = Path(path).read_text(encoding="utf-8")
+        title = extract_title(content, Path(path).stem)
+        sections: dict[str, str] = {}
+        for section, section_content, _order in split_markdown_sections(content):
+            if section == title:
+                continue
+            sections[section] = section_content
+        return BookContext(title=title, path=str(Path(path).resolve()), sections=sections)
+
+    def export_context(self, path: str, output_path: str | None = None) -> str:
+        context = self.load_book_context(path)
+        destination = Path(output_path) if output_path else Path(path).with_suffix(".context.txt")
+        destination.write_text(context.export_text(), encoding="utf-8")
+        return str(destination.resolve())

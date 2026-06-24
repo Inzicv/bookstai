@@ -81,6 +81,18 @@ def main() -> None:
         "memory",
         help="Indexe les fiches puis affiche les résultats pertinents avec leurs sections.",
     )
+    context_parser = subparsers.add_parser(
+        "context",
+        help="Charge une fiche active et exporte son contexte prêt pour assistant.",
+    )
+    context_parser.add_argument(
+        "--book",
+        help="Chemin vers la fiche Markdown active.",
+    )
+    context_parser.add_argument(
+        "--export",
+        help="Chemin du fichier de sortie de contexte.",
+    )
 
     args = parser.parse_args()
 
@@ -126,6 +138,21 @@ def main() -> None:
                     print(f"    · {hit.section} (score={hit.score})")
                     print(f"      {hit.content}")
                 print()
+            return
+
+        if args.command == "context":
+            book_path = args.book or ask_text("Chemin de la fiche Markdown active")
+            service = BookSearchService(books_dir=args.output_dir)
+            context = service.load_book_context(book_path)
+            print(f"\n[Fiche chargée] {context.title}")
+            print()
+            for section_name, section_content in context.sections.items():
+                print(f"## {section_name}")
+                print(section_content)
+                print()
+            if args.export:
+                output_path = service.export_context(book_path, output_path=args.export)
+                print(f"[Export] Contexte écrit dans : {output_path}")
             return
 
         if args.source:
