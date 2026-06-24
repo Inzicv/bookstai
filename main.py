@@ -21,10 +21,21 @@ def ask_text(prompt: str, default: str = "") -> str:
     return value or default
 
 
+def ask_multiline(prompt: str) -> str:
+    print(f"{prompt} (ligne vide pour terminer) :")
+    lines: list[str] = []
+    while True:
+        line = input()
+        if not line.strip():
+            break
+        lines.append(line)
+    return "\n".join(lines).strip()
+
+
 def ask_choice(prompt: str, choices: dict[str, str], default_key: str) -> str:
     print(prompt)
     for key, label in choices.items():
-        marker = " (défaut)" if key == default_key else ""
+        marker = " (dÃ©faut)" if key == default_key else ""
         print(f"  {key}. {label}{marker}")
     value = input("Choix: ").strip() or default_key
     return value if value in choices else default_key
@@ -39,7 +50,7 @@ def import_markdown(source_path: str, output_dir: str = "memory/books") -> str:
     if not source.exists():
         raise FileNotFoundError(f"Fichier introuvable: {source_path}")
     if source.suffix.lower() != ".md":
-        raise ValueError("Le fichier source doit être un Markdown (.md).")
+        raise ValueError("Le fichier source doit Ãªtre un Markdown (.md).")
 
     ensure_output_dir(output_dir)
     target_name = clean_filename(source.stem) + ".md"
@@ -60,27 +71,27 @@ def main() -> None:
     parser.add_argument(
         "--output-dir",
         default="memory/books",
-        help="Répertoire de sortie pour les fiches Markdown.",
+        help="RÃ©pertoire de sortie pour les fiches Markdown.",
     )
     parser.add_argument(
         "--source",
-        help="Chemin vers un fichier .md existant à importer.",
+        help="Chemin vers un fichier .md existant Ã  importer.",
     )
     parser.add_argument(
         "--template",
         action="store_true",
-        help="Crée un template vide au lieu d'importer un fichier existant.",
+        help="CrÃ©e un template vide au lieu d'importer un fichier existant.",
     )
     parser.add_argument(
         "--title",
-        help="Titre à utiliser pour le nom de fichier quand on crée un template.",
+        help="Titre Ã  utiliser pour le nom de fichier quand on crÃ©e un template.",
     )
     subparsers = parser.add_subparsers(dest="command")
     subparsers.add_parser("search", help="Recherche locale dans les fiches Markdown.")
     subparsers.add_parser("index", help="Reconstruit l'index local des fiches Markdown.")
     subparsers.add_parser(
         "memory",
-        help="Indexe les fiches puis affiche les résultats pertinents avec leurs sections.",
+        help="Indexe les fiches puis affiche les rÃ©sultats pertinents avec leurs sections.",
     )
     review_parser = subparsers.add_parser(
         "review",
@@ -159,26 +170,75 @@ def main() -> None:
             return
 
         if args.command == "review":
-            book_path = args.book or ask_text("Chemin de la fiche Markdown active")
-            user_notes = args.notes or ask_text("Notes brutes pour l'avis")
+            book_path = args.book or ask_text(
+                "Chemin de la fiche Markdown active",
+                "memory/books/lesheritiersdorion.md",
+            )
             assistant = ReviewAssistantService(book_path=book_path)
-            draft = assistant.build_draft(user_notes=user_notes)
+            draft = assistant.build_draft(user_notes=args.notes or "")
+
             print(f"\n[Book] {draft.book_title}\n")
-            print("## Hooks possibles")
-            for item in draft.hook_suggestions:
-                print(f"- {item}")
+
+            print("=== ÉTAPE 1 — Proposition de pitch ===")
+            print(draft.pitch_proposal)
             print()
-            print("## Idées de pitch")
+            print("Idées pour travailler le pitch :")
             for item in draft.pitch_ideas:
                 print(f"- {item}")
             print()
-            print("## Mémo de travail")
-            for item in draft.review_notes:
+            pitch_final = ask_multiline(
+                "Colle ici ton pitch validé/corrigé, ou laisse vide pour garder la proposition"
+            )
+            if not pitch_final:
+                pitch_final = draft.pitch_proposal
+
+            print("\n=== ÉTAPE 2 — Saisie de l'avis brut ===")
+            user_notes = ask_multiline("Colle ici ton avis brut")
+            if not user_notes:
+                user_notes = args.notes or ""
+
+            draft = assistant.build_draft(user_notes=user_notes)
+            print("\n=== Proposition d'avis ===")
+            print(draft.avis_proposal)
+            print()
+            avis_final = ask_multiline(
+                "Colle ici ton avis validé/corrigé, ou laisse vide pour garder la proposition"
+            )
+            if not avis_final:
+                avis_final = draft.avis_proposal
+
+            print("\n=== ÉTAPE 3 — Hooks proposés ===")
+            for item in draft.hook_suggestions:
                 print(f"- {item}")
             print()
-            print(draft.final_script)
+            hook_final = ask_text(
+                "Choisis ou réécris le hook final",
+                draft.hook_suggestions[0] if draft.hook_suggestions else "",
+            )
+
+            final_script = "\n".join(
+                [
+                    f"# {draft.book_title}",
+                    "",
+                    "## Accroche",
+                    draft.style_anchors[0] if draft.style_anchors else "",
+                    "",
+                    "## Hook",
+                    hook_final,
+                    "",
+                    "## Pitch",
+                    pitch_final,
+                    "",
+                    "## Avis",
+                    avis_final,
+                    "",
+                ]
+            ).rstrip() + "\n"
+
+            print("\n=== SCRIPT FINAL ===\n")
+            print(final_script)
             if args.output:
-                Path(args.output).write_text(draft.final_script, encoding="utf-8")
+                Path(args.output).write_text(final_script, encoding="utf-8")
                 print(f"[Export] Brouillon écrit dans : {Path(args.output).resolve()}")
             return
 
