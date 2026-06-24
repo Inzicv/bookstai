@@ -1,18 +1,20 @@
 # Agents
 
-## Librarian
+## Librarian V1
 
 Entrée :
 
-EPUB
+- saisie utilisateur ;
+- notes personnelles ;
+- texte copié depuis d'autres outils.
 
 Sortie :
 
-book.md
+- fiche livre Markdown dans `memory/books/<slug>.md`.
 
-Aucune créativité.
+Aucune créativité forcée.
 
-Simple extraction.
+Pas d'appel API obligatoire.
 
 ---
 
@@ -20,14 +22,14 @@ Simple extraction.
 
 Entrée :
 
-book.md
+- fiche livre Markdown.
 
 Sortie :
 
-- hooks
-- analogies
-- blagues
-- références
+- hooks ;
+- analogies ;
+- blagues ;
+- références.
 
 Validation humaine.
 
@@ -37,13 +39,13 @@ Validation humaine.
 
 Entrée :
 
-book.md
+- fiche livre Markdown.
 
 Sortie :
 
-- structures
-- rimes
-- idées
+- structures ;
+- rimes ;
+- idées.
 
 Validation humaine.
 
@@ -53,13 +55,13 @@ Validation humaine.
 
 Entrée :
 
-book.md
+- fiche livre Markdown.
 
 Sortie :
 
-- prompts image
-- personnages
-- storyboard
+- prompts image ;
+- personnages ;
+- storyboard.
 
 Validation humaine.
 
@@ -69,13 +71,13 @@ Validation humaine.
 
 Entrée :
 
-storyboard
+- storyboard.
 
 Sortie :
 
-- prompts vidéo
-- mouvements
-- expressions
+- prompts vidéo ;
+- mouvements ;
+- expressions.
 
 Validation humaine.
 
@@ -85,11 +87,11 @@ Validation humaine.
 
 Entrée :
 
-contenu final
+- contenu final.
 
 Sortie :
 
-- descriptions
-- hashtags
-- hooks
-- carrousels
+- descriptions ;
+- hashtags ;
+- hooks ;
+- carrousels.

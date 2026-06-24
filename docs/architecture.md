@@ -2,32 +2,26 @@
 
 EPUB
 ↓
-Librarian
+Librarian V1
 ↓
 memory/books
-↓
-RAG
-↓
-Comedy Room
-↓
-Song Writer
-↓
-Art Director
-↓
-Animator
-↓
-Social Media
 
 Human In The Loop entre chaque étape.
 
 Chaque module doit être indépendant.
 
+Pour Librarian V1 :
+
+- script CLI local ;
+- saisie manuelle ou collage de texte ;
+- génération Markdown simple ;
+- pas d'appel automatique à une API externe.
+
 Les données sont stockées principalement en Markdown.
 
 Technologies :
 
-- Python
-- LangGraph
-- Chroma
-- SQLite
-- MCP
+- Python standard ;
+- Markdown ;
+- SQLite plus tard si nécessaire ;
+- LangGraph et IA seulement pour les phases futures.

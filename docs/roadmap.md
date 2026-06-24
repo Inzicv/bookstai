@@ -2,26 +2,38 @@
 
 ## Phase 1 - Librarian V1
 
-EPUB
+Générateur local de fiches livres Markdown.
 
-↓
+Workflow :
 
-Extraction :
+- saisie CLI ;
+- collage d'informations depuis notes ou sources externes ;
+- création de `memory/books/<slug>.md`.
 
-- titre
-- auteur
-- résumé
-- personnages
-- descriptions physiques
-- tropes
-- citations
-- timeline
-- scènes importantes
-- thèmes
+Champs :
 
-Sortie :
+- titre ;
+- auteur ;
+- saga ;
+- tome ;
+- genre ;
+- résumé spoiler-free ;
+- résumé complet ;
+- personnages principaux ;
+- descriptions physiques ;
+- relations entre personnages ;
+- tropes ;
+- thèmes ;
+- citations clés ;
+- scènes importantes ;
+- timeline ;
+- notes personnelles ;
+- statut de lecture ;
+- niveau de spoil.
 
-memory/books/<titre>.md
+Option bonus :
+
+- template vide à remplir manuellement.
 
 ---
 
@@ -29,10 +41,10 @@ memory/books/<titre>.md
 
 Exploiter :
 
-- reviews
-- songs
-- humour
-- style visuel
+- reviews ;
+- songs ;
+- humour ;
+- style visuel.
 
 ---
 
@@ -40,11 +52,11 @@ Exploiter :
 
 Proposer :
 
-- hooks
-- analogies
-- références actuelles
-- blagues
-- punchlines
+- hooks ;
+- analogies ;
+- références actuelles ;
+- blagues ;
+- punchlines.
 
 Validation humaine.
 
@@ -52,10 +64,10 @@ Validation humaine.
 
 ## Phase 4 - Song Writer
 
-A partir d'un résumé proposer:
+À partir d'un résumé proposer :
 
-- rimes
-- idées
+- rimes ;
+- idées.
 
 Validation humaine.
 

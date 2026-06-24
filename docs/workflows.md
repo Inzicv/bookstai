@@ -1,10 +1,26 @@
-# Review
+# Workflows
+
+## Librarian V1
+
+Livre
+↓
+Saisie CLI
+↓
+Génération Markdown
+↓
+`memory/books/<slug>.md`
+
+Option :
+
+- template vide.
+
+---
+
+## Review
 
 Livre
 ↓
 Librarian
-↓
-Comedy Room
 ↓
 Validation humaine
 ↓
@@ -12,7 +28,7 @@ Review finale
 
 ---
 
-# Chanson parodique
+## Chanson parodique
 
 Livre
 ↓
@@ -32,7 +48,7 @@ Montage final
 
 ---
 
-# Carrousel
+## Carrousel
 
 Livre
 ↓

@@ -12,7 +12,7 @@ Arborescence créée.
 
 Prochaine tâche :
 
-Créer Librarian V1.
+Créer le générateur local de fiches livres Librarian V1.
 
 Documentation :
 
