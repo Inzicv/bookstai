@@ -39,7 +39,7 @@ Objectif :
 
 ---
 
-## Phase 3 - Comedy Room
+## Phase 3 - Review Assistant
 
 Proposer :
 
