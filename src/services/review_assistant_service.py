@@ -14,6 +14,7 @@ class ReviewDraft:
     pitch_ideas: list[str]
     review_notes: list[str]
     hook_suggestions: list[str]
+    style_anchors: list[str]
     final_script: str
 
 
@@ -56,6 +57,14 @@ def extract_review_blocks(content: str) -> dict[str, list[str]]:
     return blocks
 
 
+def first_nonempty_line(blocks: list[str], fallback: str) -> str:
+    for line in blocks:
+        stripped = line.strip()
+        if stripped:
+            return stripped
+    return fallback
+
+
 def load_humor_references(path: str) -> list[str]:
     text = Path(path).read_text(encoding="utf-8")
     lines = [line.strip() for line in text.splitlines() if line.strip()]
@@ -81,17 +90,19 @@ class ReviewAssistantService:
         fields = extract_book_fields(book_content)
         previous_reviews = extract_review_blocks(self.reviews_path.read_text(encoding="utf-8"))
         humor_refs = load_humor_references(str(self.humor_path))
+        pitch_anchor = first_nonempty_line(previous_reviews["pitch"], "Un pitch direct et mordant.")
+        avis_anchor = first_nonempty_line(previous_reviews["avis"], "Un avis très incarné et subjectif.")
 
         hook_ideas = [
-            f"Hook à partir du résumé : {fields['Résumé'][:180].strip()}",
-            f"Hook à partir des tropes : {fields['Tropes'][:180].strip()}",
-            f"Hook à partir des scènes fortes : {fields['Scènes importantes'][:180].strip()}",
+            self._make_hook_idea(fields["Résumé"], "résumé"),
+            self._make_hook_idea(fields["Tropes"], "tropes"),
+            self._make_hook_idea(fields["Scènes importantes"], "scènes fortes"),
         ]
 
         pitch_ideas = [
-            f"Résumé humoristique à partir du livre actif ({book_title})",
-            "Ajouter des analogies, métaphores et comparaisons dans le ton des reviews précédentes.",
-            "S'appuyer sur les références d'humour enregistrées.",
+            self._make_pitch_idea(book_title, fields, pitch_anchor, humor_refs),
+            "Garder le rythme : une phrase d'accroche, une montée en tension, puis une chute qui fait sourire.",
+            "Ajouter des analogies et comparaisons très incarnées, comme dans les reviews précédentes.",
         ]
 
         review_notes = [
@@ -102,9 +113,9 @@ class ReviewAssistantService:
         ]
 
         hook_suggestions = [
-            f"Suggestion 1 : {humor_refs[0] if humor_refs else 'hook direct et incisif'}",
-            f"Suggestion 2 : {humor_refs[1] if len(humor_refs) > 1 else 'hook plus sarcastique'}",
-            f"Suggestion 3 : {humor_refs[2] if len(humor_refs) > 2 else 'hook plus émotionnel'}",
+            f"Hook 1 : {self._style_hook(book_title, humor_refs, 0, 'un livre qui te chope par le col dès l’ouverture')}",
+            f"Hook 2 : {self._style_hook(book_title, humor_refs, 1, 'un roman qui te fait rire avant de te casser le cœur')}",
+            f"Hook 3 : {self._style_hook(book_title, humor_refs, 2, 'une lecture qui a la politesse d’être dangereusement addictive')}",
         ]
 
         final_script = self._render_script(
@@ -114,6 +125,8 @@ class ReviewAssistantService:
             previous_pitch=previous_reviews["pitch"][:8],
             previous_avis=previous_reviews["avis"][:8],
             humor_refs=humor_refs,
+            pitch_anchor=pitch_anchor,
+            avis_anchor=avis_anchor,
         )
 
         return ReviewDraft(
@@ -122,7 +135,30 @@ class ReviewAssistantService:
             pitch_ideas=pitch_ideas,
             review_notes=review_notes,
             hook_suggestions=hook_suggestions,
+            style_anchors=[pitch_anchor, avis_anchor],
             final_script=final_script,
+        )
+
+    def _make_hook_idea(self, text: str, label: str) -> str:
+        cleaned = text.strip().replace("\n", " ")
+        if not cleaned:
+            return f"Hook à partir des {label} : trouver l'angle le plus mordant."
+        return f"Hook à partir des {label} : {cleaned[:160].rstrip()}"
+
+    def _style_hook(self, book_title: str, refs: list[str], index: int, fallback: str) -> str:
+        ref = refs[index] if len(refs) > index else fallback
+        return f"{book_title} — {ref}"
+
+    def _make_pitch_idea(self, book_title: str, fields: dict[str, str], pitch_anchor: str, humor_refs: list[str]) -> str:
+        resume = (fields.get("Résumé", "") or fields.get("Résumé spoiler-free", "")).replace("\n", " ").strip()
+        tropes = (fields.get("Tropes", "") or "").replace("\n", " ").strip()
+        scene = (fields.get("Scènes importantes", "") or "").replace("\n", " ").strip()
+        ref = humor_refs[0] if humor_refs else "Référence humoristique à caler au moment du script."
+        return (
+            f"Pitch façon review : {book_title}, version orale et nerveuse. "
+            f"Partir du résumé ({resume[:120].rstrip()}) puis enchaîner sur les tropes ({tropes[:100].rstrip()}) "
+            f"avec une chute plus personnelle. Ancrage style : {pitch_anchor}. Référence possible : {ref}. "
+            f"Si besoin, s’appuyer sur la scène forte suivante : {scene[:100].rstrip()}."
         )
 
     def _render_script(
@@ -133,15 +169,28 @@ class ReviewAssistantService:
         previous_pitch: list[str],
         previous_avis: list[str],
         humor_refs: list[str],
+        pitch_anchor: str,
+        avis_anchor: str,
     ) -> str:
-        lines = [f"# Review draft — {book_title}", ""]
+        lines = [f"# {book_title}", ""]
+        lines.append("## Accroche")
+        lines.append(pitch_anchor)
+        lines.append("")
         lines.append("## Hook")
-        lines.append("*À valider par l'utilisateur*")
+        lines.append("*Propositions à valider par l'utilisateur*")
         lines.append("")
         lines.append("## Pitch")
         lines.append(fields.get("Résumé", "") or fields.get("Résumé spoiler-free", ""))
+        if fields.get("Tropes"):
+            lines.append("")
+            lines.append(f"*Tropes repérés : {fields['Tropes'].replace(chr(10), ' ')}*")
+        if fields.get("Scènes importantes"):
+            lines.append("")
+            lines.append(f"*Scènes fortes : {fields['Scènes importantes'].replace(chr(10), ' ')}*")
         lines.append("")
         lines.append("## Avis")
+        lines.append(avis_anchor)
+        lines.append("")
         lines.append(user_notes.strip() or "*L'utilisateur doit donner son avis brut.*")
         lines.append("")
         lines.append("## Références mémoire")

@@ -30,11 +30,13 @@ class TestReviewAssistantService(unittest.TestCase):
             )
             draft = assistant.build_draft(user_notes="J'ai aimé la tension.")
 
-            self.assertEqual(draft.book_title, "book")
+            self.assertEqual(draft.book_title, "Les Héritiers d'Orion")
             self.assertTrue(draft.hook_suggestions)
-            self.assertIn("Hook", draft.final_script)
+            self.assertIn("## Accroche", draft.final_script)
             self.assertIn("J'ai aimé la tension.", draft.final_script)
             self.assertIn("Une vieille review pitch.", draft.final_script)
+            self.assertIn("Un vieil avis.", draft.final_script)
+            self.assertIn("Roman Frayssinet", draft.final_script)
 
 
 if __name__ == "__main__":
