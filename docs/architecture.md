@@ -10,7 +10,7 @@ Markdown manuel
 ↓
 BookstAI
 ↓
-Import ou template
+Import, template ou recherche locale
 ↓
 `memory/books/<slug>.md`
 
@@ -20,7 +20,8 @@ Principes :
 - pas d'appel LLM obligatoire ;
 - architecture simple ;
 - Python standard en priorité ;
-- réutiliser les fiches existantes.
+- réutiliser les fiches existantes ;
+- la recherche locale parcourt les Markdown sans reconstruire les données.
 
 Human In The Loop partout.
 

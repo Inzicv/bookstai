@@ -23,12 +23,21 @@ Champs déjà présents dans les fiches :
 
 ## Phase 2 - RAG
 
-Exploiter :
+Recherche locale sur les fiches Markdown.
+
+Objectif :
+
+- retrouver rapidement les livres, citations, tropes et notes à partir d'une requête ;
+- rester local et léger ;
+- préparer les usages futurs de RAG sans dépendance externe.
+
+Sources possibles :
 
 - reviews ;
 - songs ;
 - humour ;
-- style visuel.
+- style visuel ;
+- fiches `memory/books/`.
 
 ---
 

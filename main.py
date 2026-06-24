@@ -11,6 +11,7 @@ from pathlib import Path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from src.generators.markdown_generator import clean_filename, create_empty_book_template
+from src.services.book_search_service import BookSearchService
 
 
 def ask_text(prompt: str, default: str = "") -> str:
@@ -73,10 +74,35 @@ def main() -> None:
         "--title",
         help="Titre à utiliser pour le nom de fichier quand on crée un template.",
     )
+    subparsers = parser.add_subparsers(dest="command")
+    subparsers.add_parser("search", help="Recherche locale dans les fiches Markdown.")
+    subparsers.add_parser("index", help="Reconstruit l'index local des fiches Markdown.")
 
     args = parser.parse_args()
 
     try:
+        if args.command == "index":
+            service = BookSearchService(books_dir=args.output_dir)
+            count = service.index_books()
+            print(f"\n[Succès] Index reconstruit pour {count} fiche(s).")
+            return
+
+        if args.command == "search":
+            query = args.title or ask_text("Requête de recherche")
+            service = BookSearchService(books_dir=args.output_dir)
+            results = service.search(query)
+            if not results:
+                print("\n[Aucun résultat]")
+                return
+            print()
+            for result in results:
+                print(f"- {result.title}")
+                print(f"  {result.path}")
+                print(f"  score={result.score}")
+                print(f"  {result.snippet}")
+                print()
+            return
+
         if args.source:
             output_path = import_markdown(args.source, output_dir=args.output_dir)
         else:

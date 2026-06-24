@@ -27,3 +27,17 @@ Choix du mode template
 Création d'un fichier vide
 ↓
 Remplissage manuel
+
+---
+
+## Recherche locale
+
+Lancement de BookstAI
+↓
+Choix de la commande search
+↓
+Requête utilisateur
+↓
+Recherche dans `memory/books/`
+↓
+Résultats classés par pertinence
