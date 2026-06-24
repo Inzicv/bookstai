@@ -4,94 +4,17 @@
 
 Entrée :
 
-- saisie utilisateur ;
-- notes personnelles ;
-- texte copié depuis d'autres outils.
+- fichier Markdown déjà rédigé ;
+- ou template vide.
 
 Sortie :
 
-- fiche livre Markdown dans `memory/books/<slug>.md`.
+- fichier Markdown dans `memory/books/`.
 
-Aucune créativité forcée.
-
-Pas d'appel API obligatoire.
+Il ne reconstruit pas les données du livre.
 
 ---
 
-## Comedy Room
+## Phase futures
 
-Entrée :
-
-- fiche livre Markdown.
-
-Sortie :
-
-- hooks ;
-- analogies ;
-- blagues ;
-- références.
-
-Validation humaine.
-
----
-
-## Song Writer
-
-Entrée :
-
-- fiche livre Markdown.
-
-Sortie :
-
-- structures ;
-- rimes ;
-- idées.
-
-Validation humaine.
-
----
-
-## Art Director
-
-Entrée :
-
-- fiche livre Markdown.
-
-Sortie :
-
-- prompts image ;
-- personnages ;
-- storyboard.
-
-Validation humaine.
-
----
-
-## Animator
-
-Entrée :
-
-- storyboard.
-
-Sortie :
-
-- prompts vidéo ;
-- mouvements ;
-- expressions.
-
-Validation humaine.
-
----
-
-## Social Media
-
-Entrée :
-
-- contenu final.
-
-Sortie :
-
-- descriptions ;
-- hashtags ;
-- hooks ;
-- carrousels.
+Les autres agents utiliseront ensuite la fiche Markdown comme source de vérité.

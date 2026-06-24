@@ -1,27 +1,27 @@
 # Architecture
 
-EPUB
+Source de vérité :
+
+`memory/books/*.md`
+
+Flux principal :
+
+Markdown manuel
 ↓
-Librarian V1
+BookstAI
 ↓
-memory/books
+Import ou template
+↓
+`memory/books/<slug>.md`
 
-Human In The Loop entre chaque étape.
+Principes :
 
-Chaque module doit être indépendant.
+- pas d'analyse automatique d'EPUB ;
+- pas d'appel LLM obligatoire ;
+- architecture simple ;
+- Python standard en priorité ;
+- réutiliser les fiches existantes.
 
-Pour Librarian V1 :
+Human In The Loop partout.
 
-- script CLI local ;
-- saisie manuelle ou collage de texte ;
-- génération Markdown simple ;
-- pas d'appel automatique à une API externe.
-
-Les données sont stockées principalement en Markdown.
-
-Technologies :
-
-- Python standard ;
-- Markdown ;
-- SQLite plus tard si nécessaire ;
-- LangGraph et IA seulement pour les phases futures.
+Chaque module doit rester indépendant.

@@ -1,6 +1,6 @@
 # Etat actuel
 
-Phase : Librarian V1
+Phase : Fiches Markdown comme source de vérité
 
 Déjà fait :
 
@@ -12,7 +12,7 @@ Arborescence créée.
 
 Prochaine tâche :
 
-Créer le générateur local de fiches livres Librarian V1.
+Demander au lancement le fichier Markdown du livre, puis l'importer ou créer un template vide.
 
 Documentation :
 

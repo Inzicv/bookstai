@@ -1,39 +1,23 @@
 # Roadmap
 
-## Phase 1 - Librarian V1
+## Phase 1 - Fiches Markdown comme source de vérité
 
-Générateur local de fiches livres Markdown.
+BookstAI ne reconstruit plus les informations à partir d'EPUB ni d'API LLM.
 
-Workflow :
+Workflow actuel :
 
-- saisie CLI ;
-- collage d'informations depuis notes ou sources externes ;
-- création de `memory/books/<slug>.md`.
+- un fichier Markdown manuel existe déjà dans `memory/books/` ;
+- BookstAI permet de l'importer ou de créer un template vide ;
+- les fiches dans `memory/books/` sont la source de vérité.
 
-Champs :
+Champs déjà présents dans les fiches :
 
-- titre ;
-- auteur ;
-- saga ;
-- tome ;
-- genre ;
-- résumé spoiler-free ;
-- résumé complet ;
-- personnages principaux ;
-- descriptions physiques ;
-- relations entre personnages ;
+- personnages ;
 - tropes ;
-- thèmes ;
-- citations clés ;
-- scènes importantes ;
+- résumé ;
+- citations ;
 - timeline ;
-- notes personnelles ;
-- statut de lecture ;
-- niveau de spoil.
-
-Option bonus :
-
-- template vide à remplir manuellement.
+- scènes importantes.
 
 ---
 
