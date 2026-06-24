@@ -1,93 +1,114 @@
 # Roadmap
 
-## Phase 1 - Fiches Markdown comme source de vérité
-
-BookstAI ne reconstruit plus les informations à partir d'EPUB ni d'API LLM.
-
-Workflow actuel :
-
-- un fichier Markdown manuel existe déjà dans `memory/books/` ;
-- BookstAI permet de l'importer ou de créer un template vide ;
-- les fiches dans `memory/books/` sont la source de vérité.
-
-Champs déjà présents dans les fiches :
-
-- personnages ;
-- tropes ;
-- résumé ;
-- citations ;
-- timeline ;
-- scènes importantes.
-
----
-
-## Phase 2 - RAG
-
-Recherche locale sur les fiches Markdown.
-
+# Phase 1 - Base de connaissances
+Les fichiers Markdown sont la source de vérité.
+Sources :
+* memory/books/
+* memory/reviews/
+* memory/songs/
+* memory/humor/
+* memory/visual_style/
+Les fiches livres sont créées manuellement (ChatGPT ou utilisateur).
+BookstAI ne lit pas automatiquement les EPUB.
 Objectif :
+Constituer une mémoire de qualité.
+✅ Terminé
 
-- retrouver rapidement les livres, citations, tropes et notes à partir d'une requête ;
-- rester local et léger ;
-- préparer les usages futurs de RAG sans dépendance externe.
+# Phase 2 - RAG créatif local
+Construire une mémoire créative locale légère.
+Sources :
+* memory/books/
+* memory/reviews/
+* memory/songs/
+* memory/humor/
+* memory/visual_style/
+Objectif :
+Transformer une requête naturelle en contexte exploitable.
+Exemples :
+"Je veux une review humoristique sur Les Héritiers d'Orion"
+"Je veux une parodie spoiler-free sur Crescent City"
+Le système doit fournir :
+* résumé ;
+* personnages ;
+* tropes ;
+* citations ;
+* scènes importantes ;
+* exemples de reviews similaires ;
+* exemples de chansons similaires ;
+* références humoristiques ;
+* références visuelles.
+Il ne s'agit pas d'un moteur de recherche mais d'une mémoire créative.
+🚧 Phase actuelle
 
-Sources possibles :
-
-- reviews ;
-- songs ;
-- humour ;
-- style visuel ;
-- fiches `memory/books/`.
-
----
-
-## Phase 3 - Comedy Room
-
-Proposer :
-
+# Phase 3 - Comedy Room
+Premier assistant créatif.
+Entrée :
+Contexte produit par le RAG.
+Sortie :
+* résumé humoristique / pitch de livre tel que dans le contexte
 - hooks ;
 - analogies ;
 - références actuelles ;
 - blagues ;
 - punchlines.
+L'utilisateur garde toujours la décision finale.
 
-Validation humaine.
+# Phase 4 - Song Writer
+Assistant de co-écriture.
+Entrée :
+Contexte produit par le RAG.
+Sortie :
+* idées ;
+* structures ;
+* rimes ;
+* scènes importantes ;
+* propositions de paroles de chanson (2 à 3 exemples).
+-
+L'utilisateur conserve l'écriture finale.
 
----
+# Phase 5 - Art Director
+Assistant de direction artistique.
+Entrée :
+Contexte produit par le RAG.
+Sources :
+* memory/books
+* memory/visual_style
+Sortie :
+* prompts images ;
+* idées de storyboard ;
+* cadrages ;
+* plans ;
+* références visuelles.
+Le style n'est jamais imposé.
 
-## Phase 4 - Song Writer
+# Phase 6 - Assistant de création visuelle
+Assistant de création visuelle basé sur ce qui a été produit dans Song Writer.
+Sortie :
+* prompts image ;
+* prompts vidéo ;
+* mouvements ;
+* expressions ;
+* idées d'animation.
 
-À partir d'un résumé proposer :
+# Phase 7 - Social Media
+Assistant publication.
+Sortie :
+* descriptions ;
+* hashtags ;
+* hooks ;
+* carrousels ;
+* légendes optimisées Bookstagram ;
+* légendes optimisées BookTok.
 
-- rimes ;
-- idées.
-
-Validation humaine.
-
----
-
-## Phase 5 - Art Director
-
-Prompts images.
-
-Storyboard.
-
-Direction artistique.
-
----
-
-## Phase 6 - Animator
-
-Prompts vidéo.
-
-Animations.
-
----
-
-## Phase 7 - Social Media
-
-Descriptions.
-
-Hashtags.
-
-Carrousels.
+# Principes
+Toujours privilégier :
+* simplicité ;
+* faible coût ;
+* local ;
+* Markdown ;
+* Human In The Loop.
+Éviter :
+* lecture automatique des romans ;
+* agents autonomes ;
+* pipelines coûteux ;
+* complexité inutile.
