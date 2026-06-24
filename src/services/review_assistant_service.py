@@ -1,10 +1,36 @@
-"""Local Review Assistant helper for a single active book."""
+"""Local Review Assistant helper for a single active book.
+
+The logic is intentionally split into small callable steps so it can be reused
+from the CLI, tests, a future GUI, or a Langflow workflow.
+"""
 
 from __future__ import annotations
 
 import re
 from dataclasses import dataclass
 from pathlib import Path
+
+
+@dataclass
+class ReviewAssets:
+    book_title: str
+    book_fields: dict[str, str]
+    previous_pitch: list[str]
+    previous_avis: list[str]
+    humor_refs: list[str]
+    pitch_anchor: str
+    avis_anchor: str
+
+
+@dataclass
+class StepOutput:
+    """Standard output wrapper for Langflow-friendly orchestration."""
+
+    step_name: str
+    title: str
+    content: str
+    options: list[str]
+    notes: list[str]
 
 
 @dataclass
@@ -72,7 +98,7 @@ def load_humor_references(path: str) -> list[str]:
 
 
 class ReviewAssistantService:
-    """Builds a review drafting brief from the active book and memory files."""
+    """Builds review drafting assets from the active book and memory files."""
 
     def __init__(
         self,
@@ -84,52 +110,83 @@ class ReviewAssistantService:
         self.reviews_path = Path(reviews_path)
         self.humor_path = Path(humor_path)
 
-    def build_draft(self, user_notes: str = "") -> ReviewDraft:
+    def load_assets(self) -> ReviewAssets:
         book_content = self.book_path.read_text(encoding="utf-8")
         book_title = extract_title(book_content, self.book_path.stem)
-        fields = extract_book_fields(book_content)
+        book_fields = extract_book_fields(book_content)
         previous_reviews = extract_review_blocks(self.reviews_path.read_text(encoding="utf-8"))
         humor_refs = load_humor_references(str(self.humor_path))
         pitch_anchor = first_nonempty_line(previous_reviews["pitch"], "Un pitch direct et mordant.")
         avis_anchor = first_nonempty_line(previous_reviews["avis"], "Un avis très incarné et subjectif.")
-
-        pitch_proposal = self._make_pitch_proposal(book_title, fields, pitch_anchor, humor_refs)
-        avis_proposal = self._make_avis_proposal(user_notes, avis_anchor, previous_reviews["avis"])
-        pitch_ideas = self._make_pitch_ideas(fields, humor_refs)
-        hook_suggestions = [
-            f"Hook 1 : {self._style_hook(book_title, humor_refs, 0, 'un livre qui te chope par le col dès l’ouverture')}",
-            f"Hook 2 : {self._style_hook(book_title, humor_refs, 1, 'un roman qui te fait rire avant de te casser le cœur')}",
-            f"Hook 3 : {self._style_hook(book_title, humor_refs, 2, 'une lecture qui a la politesse d’être dangereusement addictive')}",
-        ]
-
-        final_script = self._render_script(
+        return ReviewAssets(
             book_title=book_title,
-            fields=fields,
-            pitch_proposal=pitch_proposal,
-            avis_proposal=avis_proposal,
-            previous_pitch=previous_reviews["pitch"][:8],
-            previous_avis=previous_reviews["avis"][:8],
+            book_fields=book_fields,
+            previous_pitch=previous_reviews["pitch"],
+            previous_avis=previous_reviews["avis"],
             humor_refs=humor_refs,
             pitch_anchor=pitch_anchor,
             avis_anchor=avis_anchor,
-            user_notes=user_notes,
         )
 
-        return ReviewDraft(
-            book_title=book_title,
-            pitch_proposal=pitch_proposal,
-            avis_proposal=avis_proposal,
-            pitch_ideas=pitch_ideas,
-            hook_suggestions=hook_suggestions,
-            style_anchors=[pitch_anchor, avis_anchor],
-            final_script=final_script,
+    def propose_pitch(self, assets: ReviewAssets) -> str:
+        return self._make_pitch_proposal(assets)
+
+    def propose_pitch_step(self, assets: ReviewAssets) -> StepOutput:
+        return StepOutput(
+            step_name="pitch",
+            title=f"Proposition de pitch — {assets.book_title}",
+            content=self.propose_pitch(assets),
+            options=self.propose_pitch_ideas(assets),
+            notes=[
+                "L'utilisateur corrige ou conserve la proposition.",
+                "Human In The Loop avant de passer à l'avis.",
+            ],
         )
 
-    def _make_pitch_ideas(self, fields: dict[str, str], humor_refs: list[str]) -> list[str]:
-        resume = (fields.get("Résumé", "") or fields.get("Résumé spoiler-free", "")).replace("\n", " ").strip()
-        tropes = (fields.get("Tropes", "") or "").replace("\n", " ").strip()
-        scenes = (fields.get("Scènes importantes", "") or "").replace("\n", " ").strip()
-        refs = humor_refs[:3] or ["Référence humoristique à placer au moment du script."]
+    def propose_avis(self, assets: ReviewAssets, user_notes: str) -> str:
+        return self._make_avis_proposal(user_notes, assets.avis_anchor, assets.previous_avis)
+
+    def propose_avis_step(self, assets: ReviewAssets, user_notes: str) -> StepOutput:
+        return StepOutput(
+            step_name="avis",
+            title=f"Proposition d'avis — {assets.book_title}",
+            content=self.propose_avis(assets, user_notes),
+            options=[
+                "Remettre les idées dans l'ordre.",
+                "Conserver le ton direct des anciens avis.",
+                "Garder les émotions de l'utilisateur intactes.",
+            ],
+            notes=[
+                "L'utilisateur saisit son avis brut.",
+                "Puis il corrige la proposition avant de passer aux hooks.",
+            ],
+        )
+
+    def propose_hooks(self, assets: ReviewAssets) -> list[str]:
+        return [
+            f"Hook 1 : {self._style_hook(assets.book_title, assets.humor_refs, 0, 'un livre qui te chope par le col dès l’ouverture')}",
+            f"Hook 2 : {self._style_hook(assets.book_title, assets.humor_refs, 1, 'un roman qui te fait rire avant de te casser le cœur')}",
+            f"Hook 3 : {self._style_hook(assets.book_title, assets.humor_refs, 2, 'une lecture qui a la politesse d’être dangereusement addictive')}",
+        ]
+
+    def propose_hooks_step(self, assets: ReviewAssets) -> StepOutput:
+        hooks = self.propose_hooks(assets)
+        return StepOutput(
+            step_name="hooks",
+            title=f"Propositions de hooks — {assets.book_title}",
+            content="\n".join(f"- {hook}" for hook in hooks),
+            options=hooks,
+            notes=[
+                "L'utilisateur choisit ou réécrit le hook final.",
+                "Dernière validation humaine avant assemblage.",
+            ],
+        )
+
+    def propose_pitch_ideas(self, assets: ReviewAssets) -> list[str]:
+        resume = self._book_resume(assets.book_fields)
+        tropes = (assets.book_fields.get("Tropes", "") or "").replace("\n", " ").strip()
+        scenes = (assets.book_fields.get("Scènes importantes", "") or "").replace("\n", " ").strip()
+        refs = assets.humor_refs[:3] or ["Référence humoristique à placer au moment du script."]
         return [
             f"Commencer très oral, puis resserrer autour du résumé : {resume[:160].rstrip()}",
             f"Faire ressortir le trope dominant : {tropes[:140].rstrip()}",
@@ -137,22 +194,115 @@ class ReviewAssistantService:
             f"Ajouter une référence d'humour mémoire : {refs[0]}",
         ]
 
+    def assemble_script(
+        self,
+        assets: ReviewAssets,
+        pitch_final: str,
+        avis_final: str,
+        hook_final: str,
+        user_notes: str,
+    ) -> str:
+        lines = [f"# {assets.book_title}", ""]
+        lines.append("## Accroche")
+        lines.append(assets.pitch_anchor)
+        lines.append("")
+        lines.append("## Hook")
+        lines.append(hook_final)
+        lines.append("")
+        lines.append("## Pitch")
+        lines.append(pitch_final)
+        lines.append("")
+        lines.append("*Ancien résumé mémoire :*")
+        lines.append(self._book_resume(assets.book_fields))
+        lines.append("")
+        lines.append("## Avis")
+        lines.append(assets.avis_anchor)
+        lines.append("")
+        lines.append(avis_final)
+        lines.append("")
+        lines.append("*Avis brut saisi par l'utilisateur :*")
+        lines.append(user_notes.strip() or "*L'utilisateur doit donner son avis brut.*")
+        lines.append("")
+        lines.append("## Références mémoire")
+        lines.append("")
+        lines.append("### Reviews précédentes (#pitch)")
+        lines.extend(f"- {line}" for line in assets.previous_pitch or ["*Aucune référence trouvée.*"])
+        lines.append("")
+        lines.append("### Reviews précédentes (#avis)")
+        lines.extend(f"- {line}" for line in assets.previous_avis or ["*Aucune référence trouvée.*"])
+        lines.append("")
+        lines.append("### Références humoristiques")
+        lines.extend(f"- {ref}" for ref in assets.humor_refs or ["*Aucune référence trouvée.*"])
+        return "\n".join(lines).rstrip() + "\n"
+
+    def assemble_script_step(
+        self,
+        assets: ReviewAssets,
+        pitch_final: str,
+        avis_final: str,
+        hook_final: str,
+        user_notes: str,
+    ) -> StepOutput:
+        script = self.assemble_script(
+            assets=assets,
+            pitch_final=pitch_final,
+            avis_final=avis_final,
+            hook_final=hook_final,
+            user_notes=user_notes,
+        )
+        return StepOutput(
+            step_name="assemble",
+            title=f"Script final — {assets.book_title}",
+            content=script,
+            options=[],
+            notes=[
+                "Résultat final après validation humaine.",
+                "Peut être exporté tel quel dans un fichier Markdown.",
+            ],
+        )
+
+    def build_draft(self, user_notes: str = "") -> ReviewDraft:
+        assets = self.load_assets()
+        pitch_proposal = self.propose_pitch(assets)
+        avis_proposal = self.propose_avis(assets, user_notes)
+        pitch_ideas = self.propose_pitch_ideas(assets)
+        hook_suggestions = self.propose_hooks(assets)
+        final_script = self.assemble_script(
+            assets=assets,
+            pitch_final=pitch_proposal,
+            avis_final=avis_proposal,
+            hook_final=hook_suggestions[0] if hook_suggestions else "",
+            user_notes=user_notes,
+        )
+        return ReviewDraft(
+            book_title=assets.book_title,
+            pitch_proposal=pitch_proposal,
+            avis_proposal=avis_proposal,
+            hook_suggestions=hook_suggestions,
+            pitch_ideas=pitch_ideas,
+            style_anchors=[assets.pitch_anchor, assets.avis_anchor],
+            final_script=final_script,
+        )
+
+    def _book_resume(self, book_fields: dict[str, str]) -> str:
+        return (book_fields.get("Résumé", "") or book_fields.get("Résumé spoiler-free", "")).replace("\n", " ").strip()
+
     def _style_hook(self, book_title: str, refs: list[str], index: int, fallback: str) -> str:
         ref = refs[index] if len(refs) > index else fallback
         return f"{book_title} — {ref}"
 
-    def _make_pitch_proposal(self, book_title: str, fields: dict[str, str], pitch_anchor: str, humor_refs: list[str]) -> str:
-        resume = (fields.get("Résumé", "") or fields.get("Résumé spoiler-free", "")).replace("\n", " ").strip()
-        tropes = (fields.get("Tropes", "") or "").replace("\n", " ").strip()
-        scene = (fields.get("Scènes importantes", "") or "").replace("\n", " ").strip()
-        ref = humor_refs[0] if humor_refs else "Référence humoristique à caler au moment du script."
+    def _make_pitch_proposal(self, assets: ReviewAssets) -> str:
+        resume = self._book_resume(assets.book_fields)
+        tropes = (assets.book_fields.get("Tropes", "") or "").replace("\n", " ").strip()
+        scene = (assets.book_fields.get("Scènes importantes", "") or "").replace("\n", " ").strip()
+        ref = assets.humor_refs[0] if assets.humor_refs else "Référence humoristique à caler au moment du script."
         return (
-            f"{book_title} ? "
+            f"{assets.book_title} ? "
             f"On est sur {resume[:120].rstrip()} "
             f"mais avec le genre de ton qui fait qu'on ne raconte pas juste l'histoire, on la secoue un peu. "
             f"Le trope qui ressort le plus : {tropes[:100].rstrip()}. "
             f"Et la scène qui donne du sel : {scene[:100].rstrip()}. "
-            f"On garde le rythme du style mémoire : {pitch_anchor}. "
+            f"On garde le rythme du style mémoire : {assets.pitch_anchor}. "
             f"Référence utile : {ref}."
         )
 
@@ -165,49 +315,3 @@ class ReviewAssistantService:
             f"Version lissée : garder ce que l'utilisateur ressent, remettre les idées dans l'ordre, "
             f"et conserver le ton direct et incarné des anciens avis."
         )
-
-    def _render_script(
-        self,
-        book_title: str,
-        fields: dict[str, str],
-        pitch_proposal: str,
-        avis_proposal: str,
-        previous_pitch: list[str],
-        previous_avis: list[str],
-        humor_refs: list[str],
-        pitch_anchor: str,
-        avis_anchor: str,
-        user_notes: str,
-    ) -> str:
-        lines = [f"# {book_title}", ""]
-        lines.append("## Accroche")
-        lines.append(pitch_anchor)
-        lines.append("")
-        lines.append("## Hook")
-        lines.append("*Propositions à valider par l'utilisateur*")
-        lines.append("")
-        lines.append("## Pitch")
-        lines.append(pitch_proposal)
-        lines.append("")
-        lines.append("*Ancien résumé mémoire :*")
-        lines.append(fields.get("Résumé", "") or fields.get("Résumé spoiler-free", ""))
-        lines.append("")
-        lines.append("## Avis")
-        lines.append(avis_anchor)
-        lines.append("")
-        lines.append(avis_proposal)
-        lines.append("")
-        lines.append("*Avis brut saisi par l'utilisateur :*")
-        lines.append(user_notes.strip() or "*L'utilisateur doit donner son avis brut.*")
-        lines.append("")
-        lines.append("## Références mémoire")
-        lines.append("")
-        lines.append("### Reviews précédentes (#pitch)")
-        lines.extend(f"- {line}" for line in previous_pitch or ["*Aucune référence trouvée.*"])
-        lines.append("")
-        lines.append("### Reviews précédentes (#avis)")
-        lines.extend(f"- {line}" for line in previous_avis or ["*Aucune référence trouvée.*"])
-        lines.append("")
-        lines.append("### Références humoristiques")
-        lines.extend(f"- {ref}" for ref in humor_refs or ["*Aucune référence trouvée.*"])
-        return "\n".join(lines).rstrip() + "\n"
