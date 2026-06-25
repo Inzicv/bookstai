@@ -6,9 +6,16 @@ from the CLI, tests, a future GUI, or a Langflow workflow.
 
 from __future__ import annotations
 
+import os
 import re
+import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
+
+try:
+    from google import genai
+except Exception:  # pragma: no cover - optional dependency
+    genai = None
 
 
 @dataclass
@@ -44,15 +51,72 @@ class ReviewDraft:
     final_script: str
 
 
-def extract_section(content: str, section_name: str) -> str:
-    pattern = re.compile(rf"^#+\s+{re.escape(section_name)}\s*$", flags=re.MULTILINE | re.IGNORECASE)
-    match = pattern.search(content)
-    if not match:
-        return ""
-    start = match.end()
-    next_section = re.search(r"^#+\s+", content[start:], flags=re.MULTILINE)
-    end = start + next_section.start() if next_section else len(content)
-    return content[start:end].strip()
+class ReviewLLMClient:
+    """Optional Gemini client used to generate prose from local Markdown context."""
+
+    def __init__(self, api_key: str | None = None, model_name: str | None = None) -> None:
+        self.api_key = api_key or os.getenv("GEMINI_API_KEY", "").strip()
+        self.model_name = model_name or os.getenv("BOOKSTAI_REVIEW_MODEL", "gemini-2.5-flash")
+        self.enabled = bool(self.api_key and genai is not None)
+        self._client = genai.Client(api_key=self.api_key) if self.enabled else None
+
+    def generate_text(self, prompt: str, system_instruction: str) -> str | None:
+        if not self.enabled or self._client is None:
+            return None
+        response = self._client.models.generate_content(
+            model=self.model_name,
+            contents=prompt,
+            config={
+                "system_instruction": system_instruction,
+                "temperature": 0.7,
+            },
+        )
+        text = getattr(response, "text", None)
+        return text.strip() if isinstance(text, str) and text.strip() else None
+
+
+def normalize_text(value: str) -> str:
+    normalized = unicodedata.normalize("NFKD", value)
+    without_marks = "".join(char for char in normalized if not unicodedata.combining(char))
+    return re.sub(r"\s+", " ", without_marks).strip().lower()
+
+
+def parse_markdown_sections(content: str) -> dict[str, str]:
+    sections: dict[str, list[str]] = {}
+    current_name = "Front matter"
+    sections[current_name] = []
+
+    for line in content.splitlines():
+        match = re.match(r"^#{1,6}\s+(.+)$", line.strip())
+        if match:
+            current_name = re.sub(r"^\d+[\s\.\-\)]*", "", match.group(1).strip())
+            sections.setdefault(current_name, [])
+            continue
+        sections.setdefault(current_name, []).append(line)
+
+    return {name: "\n".join(lines).strip() for name, lines in sections.items() if "\n".join(lines).strip()}
+
+
+def pick_section(sections: dict[str, str], wanted: str) -> str:
+    wanted_norm = normalize_text(wanted)
+    aliases = {
+        "résumé": ["résumé", "résumé du tome", "résumé spoiler-free"],
+        "tropes": ["tropes", "tropes littéraires"],
+        "personnages": [
+            "personnages",
+            "personnages principaux",
+            "personnages (nom, prénom & description physique)",
+        ],
+        "scènes importantes": ["scènes importantes", "scenes importantes"],
+    }
+    for section_name, content in sections.items():
+        section_norm = normalize_text(section_name)
+        if section_norm == wanted_norm:
+            return content
+        for alias in aliases.get(wanted, [wanted]):
+            if section_norm == normalize_text(alias):
+                return content
+    return ""
 
 
 def extract_title(content: str, fallback: str) -> str:
@@ -61,9 +125,10 @@ def extract_title(content: str, fallback: str) -> str:
 
 
 def extract_book_fields(content: str) -> dict[str, str]:
+    sections = parse_markdown_sections(content)
     fields: dict[str, str] = {}
     for label in ["Résumé", "Résumé spoiler-free", "Tropes", "Personnages", "Scènes importantes"]:
-        fields[label] = extract_section(content, label)
+        fields[label] = pick_section(sections, label)
     return fields
 
 
@@ -71,11 +136,11 @@ def extract_review_blocks(content: str) -> dict[str, list[str]]:
     blocks: dict[str, list[str]] = {"pitch": [], "avis": []}
     current = None
     for line in content.splitlines():
-        stripped = line.strip().lower()
-        if stripped == "#pitch" or stripped == "## pitch":
+        stripped = normalize_text(line)
+        if stripped in {"#pitch", "## pitch", "pitch"}:
             current = "pitch"
             continue
-        if stripped == "#avis" or stripped == "## avis":
+        if stripped in {"#avis", "## avis", "avis"}:
             current = "avis"
             continue
         if current and line.strip():
@@ -97,6 +162,35 @@ def load_humor_references(path: str) -> list[str]:
     return lines[:20]
 
 
+def debug_book_context(
+    book_path: str,
+    reviews_path: str = "memory/reviews/reviews.md",
+    humor_path: str = "memory/humor/references.md",
+) -> dict[str, object]:
+    """Return a compact debug snapshot for the active book and memory files."""
+    book_content = Path(book_path).read_text(encoding="utf-8")
+    book_title = extract_title(book_content, Path(book_path).stem)
+    sections = parse_markdown_sections(book_content)
+    fields = extract_book_fields(book_content)
+    previous_reviews = extract_review_blocks(Path(reviews_path).read_text(encoding="utf-8"))
+    humor_refs = load_humor_references(humor_path)
+    summary_text = fields.get("Résumé", "") or fields.get("Résumé spoiler-free", "")
+    return {
+        "book_title": book_title,
+        "sections_detected": list(sections.keys()),
+        "summary_length": len(summary_text),
+        "tropes_count": len([line for line in fields.get("Tropes", "").splitlines() if line.strip()]),
+        "scenes_count": len([line for line in fields.get("Scènes importantes", "").splitlines() if line.strip()]),
+        "pitch_count": len(previous_reviews["pitch"]),
+        "avis_count": len(previous_reviews["avis"]),
+        "pitch_preview": first_nonempty_line(previous_reviews["pitch"], ""),
+        "avis_preview": first_nonempty_line(previous_reviews["avis"], ""),
+        "humor_count": len(humor_refs),
+        "humor_preview": humor_refs[:5],
+        "field_keys": list(fields.keys()),
+    }
+
+
 class ReviewAssistantService:
     """Builds review drafting assets from the active book and memory files."""
 
@@ -105,10 +199,13 @@ class ReviewAssistantService:
         book_path: str,
         reviews_path: str = "memory/reviews/reviews.md",
         humor_path: str = "memory/humor/references.md",
+        api_key: str | None = None,
+        model_name: str | None = None,
     ) -> None:
         self.book_path = Path(book_path)
         self.reviews_path = Path(reviews_path)
         self.humor_path = Path(humor_path)
+        self.llm = ReviewLLMClient(api_key=api_key, model_name=model_name)
 
     def load_assets(self) -> ReviewAssets:
         book_content = self.book_path.read_text(encoding="utf-8")
@@ -129,7 +226,8 @@ class ReviewAssistantService:
         )
 
     def propose_pitch(self, assets: ReviewAssets) -> str:
-        return self._make_pitch_proposal(assets)
+        llm_text = self._generate_pitch_with_llm(assets)
+        return llm_text or self._make_pitch_proposal(assets)
 
     def propose_pitch_step(self, assets: ReviewAssets) -> StepOutput:
         return StepOutput(
@@ -144,7 +242,8 @@ class ReviewAssistantService:
         )
 
     def propose_avis(self, assets: ReviewAssets, user_notes: str) -> str:
-        return self._make_avis_proposal(user_notes, assets.avis_anchor, assets.previous_avis)
+        llm_text = self._generate_avis_with_llm(assets, user_notes)
+        return llm_text or self._make_avis_proposal(user_notes, assets.avis_anchor, assets.previous_avis)
 
     def propose_avis_step(self, assets: ReviewAssets, user_notes: str) -> StepOutput:
         return StepOutput(
@@ -163,6 +262,9 @@ class ReviewAssistantService:
         )
 
     def propose_hooks(self, assets: ReviewAssets) -> list[str]:
+        llm_hooks = self._generate_hooks_with_llm(assets)
+        if llm_hooks:
+            return llm_hooks
         return [
             f"Hook 1 : {self._style_hook(assets.book_title, assets.humor_refs, 0, 'un livre qui te chope par le col dès l’ouverture')}",
             f"Hook 2 : {self._style_hook(assets.book_title, assets.humor_refs, 1, 'un roman qui te fait rire avant de te casser le cœur')}",
@@ -306,6 +408,25 @@ class ReviewAssistantService:
             f"Référence utile : {ref}."
         )
 
+    def _generate_pitch_with_llm(self, assets: ReviewAssets) -> str | None:
+        prompt = "\n".join(
+            [
+                f"Livre: {assets.book_title}",
+                f"Résumé: {self._book_resume(assets.book_fields)}",
+                f"Tropes: {(assets.book_fields.get('Tropes', '') or '').replace(chr(10), ' ')}",
+                f"Scènes importantes: {(assets.book_fields.get('Scènes importantes', '') or '').replace(chr(10), ' ')}",
+                f"Ancien pitch style: {assets.pitch_anchor}",
+                f"Références humour: {', '.join(assets.humor_refs[:5])}",
+                "",
+                "Écris une proposition de pitch en français, orale, drôle, fidèle au ton des reviews existantes.",
+                "Retourne uniquement le texte du pitch, sans titre ni puces.",
+            ]
+        )
+        return self.llm.generate_text(
+            prompt=prompt,
+            system_instruction="Tu es un assistant d'écriture de reviews humoristiques. Tu restes fidèle au ton de l'utilisatrice.",
+        )
+
     def _make_avis_proposal(self, user_notes: str, avis_anchor: str, previous_avis: list[str]) -> str:
         base = user_notes.strip() or "L'utilisateur doit donner son avis brut."
         sample = first_nonempty_line(previous_avis, avis_anchor)
@@ -315,3 +436,41 @@ class ReviewAssistantService:
             f"Version lissée : garder ce que l'utilisateur ressent, remettre les idées dans l'ordre, "
             f"et conserver le ton direct et incarné des anciens avis."
         )
+
+    def _generate_avis_with_llm(self, assets: ReviewAssets, user_notes: str) -> str | None:
+        prompt = "\n".join(
+            [
+                f"Livre: {assets.book_title}",
+                f"Avis brut utilisateur: {user_notes.strip() or 'N/A'}",
+                f"Ancien avis style: {first_nonempty_line(assets.previous_avis, assets.avis_anchor)}",
+                "",
+                "Réécris l'avis brut dans un style naturel, direct, incarné et humoristique.",
+                "Conserve les émotions de l'utilisateur et n'invente pas d'opinion non présente.",
+                "Retourne uniquement le texte de l'avis, sans titre ni puces.",
+            ]
+        )
+        return self.llm.generate_text(
+            prompt=prompt,
+            system_instruction="Tu réécris des avis de lecture avec une voix très personnelle, vive et humoristique.",
+        )
+
+    def _generate_hooks_with_llm(self, assets: ReviewAssets) -> list[str] | None:
+        prompt = "\n".join(
+            [
+                f"Livre: {assets.book_title}",
+                f"Résumé: {self._book_resume(assets.book_fields)}",
+                f"Humour: {', '.join(assets.humor_refs[:5])}",
+                "",
+                "Propose 3 hooks courts, percutants, en français.",
+                "Chaque hook doit être sur une ligne séparée, sans numérotation, sans explication.",
+            ]
+        )
+        text = self.llm.generate_text(
+            prompt=prompt,
+            system_instruction="Tu écris des hooks de review très courts, punchy, et adaptés à un public booktok / bookstagram.",
+        )
+        if not text:
+            return None
+        hooks = [line.strip("-• \t") for line in text.splitlines() if line.strip()]
+        hooks = [hook for hook in hooks if hook]
+        return hooks[:3] or None
