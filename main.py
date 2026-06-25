@@ -140,6 +140,15 @@ def main() -> None:
         "--export",
         help="Chemin du fichier de sortie de contexte.",
     )
+    debug_parser = subparsers.add_parser(
+        "debug-book",
+        help="Affiche le diagnostic d'extraction d'une fiche livre et des mémoires associées.",
+    )
+    debug_parser.add_argument(
+        "--book",
+        required=True,
+        help="Chemin vers la fiche Markdown à diagnostiquer.",
+    )
 
     args = parser.parse_args()
 
@@ -276,6 +285,26 @@ def main() -> None:
             if args.export:
                 output_path = service.export_context(book_path, output_path=args.export)
                 print(f"[Export] Contexte écrit dans : {output_path}")
+            return
+
+        if args.command == "debug-book":
+            snapshot = ReviewAssistantService(
+                book_path=args.book,
+            ).load_assets()
+            service = ReviewAssistantService(book_path=args.book)
+            debug_data = service.load_assets()
+            print(f"Titre détecté : {debug_data.book_title}")
+            print("\nSections détectées :")
+            for key, value in debug_book_context(args.book)["sections_detected"]:
+                print(f"- {key}")
+            print(f"\nLongueur du résumé : {len(debug_data.book_fields.get('Résumé', '') or debug_data.book_fields.get('Résumé spoiler-free', ''))}")
+            print(f"Nombre de tropes détectés : {len([line for line in debug_data.book_fields.get('Tropes', '').splitlines() if line.strip()])}")
+            print(f"Nombre de scènes importantes détectées : {len([line for line in debug_data.book_fields.get('Scènes importantes', '').splitlines() if line.strip()])}")
+            print("\nAperçu anciens pitchs :")
+            print(debug_book_context(args.book)["pitch_preview"])
+            print("\nAperçu références humour :")
+            for line in debug_book_context(args.book)["humor_preview"]:
+                print(f"- {line}")
             return
 
         if args.source:
