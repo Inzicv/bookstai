@@ -28,15 +28,27 @@ class TestReviewAssistantService(unittest.TestCase):
                 reviews_path=str(reviews_path),
                 humor_path=str(humor_path),
             )
-            draft = assistant.build_draft(user_notes="J'ai aimé la tension.")
+            assets = assistant.load_assets()
+            pitch_step = assistant.propose_pitch_step(assets)
+            avis_step = assistant.propose_avis_step(assets, "J'ai aimé la tension.")
+            hooks_step = assistant.propose_hooks_step(assets)
+            assemble_step = assistant.assemble_script_step(
+                assets=assets,
+                pitch_final=pitch_step.content,
+                avis_final=avis_step.content,
+                hook_final=hooks_step.options[0],
+                user_notes="J'ai aimé la tension.",
+            )
 
-            self.assertEqual(draft.book_title, "Les Héritiers d'Orion")
-            self.assertTrue(draft.hook_suggestions)
-            self.assertIn("## Accroche", draft.final_script)
-            self.assertIn("J'ai aimé la tension.", draft.final_script)
-            self.assertIn("Une vieille review pitch.", draft.final_script)
-            self.assertIn("Un vieil avis.", draft.final_script)
-            self.assertIn("Roman Frayssinet", draft.final_script)
+            self.assertEqual(assets.book_title, "Les Héritiers d'Orion")
+            self.assertIn("pitch", pitch_step.step_name)
+            self.assertIn("avis", avis_step.step_name)
+            self.assertTrue(hooks_step.options)
+            self.assertIn("## Accroche", assemble_step.content)
+            self.assertIn("J'ai aimé la tension.", assemble_step.content)
+            self.assertIn("Une vieille review pitch.", assemble_step.content)
+            self.assertIn("Un vieil avis.", assemble_step.content)
+            self.assertIn("Roman Frayssinet", assemble_step.content)
 
 
 if __name__ == "__main__":

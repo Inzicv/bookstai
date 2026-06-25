@@ -41,6 +41,14 @@ def ask_choice(prompt: str, choices: dict[str, str], default_key: str) -> str:
     return value if value in choices else default_key
 
 
+def confirm_step(prompt: str, default: bool = True) -> bool:
+    suffix = " [Y/n]" if default else " [y/N]"
+    value = input(f"{prompt}{suffix}: ").strip().lower()
+    if not value:
+        return default
+    return value in {"y", "yes", "o", "oui"}
+
+
 def ensure_output_dir(output_dir: str) -> None:
     os.makedirs(output_dir, exist_ok=True)
 
@@ -175,71 +183,72 @@ def main() -> None:
                 "memory/books/lesheritiersdorion.md",
             )
             assistant = ReviewAssistantService(book_path=book_path)
-            draft = assistant.build_draft(user_notes=args.notes or "")
+            assets = assistant.load_assets()
+            print(f"\n[Book] {assets.book_title}\n")
 
-            print(f"\n[Book] {draft.book_title}\n")
-
+            pitch_step = assistant.propose_pitch_step(assets)
             print("=== ÉTAPE 1 — Proposition de pitch ===")
-            print(draft.pitch_proposal)
+            print(pitch_step.content)
             print()
             print("Idées pour travailler le pitch :")
-            for item in draft.pitch_ideas:
+            for item in pitch_step.options:
                 print(f"- {item}")
+            print()
+            print("Notes :")
+            for note in pitch_step.notes:
+                print(f"- {note}")
             print()
             pitch_final = ask_multiline(
                 "Colle ici ton pitch validé/corrigé, ou laisse vide pour garder la proposition"
             )
             if not pitch_final:
-                pitch_final = draft.pitch_proposal
+                pitch_final = pitch_step.content
 
             print("\n=== ÉTAPE 2 — Saisie de l'avis brut ===")
             user_notes = ask_multiline("Colle ici ton avis brut")
             if not user_notes:
                 user_notes = args.notes or ""
 
-            draft = assistant.build_draft(user_notes=user_notes)
+            avis_step = assistant.propose_avis_step(assets, user_notes)
             print("\n=== Proposition d'avis ===")
-            print(draft.avis_proposal)
+            print(avis_step.content)
+            print()
+            print("Notes :")
+            for note in avis_step.notes:
+                print(f"- {note}")
             print()
             avis_final = ask_multiline(
                 "Colle ici ton avis validé/corrigé, ou laisse vide pour garder la proposition"
             )
             if not avis_final:
-                avis_final = draft.avis_proposal
+                avis_final = avis_step.content
 
+            hooks_step = assistant.propose_hooks_step(assets)
             print("\n=== ÉTAPE 3 — Hooks proposés ===")
-            for item in draft.hook_suggestions:
-                print(f"- {item}")
+            print(hooks_step.content)
+            print()
+            print("Notes :")
+            for note in hooks_step.notes:
+                print(f"- {note}")
             print()
             hook_final = ask_text(
                 "Choisis ou réécris le hook final",
-                draft.hook_suggestions[0] if draft.hook_suggestions else "",
+                hooks_step.options[0] if hooks_step.options else "",
             )
 
-            final_script = "\n".join(
-                [
-                    f"# {draft.book_title}",
-                    "",
-                    "## Accroche",
-                    draft.style_anchors[0] if draft.style_anchors else "",
-                    "",
-                    "## Hook",
-                    hook_final,
-                    "",
-                    "## Pitch",
-                    pitch_final,
-                    "",
-                    "## Avis",
-                    avis_final,
-                    "",
-                ]
-            ).rstrip() + "\n"
-
-            print("\n=== SCRIPT FINAL ===\n")
-            print(final_script)
-            if args.output:
-                Path(args.output).write_text(final_script, encoding="utf-8")
-                print(f"[Export] Brouillon écrit dans : {Path(args.output).resolve()}")
+            if confirm_step("Assembler le script final maintenant ?"):
+                assemble_step = assistant.assemble_script_step(
+                    assets=assets,
+                    pitch_final=pitch_final,
+                    avis_final=avis_final,
+                    hook_final=hook_final,
+                    user_notes=user_notes,
+                )
+                print("\n=== SCRIPT FINAL ===\n")
+                print(assemble_step.content)
+                if args.output:
+                    Path(args.output).write_text(assemble_step.content, encoding="utf-8")
+                    print(f"[Export] Brouillon écrit dans : {Path(args.output).resolve()}")
             return
 
         if args.command == "context":
