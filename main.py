@@ -118,6 +118,16 @@ def main() -> None:
         "--output",
         help="Chemin optionnel pour enregistrer le brouillon.",
     )
+    review_parser.add_argument(
+        "--skip-confirm",
+        action="store_true",
+        help="Passe la validation finale de l'assemblage.",
+    )
+    review_parser.add_argument(
+        "--run-all",
+        action="store_true",
+        help="Affiche et exécute le workflow complet en mode test manuel.",
+    )
     context_parser = subparsers.add_parser(
         "context",
         help="Charge une fiche active et exporte son contexte prêt pour assistant.",
@@ -185,6 +195,8 @@ def main() -> None:
             assistant = ReviewAssistantService(book_path=book_path)
             assets = assistant.load_assets()
             print(f"\n[Book] {assets.book_title}\n")
+            if args.run_all:
+                print("[Mode] Workflow complet de test manuel\n")
 
             pitch_step = assistant.propose_pitch_step(assets)
             print("=== ÉTAPE 1 — Proposition de pitch ===")
@@ -236,7 +248,7 @@ def main() -> None:
                 hooks_step.options[0] if hooks_step.options else "",
             )
 
-            if confirm_step("Assembler le script final maintenant ?"):
+            if args.skip_confirm or confirm_step("Assembler le script final maintenant ?"):
                 assemble_step = assistant.assemble_script_step(
                     assets=assets,
                     pitch_final=pitch_final,

@@ -81,6 +81,31 @@ Avec export du brouillon :
 python main.py review --book "memory/books/lesheritiersdorion.md" --notes "J’ai aimé la tension et l’humour." --output "review_draft.md"
 ```
 
+### Scénario de test manuel complet
+
+Si la fiche de test existe, lance :
+
+```bash
+python main.py review --book "memory/books/lesheritiersdorion.md" --run-all
+```
+
+Pour assembler sans demander la confirmation finale :
+
+```bash
+python main.py review --book "memory/books/lesheritiersdorion.md" --run-all --skip-confirm
+```
+
+Déroulé attendu :
+
+1. proposition de pitch ;
+2. saisie du pitch corrigé ;
+3. saisie de l'avis brut ;
+4. proposition d'avis ;
+5. saisie de l'avis corrigé ;
+6. propositions de hooks ;
+7. choix du hook final ;
+8. assemblage du script final.
+
 ## 8. Charger une fiche active et exporter son contexte
 
 ```bash
