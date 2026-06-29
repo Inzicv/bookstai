@@ -15,8 +15,9 @@ class TestMemoryReaderFileValidation:
     def test_file_not_found(self) -> None:
         """Test that MemoryFileNotFoundError is raised for non-existent files."""
         nonexistent_path = Path("/nonexistent/path/to/file.md")
+        reader = MemoryReader()
         with pytest.raises(MemoryFileNotFoundError):
-            MemoryReader(nonexistent_path)
+            reader.read_text(nonexistent_path)
 
     def test_empty_file(self) -> None:
         """Test that EmptyMemoryFileError is raised for empty files."""
@@ -24,8 +25,9 @@ class TestMemoryReaderFileValidation:
             temp_path = Path(f.name)
 
         try:
+            reader = MemoryReader()
             with pytest.raises(EmptyMemoryFileError):
-                MemoryReader(temp_path)
+                reader.read_text(temp_path)
         finally:
             temp_path.unlink()
 
@@ -33,8 +35,26 @@ class TestMemoryReaderFileValidation:
 class TestMemoryReaderBasicReading:
     """Tests for basic file reading functionality."""
 
+    def test_read_text(self) -> None:
+        """Test reading plain text from a file."""
+        content = "# Header\nContent here"
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".md", delete=False, encoding="utf-8"
+        ) as f:
+            f.write(content)
+            temp_path = Path(f.name)
+
+        try:
+            reader = MemoryReader()
+            text = reader.read_text(temp_path)
+            assert text == content
+            assert "# Header" in text
+            assert "Content here" in text
+        finally:
+            temp_path.unlink()
+
     def test_read_simple_file(self) -> None:
-        """Test reading a simple file with content."""
+        """Test reading and parsing a simple file."""
         with tempfile.NamedTemporaryFile(
             mode="w", suffix=".md", delete=False, encoding="utf-8"
         ) as f:
@@ -42,9 +62,8 @@ class TestMemoryReaderBasicReading:
             temp_path = Path(f.name)
 
         try:
-            reader = MemoryReader(temp_path)
-            assert reader.file_path == temp_path
-            sections = reader.parse()
+            reader = MemoryReader()
+            sections = reader.read_sections(temp_path)
             assert "Header" in sections
         finally:
             temp_path.unlink()
@@ -65,8 +84,8 @@ This is the introduction content."""
             temp_path = Path(f.name)
 
         try:
-            reader = MemoryReader(temp_path)
-            sections = reader.parse()
+            reader = MemoryReader()
+            sections = reader.read_sections(temp_path)
 
             assert len(sections) == 1
             assert "Introduction" in sections
@@ -92,8 +111,8 @@ Content 3"""
             temp_path = Path(f.name)
 
         try:
-            reader = MemoryReader(temp_path)
-            sections = reader.parse()
+            reader = MemoryReader()
+            sections = reader.read_sections(temp_path)
 
             assert len(sections) == 3
             assert "Section 1" in sections
@@ -109,6 +128,8 @@ Content 3"""
         """Test parsing with nested headers (different levels)."""
         content = """# Main Section
 Content before subsection
+
+Some more intro text
 
 ## Subsection 1
 Subsection content
@@ -126,8 +147,8 @@ More content"""
             temp_path = Path(f.name)
 
         try:
-            reader = MemoryReader(temp_path)
-            sections = reader.parse()
+            reader = MemoryReader()
+            sections = reader.read_sections(temp_path)
 
             assert "Main Section" in sections
             assert "Subsection 1" in sections
@@ -159,8 +180,8 @@ Content of first section"""
             temp_path = Path(f.name)
 
         try:
-            reader = MemoryReader(temp_path)
-            sections = reader.parse()
+            reader = MemoryReader()
+            sections = reader.read_sections(temp_path)
 
             assert "document" in sections
             assert "This is preamble text." in sections["document"]
@@ -181,8 +202,8 @@ Content"""
             temp_path = Path(f.name)
 
         try:
-            reader = MemoryReader(temp_path)
-            sections = reader.parse()
+            reader = MemoryReader()
+            sections = reader.read_sections(temp_path)
 
             assert "document" not in sections
             assert "First Section" in sections
@@ -190,17 +211,12 @@ Content"""
             temp_path.unlink()
 
 
-class TestMemoryReaderMethods:
-    """Tests for helper methods."""
+class TestMemoryReaderPathTypes:
+    """Tests for different path types (str and Path)."""
 
-    def test_get_section(self) -> None:
-        """Test getting a specific section by name."""
-        content = """# Section A
-Content A
-
-# Section B
-Content B"""
-
+    def test_read_text_with_string_path(self) -> None:
+        """Test that read_text accepts string paths."""
+        content = "# Header\nContent"
         with tempfile.NamedTemporaryFile(
             mode="w", suffix=".md", delete=False, encoding="utf-8"
         ) as f:
@@ -208,19 +224,16 @@ Content B"""
             temp_path = Path(f.name)
 
         try:
-            reader = MemoryReader(temp_path)
-
-            assert "Content A" in reader.get_section("Section A")  # type: ignore
-            assert "Content B" in reader.get_section("Section B")  # type: ignore
-            assert reader.get_section("Non-existent") is None
+            reader = MemoryReader()
+            # Pass as string instead of Path
+            text = reader.read_text(str(temp_path))
+            assert text == content
         finally:
             temp_path.unlink()
 
-    def test_section_exists(self) -> None:
-        """Test checking if a section exists."""
-        content = """# Existing Section
-Content"""
-
+    def test_read_sections_with_string_path(self) -> None:
+        """Test that read_sections accepts string paths."""
+        content = "# Header\nContent"
         with tempfile.NamedTemporaryFile(
             mode="w", suffix=".md", delete=False, encoding="utf-8"
         ) as f:
@@ -228,23 +241,16 @@ Content"""
             temp_path = Path(f.name)
 
         try:
-            reader = MemoryReader(temp_path)
-
-            assert reader.section_exists("Existing Section")
-            assert not reader.section_exists("Non-existent Section")
+            reader = MemoryReader()
+            # Pass as string instead of Path
+            sections = reader.read_sections(str(temp_path))
+            assert "Header" in sections
         finally:
             temp_path.unlink()
 
-    def test_get_section_names(self) -> None:
-        """Test getting all section names."""
-        content = """Preamble text
-
-# Section 1
-Content 1
-
-# Section 2
-Content 2"""
-
+    def test_read_text_with_path_object(self) -> None:
+        """Test that read_text accepts Path objects."""
+        content = "# Header\nContent"
         with tempfile.NamedTemporaryFile(
             mode="w", suffix=".md", delete=False, encoding="utf-8"
         ) as f:
@@ -252,24 +258,16 @@ Content 2"""
             temp_path = Path(f.name)
 
         try:
-            reader = MemoryReader(temp_path)
-            names = reader.get_section_names()
-
-            assert "document" in names
-            assert "Section 1" in names
-            assert "Section 2" in names
-            assert len(names) == 3
+            reader = MemoryReader()
+            # Pass as Path object
+            text = reader.read_text(temp_path)
+            assert text == content
         finally:
             temp_path.unlink()
 
-    def test_get_all_sections(self) -> None:
-        """Test getting all sections at once."""
-        content = """# Section 1
-Content 1
-
-# Section 2
-Content 2"""
-
+    def test_read_sections_with_path_object(self) -> None:
+        """Test that read_sections accepts Path objects."""
+        content = "# Header\nContent"
         with tempfile.NamedTemporaryFile(
             mode="w", suffix=".md", delete=False, encoding="utf-8"
         ) as f:
@@ -277,38 +275,10 @@ Content 2"""
             temp_path = Path(f.name)
 
         try:
-            reader = MemoryReader(temp_path)
-            sections = reader.get_all_sections()
-
-            assert isinstance(sections, dict)
-            assert len(sections) == 2
-            assert "Section 1" in sections
-            assert "Section 2" in sections
-        finally:
-            temp_path.unlink()
-
-
-class TestMemoryReaderCaching:
-    """Tests for caching behavior."""
-
-    def test_parse_caching(self) -> None:
-        """Test that parse() results are cached."""
-        content = """# Section
-Content"""
-
-        with tempfile.NamedTemporaryFile(
-            mode="w", suffix=".md", delete=False, encoding="utf-8"
-        ) as f:
-            f.write(content)
-            temp_path = Path(f.name)
-
-        try:
-            reader = MemoryReader(temp_path)
-            sections1 = reader.parse()
-            sections2 = reader.parse()
-
-            # Should return the same object (cached)
-            assert sections1 is sections2
+            reader = MemoryReader()
+            # Pass as Path object
+            sections = reader.read_sections(temp_path)
+            assert "Header" in sections
         finally:
             temp_path.unlink()
 
@@ -350,8 +320,8 @@ Positive review"""
             temp_path = Path(f.name)
 
         try:
-            reader = MemoryReader(temp_path)
-            sections = reader.parse()
+            reader = MemoryReader()
+            sections = reader.read_sections(temp_path)
 
             # Verify all major sections are present
             assert "Title" in sections
@@ -387,8 +357,8 @@ Content"""
             temp_path = Path(f.name)
 
         try:
-            reader = MemoryReader(temp_path)
-            sections = reader.parse()
+            reader = MemoryReader()
+            sections = reader.read_sections(temp_path)
 
             # Headers should be properly identified
             assert "Title with leading spaces" in sections
