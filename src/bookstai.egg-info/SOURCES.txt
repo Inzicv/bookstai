@@ -1,0 +1,9 @@
+README.md
+pyproject.toml
+src/bookstai/__init__.py
+src/bookstai.egg-info/PKG-INFO
+src/bookstai.egg-info/SOURCES.txt
+src/bookstai.egg-info/dependency_links.txt
+src/bookstai.egg-info/requires.txt
+src/bookstai.egg-info/top_level.txt
+tests/test_memory_reader.py
