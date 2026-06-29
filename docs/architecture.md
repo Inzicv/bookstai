@@ -8,7 +8,6 @@ Principe général :
 
 - les fichiers Markdown sont maintenus manuellement ;
 - ils sont consommés directement par les assistants spécialisés ;
-- aucun agent intermédiaire n'est chargé de gérer les livres ;
 - Human In The Loop partout.
 
 Flux global :

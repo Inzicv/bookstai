@@ -2,12 +2,6 @@
 
 BookstAI est mon studio personnel de création assisté.
 
-Je reste toujours la créatrice.
-
-L'objectif n'est pas de remplacer ma créativité mais de me décharger des tâches répétitives.
-
-Les décisions créatives importantes sont toujours validées par moi.
-
 BookstAI doit :
 
 - me faire gagner du temps ;
@@ -19,6 +13,21 @@ BookstAI doit :
 
 Human In The Loop partout.
 
-Je ne cherche pas un système autonome.
+Je donne une fiche lecture a BookstAI
+↓
+Je choisis :
+Review
+Chanson
+Miniature
+Storyboard
+↓
+L'IA produit une première proposition.
+↓
+Je corrige.
+↓
+L'IA mémorise mes corrections.
+↓
+Je valide.
+↓
+Tous les fichiers nécessaires sont générés.
 
-Je cherche une équipe d'assistants IA.

@@ -1,91 +1,309 @@
-# Roadmap
+# BookstAI Roadmap
 
-## Phase 1 - Mémoire Markdown comme source de vérité
-
-Les fiches Markdown dans `memory/books/` sont créées et maintenues manuellement.
-
-Elles contiennent déjà les informations clés :
-
-- personnages
-- tropes
-- résumé
-- citations
-- timeline
-- scènes importantes
-
-Sortie :
-
-- `memory/books/<slug>.md`
+> Version : 1.0
+>
+> Objectif :
+>
+> Construire progressivement BookstAI jusqu'à obtenir un studio personnel de création de contenu assisté par IA, basé sur des workflows agentiques, avec Human In The Loop à chaque étape.
 
 ---
 
-## Phase 2 - Mémoire spécialisée locale
+# Définition de "Terminé"
 
-Les assistants spécialisés lisent directement les fichiers mémoire utiles.
+BookstAI sera considéré comme terminé lorsque :
 
-Références :
-
-- `memory/books/<livre>.md`
-- `memory/reviews/reviews.md`
-- `memory/humor/references.md`
-- `memory/songs/`
-- `memory/visual_style/`
-
-Objectif :
-
-- garder une mémoire simple, locale et utile ;
-- rester aligné avec les besoins des assistants spécialisés ;
-- éviter toute couche intermédiaire inutile.
+- une fiche lecture suffira à lancer un workflow complet ;
+- chaque workflow sera orchestré automatiquement ;
+- chaque étape pourra être validée ou modifiée par l'utilisateur ;
+- la mémoire sera utilisée automatiquement ;
+- les corrections pourront enrichir la mémoire après validation ;
+- l'ajout d'un nouveau workflow nécessitera très peu de développement.
 
 ---
 
-## Phase 3 - Review Assistant
+# Milestone 1 — Fondations
 
-Proposer :
+Objectif
 
-- hooks
-- analogies
-- références actuelles
-- blagues
-- punchlines
+Créer une base solide qui ne devra quasiment plus changer.
 
-Validation humaine.
+## À faire
 
----
+- [ ] Finaliser la Vision
+- [ ] Finaliser l'Architecture
+- [ ] Finaliser les Workflows
+- [ ] Finaliser les Agents
+- [ ] Définir tous les formats d'entrée/sortie
+- [ ] Définir les conventions de nommage
+- [ ] Définir l'organisation des dossiers
 
-## Phase 4 - Song Writer
+Livrables
 
-A partir d'un résumé proposer:
+- docs/
+- memory/
+- prompts/
 
-- rimes
-- idées
+Critère de validation
 
-Validation humaine.
-
----
-
-## Phase 5 - Art Director
-
-Prompts images.
-
-Storyboard.
-
-Direction artistique.
+Toute personne lisant uniquement la documentation doit comprendre comment fonctionne BookstAI.
 
 ---
 
-## Phase 6 - Animator
+# Milestone 2 — Langflow
 
-Prompts vidéo.
+Objectif
 
-Animations.
+Construire l'orchestrateur visuel.
+
+## À faire
+
+- [ ] Installer Langflow
+- [ ] Comprendre les Components
+- [ ] Comprendre les Flows
+- [ ] Comprendre les Tools
+- [ ] Comprendre les Memory
+- [ ] Comprendre les MCP
+- [ ] Comprendre les API Keys
+- [ ] Comprendre les Variables
+
+Puis construire un premier Flow minimal.
+
+Entrée
+
+Livre
+
+↓
+
+Sortie
+
+Hello World
+
+Critère
+
+Comprendre parfaitement Langflow avant d'ajouter de la logique métier.
 
 ---
 
-## Phase 7 - Social Media
+# Milestone 3 — Premier Agent
 
-Descriptions.
+Objectif
 
-Hashtags.
+Créer le Context Builder.
 
-Carrousels.
+Entrées
+
+- workflow
+- fiche lecture
+
+Sortie
+
+Contexte propre
+
+Critère
+
+Le Context Builder fonctionne de manière totalement indépendante.
+
+---
+
+# Milestone 4 — Premier Workflow
+
+Objectif
+
+Créer une Review complète.
+
+Flow
+
+Context Builder
+
+↓
+
+Style Memory
+
+↓
+
+Comedy Room
+
+↓
+
+Validation
+
+↓
+
+Review Writer
+
+↓
+
+Validation
+
+↓
+
+Social Media
+
+↓
+
+Validation
+
+↓
+
+Sortie
+
+Critère
+
+Produire une review complète sans intervention technique.
+
+---
+
+# Milestone 5 — Chanson
+
+Objectif
+
+Automatiser les chansons.
+
+Flow
+
+Context
+
+↓
+
+Style
+
+↓
+
+Comedy
+
+↓
+
+Song Writer
+
+↓
+
+Validation
+
+↓
+
+Prompt musique
+
+↓
+
+Sortie
+
+Critère
+
+Obtenir une chanson prête pour Suno.
+
+---
+
+# Milestone 6 — Mémoire
+
+Objectif
+
+Utiliser automatiquement la mémoire.
+
+À faire
+
+- charger les fichiers utiles
+- limiter le contexte
+- éviter les doublons
+- gérer les spoilers
+
+Critère
+
+Chaque agent reçoit uniquement les informations dont il a besoin.
+
+---
+
+# Milestone 7 — Learning Loop
+
+Objectif
+
+Faire apprendre BookstAI.
+
+Workflow
+
+Version IA
+
+↓
+
+Version corrigée
+
+↓
+
+Analyse
+
+↓
+
+Diff
+
+↓
+
+Suggestion
+
+↓
+
+Validation
+
+↓
+
+Mémoire
+
+Critère
+
+Aucune mémoire n'est modifiée automatiquement.
+
+---
+
+# Milestone 8 — Industrialisation
+
+Objectif
+
+Transformer le prototype en véritable outil.
+
+À faire
+
+- historique
+- logs
+- gestion des erreurs
+- templates
+- export markdown
+- export json
+
+Critère
+
+BookstAI peut être utilisé tous les jours.
+
+---
+
+# Milestone 9 — Nouveaux workflows
+
+Créer progressivement
+
+- Review
+- Chanson
+- Comedy Room
+- Social Media
+
+Puis les futurs workflows.
+
+Tous doivent respecter la même architecture.
+
+---
+
+# Milestone 10 — Version 1.0
+
+Critères
+
+✓ Tous les workflows fonctionnent
+
+✓ Tous les agents sont indépendants
+
+✓ Human In The Loop partout
+
+✓ Documentation complète
+
+✓ Architecture stable
+
+✓ Facile à maintenir
+
+✓ Facile à faire évoluer
+
+✓ Agréable à utiliser
