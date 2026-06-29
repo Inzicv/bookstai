@@ -1,0 +1,24 @@
+[project]
+name = "bookstai"
+version = "0.1.0"
+description = "Studio personnel de creation assistee par IA pour contenus BookstAI."
+requires-python = ">=3.11"
+dependencies = [
+    "python-dotenv>=1.0.1",
+    "pydantic>=2.8.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2.0",
+]
+langflow = [
+    "langflow>=1.0.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
