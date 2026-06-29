@@ -29,3 +29,15 @@ class EmptyMemoryFileError(BookstAIError):
     """Raised when a memory file is empty."""
 
     pass
+
+
+class PromptFileNotFoundError(BookstAIError):
+    """Raised when a prompt file cannot be found."""
+
+    pass
+
+
+class EmptyPromptFileError(BookstAIError):
+    """Raised when a prompt file exists but is empty."""
+
+    pass
