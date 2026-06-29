@@ -15,6 +15,7 @@ from .core.errors import (
 )
 from .core.types import WorkflowType, SpoilerLevel, ProviderType
 from .memory.reader import MemoryReader
+from .agents.context_builder import ContextBuilder
 
 __all__ = [
     "BookstAISettings",
@@ -28,4 +29,5 @@ __all__ = [
     "SpoilerLevel",
     "ProviderType",
     "MemoryReader",
+    "ContextBuilder",
 ]
