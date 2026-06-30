@@ -54,7 +54,7 @@ def test_openai_client_accepts_explicit_api_key(monkeypatch) -> None:
 
     client = OpenAILLMClient(api_key="explicit-key")
 
-    assert client.api_key == "explicit-key"
+    assert not hasattr(client, "api_key")
 
 
 def test_openai_client_accepts_env_api_key(monkeypatch) -> None:
@@ -67,7 +67,7 @@ def test_openai_client_accepts_env_api_key(monkeypatch) -> None:
 
     client = OpenAILLMClient()
 
-    assert client.api_key == "env-key"
+    assert not hasattr(client, "api_key")
 
 
 def test_generate_rejects_empty_prompt(monkeypatch) -> None:
@@ -117,5 +117,13 @@ def test_error_messages_do_not_reveal_api_key(monkeypatch) -> None:
 
     client = OpenAILLMClient()
 
-    assert "super-secret-key" not in str(client.api_key)
+    assert not hasattr(client, "api_key")
 
+
+def test_missing_api_key_error_message_does_not_reveal_secret(monkeypatch) -> None:
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+
+    with pytest.raises(MissingAPIKeyError) as exc_info:
+        OpenAILLMClient(api_key=None)
+
+    assert "super-secret-key" not in str(exc_info.value)

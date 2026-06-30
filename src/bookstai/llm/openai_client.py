@@ -20,8 +20,8 @@ class OpenAILLMClient:
     ) -> None:
         self.model = model
         self.temperature = temperature
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
-        if not self.api_key:
+        resolved_api_key = api_key or os.getenv("OPENAI_API_KEY")
+        if not resolved_api_key:
             raise MissingAPIKeyError(
                 "OPENAI_API_KEY is required to use OpenAILLMClient."
             )
@@ -33,7 +33,7 @@ class OpenAILLMClient:
                 "The 'openai' package is required to use OpenAILLMClient."
             ) from exc
 
-        self._client = OpenAI(api_key=self.api_key)
+        self._client = OpenAI(api_key=resolved_api_key)
 
     def generate(self, prompt: str) -> str:
         if not prompt or not prompt.strip():
