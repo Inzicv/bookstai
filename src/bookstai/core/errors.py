@@ -77,3 +77,9 @@ class InvalidPlatformError(BookstAIError):
     """Raised when a social media platform is invalid."""
 
     pass
+
+
+class InvalidExportFormatError(BookstAIError):
+    """Raised when an export format is invalid."""
+
+    pass
