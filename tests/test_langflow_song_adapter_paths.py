@@ -1,4 +1,4 @@
-"""Tests for Langflow review adapter path resolution."""
+"""Tests for Langflow song adapter path resolution."""
 
 from __future__ import annotations
 
@@ -6,10 +6,10 @@ from pathlib import Path
 
 import bookstai
 
-from bookstai.langflow import review_component
+from bookstai.langflow import song_component
 
 
-def test_run_review_workflow_resolves_prompt_root_from_package(monkeypatch, tmp_path: Path) -> None:
+def test_run_song_workflow_resolves_prompt_root_from_package(monkeypatch, tmp_path: Path) -> None:
     package_root = tmp_path / "site-packages" / "bookstai"
     fake_init = package_root / "__init__.py"
     fake_init.write_text("__all__ = []", encoding="utf-8")
@@ -23,19 +23,22 @@ def test_run_review_workflow_resolves_prompt_root_from_package(monkeypatch, tmp_
     captured = {}
 
     class DummyWorkflow:
-        def __init__(self, memory_root, prompt_root, llm_client) -> None:
+        def __init__(self, memory_root, prompt_root, llm_client, image_backend) -> None:
             captured["memory_root"] = memory_root
             captured["prompt_root"] = prompt_root
             captured["llm_client"] = llm_client
+            captured["image_backend"] = image_backend
 
         def run(self, **kwargs):
-            return {"workflow": "review"}
+            return {"workflow": "song"}
 
-    monkeypatch.setattr(review_component, "ReviewWorkflow", DummyWorkflow)
-    monkeypatch.setattr(review_component, "create_llm_client", lambda **kwargs: "mock-client")
-    review_component.run_review_workflow(
+    monkeypatch.setattr(song_component, "SongWorkflow", DummyWorkflow)
+    monkeypatch.setattr(song_component, "create_llm_client", lambda **kwargs: "mock-client")
+
+    song_component.run_song_workflow(
         book_slug="example",
-        user_opinion="opinion",
+        spoiler_mode="spoiler_free",
+        prompt_type="thumbnail",
         platform="tiktok",
         provider="mock",
     )

@@ -7,34 +7,31 @@ from pathlib import Path
 import bookstai
 
 
-def resolve_bookstai_path(value: str | Path) -> Path:
+def resolve_bookstai_path(value: str | Path, fallback_dir_name: str) -> Path:
     """Resolve a BookstAI path independently from the current working directory."""
 
-    path = Path(value)
+    raw_path = Path(value).expanduser()
 
-    if path.is_absolute():
-        return path
+    if raw_path.is_absolute():
+        return raw_path
 
-    if path.exists():
-        return path
+    cwd_candidate = Path.cwd() / raw_path
+    if cwd_candidate.exists():
+        return cwd_candidate
 
     package_root = Path(bookstai.__file__).resolve().parent
-
-    normalized = path
+    normalized = raw_path
     if normalized.parts and normalized.parts[0] == "bookstai":
         normalized = Path(*normalized.parts[1:])
 
-    candidates = [
-        package_root / normalized,
-        package_root.parent / normalized,
-        package_root.parent.parent / normalized,
-    ]
-
-    if normalized.parts[:1] == ("prompts",):
-        candidates.insert(0, package_root / normalized)
-
-    for candidate in candidates:
+    for parent in package_root.parents:
+        candidate = parent / fallback_dir_name
         if candidate.exists():
-            return candidate
+            if normalized == Path(fallback_dir_name):
+                return candidate
+            nested_candidate = candidate / Path(*normalized.parts[1:]) if normalized.parts and normalized.parts[0] == fallback_dir_name else candidate / normalized
+            if nested_candidate.exists():
+                return nested_candidate
 
-    return package_root / normalized
+    project_root = package_root.parents[1]
+    return project_root / normalized

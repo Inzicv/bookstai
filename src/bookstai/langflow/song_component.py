@@ -26,8 +26,8 @@ def run_song_workflow(
 ) -> dict[str, Any]:
     """Run the existing Song workflow with a configurable LLM client."""
 
-    memory_root_path = resolve_bookstai_path(memory_root)
-    prompt_root_path = resolve_bookstai_path(prompt_root)
+    memory_root_path = resolve_bookstai_path(memory_root, "memory")
+    prompt_root_path = resolve_bookstai_path(prompt_root, "prompts")
     llm_client = create_llm_client(
         provider=provider,
         model=model,

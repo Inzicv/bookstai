@@ -28,12 +28,13 @@ def test_resolve_bookstai_path_prefers_package_prompts_when_missing_elsewhere(
     tmp_path: Path,
 ) -> None:
     package_root = tmp_path / "site-packages" / "bookstai"
-    prompts_dir = package_root / "prompts"
-    prompts_dir.mkdir(parents=True, exist_ok=True)
     fake_init = package_root / "__init__.py"
     fake_init.write_text("__all__ = []", encoding="utf-8")
     monkeypatch.setattr(bookstai, "__file__", str(fake_init))
-
-    monkeypatch.chdir(tmp_path)
+    prompts_dir = tmp_path / "prompts"
+    prompts_dir.mkdir(parents=True, exist_ok=True)
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+    monkeypatch.chdir(workspace)
 
     assert resolve_bookstai_path("prompts") == prompts_dir
