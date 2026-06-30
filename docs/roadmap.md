@@ -323,3 +323,5 @@ HITL est maintenant accessible depuis la CLI via `--hitl`.
 HITL est maintenant accessible depuis Langflow via le champ `hitl`.
 
 Les sessions HITL peuvent maintenant être persistées en JSON.
+
+Les sessions HITL peuvent maintenant être relues, approuvées, rejetées et éditées depuis la CLI.

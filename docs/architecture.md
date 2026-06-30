@@ -117,3 +117,22 @@ Le JSON conserve :
 - les métadonnées.
 
 Cette persistance prépare les futures commandes de validation et d’édition.
+
+## Commandes CLI HITL
+
+La CLI permet de manipuler une session HITL sauvegardée.
+
+Commandes disponibles :
+
+```text
+bookstai hitl show
+bookstai hitl approve
+bookstai hitl reject
+bookstai hitl edit
+```
+
+Ces commandes ne relancent pas les workflows.
+
+Elles modifient uniquement le fichier JSON de session HITL.
+
+Elles permettent de reprendre une génération, d’approuver des étapes, de rejeter des propositions ou d’enregistrer une version corrigée.

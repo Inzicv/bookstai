@@ -18,8 +18,11 @@ class HITLSessionStorage:
         self.root.mkdir(parents=True, exist_ok=True)
 
     def save(self, session: HITLSession) -> Path:
+        return self.save_to_path(session, self._path_for(session.workflow_name, session.item_slug))
+
+    def save_to_path(self, session: HITLSession, path: str | Path) -> Path:
         try:
-            output_path = self._path_for(session.workflow_name, session.item_slug)
+            output_path = Path(path)
             output_path.parent.mkdir(parents=True, exist_ok=True)
             output_path.write_text(
                 json.dumps(session.to_dict(), ensure_ascii=False, indent=2),

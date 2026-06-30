@@ -10,6 +10,7 @@ from typing import Sequence
 from .core.config import load_settings
 from .image import create_image_backend
 from .exports import ExportService
+from .hitl import HITLSessionStorage
 from .llm import create_llm_client
 from .workflows.review import ReviewWorkflow
 from .workflows.song import SongWorkflow
@@ -53,12 +54,37 @@ def build_parser() -> argparse.ArgumentParser:
     song_parser.add_argument("--export", nargs="+", choices=["markdown", "json"])
     song_parser.add_argument("--output-root", default="outputs")
 
+    hitl_parser = subparsers.add_parser("hitl")
+    hitl_subparsers = hitl_parser.add_subparsers(dest="hitl_command", required=True)
+
+    show_parser = hitl_subparsers.add_parser("show")
+    show_parser.add_argument("--file", required=True)
+
+    approve_parser = hitl_subparsers.add_parser("approve")
+    approve_parser.add_argument("--file", required=True)
+    approve_parser.add_argument("--step", required=True)
+    approve_parser.add_argument("--comment")
+
+    reject_parser = hitl_subparsers.add_parser("reject")
+    reject_parser.add_argument("--file", required=True)
+    reject_parser.add_argument("--step", required=True)
+    reject_parser.add_argument("--comment")
+
+    edit_parser = hitl_subparsers.add_parser("edit")
+    edit_parser.add_argument("--file", required=True)
+    edit_parser.add_argument("--step", required=True)
+    edit_parser.add_argument("--content", required=True)
+    edit_parser.add_argument("--comment")
+
     return parser
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+
+    if args.command == "hitl":
+        return _run_hitl_command(args)
 
     settings = load_settings(
         memory_root=args.memory_root,
@@ -131,6 +157,28 @@ def main(argv: Sequence[str] | None = None) -> int:
             formats=args.export,
         )
         pprint({"exports": exported_paths})
+    return 0
+
+
+def _run_hitl_command(args: argparse.Namespace) -> int:
+    storage = HITLSessionStorage()
+    session = storage.load(args.file)
+
+    if args.hitl_command == "show":
+        pprint(session.to_dict())
+        return 0
+
+    if args.hitl_command == "approve":
+        session.approve_step(args.step, comment=args.comment)
+    elif args.hitl_command == "reject":
+        session.reject_step(args.step, comment=args.comment)
+    elif args.hitl_command == "edit":
+        session.edit_step(args.step, edited_content=args.content, comment=args.comment)
+    else:  # pragma: no cover
+        raise ValueError(f"Unknown HITL command: {args.hitl_command}")
+
+    storage.save_to_path(session, args.file)
+    pprint(session.to_dict())
     return 0
 
 
