@@ -224,3 +224,19 @@ Le backend comfyui prépare l’utilisation locale de ComfyUI, mais il n’est p
 La factory ne génère aucune image directement.
 
 Elle construit seulement un backend compatible `ImageBackend`.
+## Langflow Song
+
+Le backend image local peut maintenant être sélectionné depuis le composant Langflow Song.
+
+Le backend par défaut reste `mock`.
+
+Le backend `comfyui` prépare l'appel à une instance locale de ComfyUI.
+
+Cette intégration ne lance pas ComfyUI automatiquement.
+
+Elle ne génère une image réelle que si :
+
+- ComfyUI est lancé localement ;
+- `image_backend` vaut `comfyui` ;
+- un workflow ComfyUI compatible est fourni ;
+- le flow Song est exécuté.

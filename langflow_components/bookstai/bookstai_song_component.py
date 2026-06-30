@@ -77,6 +77,42 @@ class BookstAISongComponent(Component):
             value="outputs/mock/image.png",
             info="Mock image output path.",
         ),
+        MessageTextInput(
+            name="image_backend",
+            display_name="Image backend",
+            value="mock",
+            info="Image backend used by the Song workflow.",
+        ),
+        MessageTextInput(
+            name="comfyui_url",
+            display_name="ComfyUI URL",
+            value="http://127.0.0.1:8188",
+            info="Local ComfyUI endpoint.",
+        ),
+        MessageTextInput(
+            name="comfyui_workflow_path",
+            display_name="ComfyUI workflow path",
+            value="",
+            info="Path to a ComfyUI workflow file.",
+        ),
+        MessageTextInput(
+            name="image_output_dir",
+            display_name="Image output dir",
+            value="outputs/images",
+            info="Directory used by the image backend.",
+        ),
+        MessageTextInput(
+            name="image_timeout",
+            display_name="Image timeout",
+            value="60.0",
+            info="Timeout passed to the image backend factory.",
+        ),
+        MessageTextInput(
+            name="image_poll_interval",
+            display_name="Image poll interval",
+            value="1.0",
+            info="Polling interval passed to the image backend factory.",
+        ),
     ]
 
     outputs = [
@@ -100,5 +136,11 @@ class BookstAISongComponent(Component):
             provider=self.provider,
             model=self.model,
             temperature=float(self.temperature),
+            image_backend=self.image_backend,
+            comfyui_url=self.comfyui_url,
+            comfyui_workflow_path=Path(self.comfyui_workflow_path) if self.comfyui_workflow_path else None,
+            image_output_dir=Path(self.image_output_dir),
+            image_timeout=float(self.image_timeout),
+            image_poll_interval=float(self.image_poll_interval),
         )
         return Data(value=result)

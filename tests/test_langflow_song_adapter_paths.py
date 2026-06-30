@@ -37,6 +37,7 @@ def test_run_song_workflow_resolves_prompt_root_from_package(monkeypatch, tmp_pa
 
     monkeypatch.setattr(song_component, "SongWorkflow", DummyWorkflow)
     monkeypatch.setattr(song_component, "create_llm_client", lambda **kwargs: "mock-client")
+    monkeypatch.setattr(song_component, "create_image_backend", lambda **kwargs: "mock-image-backend")
 
     song_component.run_song_workflow(
         book_slug="example",
@@ -48,3 +49,4 @@ def test_run_song_workflow_resolves_prompt_root_from_package(monkeypatch, tmp_pa
 
     assert captured["prompt_root"] == prompts_dir
     assert captured["memory_root"] == memory_dir
+    assert captured["image_backend"] == "mock-image-backend"

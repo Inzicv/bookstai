@@ -5,8 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from ..core.types import ProviderType
-from ..image.mock_backend import MockImageBackend
+from ..core.types import ImageBackendType, ProviderType
+from ..image import create_image_backend
 from ..llm import create_llm_client
 from ..workflows.song import SongWorkflow
 from .paths import resolve_bookstai_path
@@ -23,6 +23,12 @@ def run_song_workflow(
     provider: ProviderType = "mock",
     model: str = "gpt-4o-mini",
     temperature: float = 0.7,
+    image_backend: ImageBackendType = "mock",
+    comfyui_url: str = "http://127.0.0.1:8188",
+    comfyui_workflow_path: str | Path | None = None,
+    image_output_dir: str | Path = "outputs/images",
+    image_timeout: float = 60.0,
+    image_poll_interval: float = 1.0,
 ) -> dict[str, Any]:
     """Run the existing Song workflow with a configurable LLM client."""
 
@@ -33,12 +39,21 @@ def run_song_workflow(
         model=model,
         temperature=temperature,
     )
+    image_backend_instance = create_image_backend(
+        backend=image_backend,
+        image_path=image_path,
+        comfyui_url=comfyui_url,
+        workflow_path=comfyui_workflow_path,
+        output_dir=image_output_dir,
+        timeout=image_timeout,
+        poll_interval=image_poll_interval,
+    )
 
     workflow = SongWorkflow(
         memory_root=memory_root_path,
         prompt_root=prompt_root_path,
         llm_client=llm_client,
-        image_backend=MockImageBackend(image_path=str(Path(image_path))),
+        image_backend=image_backend_instance,
     )
     return workflow.run(
         book_slug=book_slug,

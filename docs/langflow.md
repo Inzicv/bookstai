@@ -257,3 +257,34 @@ Les prompts agents BookstAI vivent dans :
 Le prÃ©-check projet permet de vÃ©rifier rapidement que les prompts obligatoires sont bien prÃ©sents avant de relancer Langflow.
 
 Il ne corrige rien automatiquement et sert uniquement Ã  diagnostiquer l'Ã©tat du projet.
+## Backend image dans Langflow Song
+
+Le composant `BookstAISongComponent` permet de choisir le backend image.
+
+Backends disponibles :
+
+- `mock`
+- `comfyui`
+
+Par défaut :
+
+```text
+image_backend = mock
+```
+
+Le backend mock retourne un chemin d'image fictif et ne génère aucune image réelle.
+
+Pour préparer ComfyUI :
+
+```text
+image_backend = comfyui
+comfyui_url = http://127.0.0.1:8188
+comfyui_workflow_path = chemin/vers/workflow.json
+image_output_dir = outputs/images
+image_timeout = 60.0
+image_poll_interval = 1.0
+```
+
+ComfyUI n'est jamais utilisé par défaut.
+
+Les tests et les premiers flows doivent rester en mock.

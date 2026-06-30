@@ -75,15 +75,20 @@ def test_run_song_workflow_uses_factory_and_transmits_configuration(monkeypatch,
             return {"workflow": "song", "book_slug": kwargs["book_slug"]}
 
     def fake_create_llm_client(*, provider, model, temperature):
-        captured["factory"] = {
+        captured["llm_factory"] = {
             "provider": provider,
             "model": model,
             "temperature": temperature,
         }
         return {"provider": provider, "model": model, "temperature": temperature}
 
+    def fake_create_image_backend(**kwargs):
+        captured["image_factory"] = kwargs
+        return {"backend": kwargs["backend"], "image_path": kwargs["image_path"]}
+
     monkeypatch.setattr("bookstai.langflow.song_component.SongWorkflow", DummyWorkflow)
     monkeypatch.setattr("bookstai.langflow.song_component.create_llm_client", fake_create_llm_client)
+    monkeypatch.setattr("bookstai.langflow.song_component.create_image_backend", fake_create_image_backend)
 
     result = run_song_workflow(
         book_slug="example",
@@ -96,20 +101,28 @@ def test_run_song_workflow_uses_factory_and_transmits_configuration(monkeypatch,
         provider="openai",
         model="gpt-4o-mini",
         temperature=0.4,
+        image_backend="comfyui",
+        comfyui_url="http://127.0.0.1:8188",
+        comfyui_workflow_path=tmp_path / "workflow.json",
+        image_output_dir=tmp_path / "outputs" / "images",
+        image_timeout=30.0,
+        image_poll_interval=0.5,
     )
 
     assert result["workflow"] == "song"
-    assert captured["factory"] == {
+    assert captured["llm_factory"] == {
         "provider": "openai",
         "model": "gpt-4o-mini",
         "temperature": 0.4,
     }
-    assert captured["llm_client"] == {
-        "provider": "openai",
-        "model": "gpt-4o-mini",
-        "temperature": 0.4,
-    }
-    assert str(captured["image_backend"].image_path).endswith("image.png")
+    assert captured["image_factory"]["backend"] == "comfyui"
+    assert captured["image_factory"]["image_path"] == str(tmp_path / "outputs" / "mock" / "image.png")
+    assert captured["image_factory"]["comfyui_url"] == "http://127.0.0.1:8188"
+    assert captured["image_factory"]["workflow_path"] == tmp_path / "workflow.json"
+    assert captured["image_factory"]["output_dir"] == tmp_path / "outputs" / "images"
+    assert captured["image_factory"]["timeout"] == 30.0
+    assert captured["image_factory"]["poll_interval"] == 0.5
+    assert captured["image_backend"]["backend"] == "comfyui"
     assert captured["run"] == {
         "book_slug": "example",
         "spoiler_mode": "spoiler_free",
@@ -136,20 +149,26 @@ def test_run_song_workflow_defaults_to_mock(monkeypatch, tmp_path: Path) -> None
     class DummyWorkflow:
         def __init__(self, memory_root, prompt_root, llm_client, image_backend) -> None:
             captured["llm_client"] = llm_client
+            captured["image_backend"] = image_backend
 
         def run(self, **kwargs):
             return {"workflow": "song", "book_slug": kwargs["book_slug"]}
 
     def fake_create_llm_client(*, provider, model, temperature):
-        captured["factory"] = {
+        captured["llm_factory"] = {
             "provider": provider,
             "model": model,
             "temperature": temperature,
         }
         return "mock-client"
 
+    def fake_create_image_backend(**kwargs):
+        captured["image_factory"] = kwargs
+        return "mock-image-backend"
+
     monkeypatch.setattr("bookstai.langflow.song_component.SongWorkflow", DummyWorkflow)
     monkeypatch.setattr("bookstai.langflow.song_component.create_llm_client", fake_create_llm_client)
+    monkeypatch.setattr("bookstai.langflow.song_component.create_image_backend", fake_create_image_backend)
 
     run_song_workflow(
         book_slug="example",
@@ -161,8 +180,9 @@ def test_run_song_workflow_defaults_to_mock(monkeypatch, tmp_path: Path) -> None
         image_path=str(tmp_path / "outputs" / "mock" / "image.png"),
     )
 
-    assert captured["factory"] == {
+    assert captured["llm_factory"] == {
         "provider": "mock",
         "model": "gpt-4o-mini",
         "temperature": 0.7,
     }
+    assert captured["image_factory"]["backend"] == "mock"
