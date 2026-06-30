@@ -211,12 +211,20 @@ class ComfyUIImageBackend(ImageBackend):
         return str(target_path)
 
     def _resolve_output_path(self, filename: str, subfolder: str) -> Path:
+        if self._is_dangerous_path_component(filename):
+            raise ImageGenerationError("ComfyUI history contained an invalid image reference.")
+
         safe_filename = Path(filename).name
+        if not safe_filename or safe_filename in {".", ".."}:
+            raise ImageGenerationError("ComfyUI history contained an invalid image reference.")
+
         if self._is_dangerous_path_component(subfolder):
             raise ImageGenerationError("ComfyUI history contained an invalid image reference.")
+
         safe_subfolder = Path(subfolder) if subfolder else Path()
         if any(part == ".." for part in safe_subfolder.parts):
             raise ImageGenerationError("ComfyUI history contained an invalid image reference.")
+
         relative_target = safe_subfolder / safe_filename
         target_path = self.output_dir / relative_target
         resolved_root = self.output_dir.resolve()
@@ -226,6 +234,12 @@ class ComfyUIImageBackend(ImageBackend):
         return target_path
 
     def _is_dangerous_path_component(self, value: str) -> bool:
+        if not value or value in {".", ".."}:
+            return True
+        if Path(value).is_absolute():
+            return True
+        if "/" in value or "\\" in value:
+            return True
         return ".." in Path(value).parts
 
     def _extract_image_reference_from_history(self, history: dict[str, Any], prompt_id: str) -> dict[str, str] | None:

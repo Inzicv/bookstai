@@ -223,6 +223,50 @@ def test_generate_raises_when_history_contains_invalid_image_reference(tmp_path:
         backend.generate("prompt")
 
 
+@pytest.mark.parametrize(
+    "filename",
+    [
+        "..\\evil.png",
+        "folder/evil.png",
+        "folder\\evil.png",
+        "C:\\temp\\evil.png",
+        "/tmp/evil.png",
+        ".",
+        "..",
+    ],
+)
+def test_generate_rejects_dangerous_filenames(tmp_path: Path, filename: str) -> None:
+    workflow_path = _workflow_file(tmp_path)
+    fake_client = FakeHTTPClient(
+        post_response={"prompt_id": "abc123"},
+        get_responses=[
+            {
+                "abc123": {
+                    "outputs": {
+                        "9": {
+                            "images": [
+                                {
+                                    "filename": filename,
+                                    "subfolder": "",
+                                    "type": "output",
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        ],
+    )
+    backend = ComfyUIImageBackend(
+        workflow_path=workflow_path,
+        output_dir=tmp_path / "images",
+        http_client=fake_client,
+    )
+
+    with pytest.raises(ImageGenerationError, match="ComfyUI history contained an invalid image reference."):
+        backend.generate("prompt")
+
+
 def test_generate_raises_when_history_contains_dangerous_subfolder(tmp_path: Path) -> None:
     workflow_path = _workflow_file(tmp_path)
     fake_client = FakeHTTPClient(
@@ -237,6 +281,25 @@ def test_generate_raises_when_history_contains_dangerous_subfolder(tmp_path: Pat
 
     with pytest.raises(ImageGenerationError, match="ComfyUI history contained an invalid image reference."):
         backend.generate("prompt")
+
+
+def test_generate_accepts_simple_filename(tmp_path: Path) -> None:
+    workflow_path = _workflow_file(tmp_path)
+    fake_client = FakeHTTPClient(
+        post_response={"prompt_id": "abc123"},
+        get_responses=[{"abc123": {"outputs": {"9": {"images": [{"filename": "bookstai_00001.png", "subfolder": "", "type": "output"}]}}}}],
+        bytes_response=b"PNGDATA",
+    )
+    backend = ComfyUIImageBackend(
+        workflow_path=workflow_path,
+        output_dir=tmp_path / "images",
+        http_client=fake_client,
+    )
+
+    result = backend.generate("prompt")
+
+    assert result == str(tmp_path / "images" / "bookstai_00001.png")
+    assert (tmp_path / "images" / "bookstai_00001.png").exists()
 
 
 def test_generate_times_out_when_history_never_contains_image(monkeypatch, tmp_path: Path) -> None:
