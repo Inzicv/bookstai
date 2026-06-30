@@ -58,6 +58,7 @@ def test_load_reconstructs_session_round_trip(tmp_path) -> None:
     assert step.edited_content == {"response": "edited"}
     assert step.comment == "Corrige"
     assert step.metadata == {"source": "llm"}
+    assert step.validated_content == {"response": "edited"}
 
 
 def test_load_missing_file_raises_storage_error(tmp_path) -> None:
@@ -116,3 +117,43 @@ def test_load_unknown_status_raises_storage_error(tmp_path) -> None:
         assert False, "HITLSessionStorageError expected"
     except HITLSessionStorageError as exc:
         assert str(exc) == "HITL session data is invalid."
+
+
+def test_saved_json_includes_validated_content(tmp_path) -> None:
+    storage = HITLSessionStorage(root=tmp_path / "hitl")
+    session = HITLSession(workflow_name="review", item_slug="book")
+    session.add_step(name="social", content="original")
+    session.edit_step("social", edited_content="corrige")
+
+    path = storage.save(session)
+    data = json.loads(path.read_text(encoding="utf-8"))
+
+    assert data["steps"][0]["validated_content"] == "corrige"
+
+
+def test_load_legacy_json_without_validated_content(tmp_path) -> None:
+    storage = HITLSessionStorage(root=tmp_path / "hitl")
+    path = tmp_path / "legacy.json"
+    path.write_text(
+        json.dumps(
+            {
+                "workflow_name": "review",
+                "item_slug": "book",
+                "steps": [
+                    {
+                        "name": "social",
+                        "status": "edited",
+                        "content": "original",
+                        "edited_content": "corrige",
+                        "comment": None,
+                        "metadata": {},
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    session = storage.load(path)
+
+    assert session.get_validated_content("social") == "corrige"

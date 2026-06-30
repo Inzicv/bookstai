@@ -89,6 +89,29 @@ Ce champ ne bloque pas le workflow.
 
 Il ajoute seulement la session HITL au résultat pour permettre une validation ultérieure.
 
+## Contenu validé HITL
+
+Chaque étape HITL conserve toujours le contenu original généré par l'IA.
+
+La version réellement exploitable est exposée via `validated_content`.
+
+Règles :
+
+- `pending` utilise encore le contenu original ;
+- `approved` utilise le contenu original ;
+- `edited` utilise le contenu corrigé par l'utilisateur ;
+- `rejected` retourne `None`.
+
+`validated_content` est une valeur calculée.
+
+La source de vérité reste :
+
+- `status` ;
+- `content` ;
+- `edited_content`.
+
+Cette logique prépare la Learning Loop et l'enrichissement futur de la mémoire.
+
 ## Persistance HITL
 
 Les sessions HITL peuvent être sauvegardées en JSON.

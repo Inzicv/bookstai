@@ -70,6 +70,65 @@ def test_to_dict_returns_json_serializable_structure() -> None:
     assert result["workflow_name"] == "review"
     assert result["item_slug"] == "example"
     assert result["steps"][0]["status"] == "approved"
+    assert result["steps"][0]["validated_content"] == {"response": "..."}
+
+
+def test_get_validated_content_returns_content_for_pending_step() -> None:
+    session = HITLSession(workflow_name="review", item_slug="example")
+    session.add_step(name="comedy", content={"response": "..."})
+
+    assert session.get_validated_content("comedy") == {"response": "..."}
+
+
+def test_get_validated_content_returns_edited_content() -> None:
+    session = HITLSession(workflow_name="review", item_slug="example")
+    session.add_step(name="social", content="Texte initial")
+    session.edit_step("social", edited_content="Texte corrigé.")
+
+    assert session.get_validated_content("social") == "Texte corrigé."
+
+
+def test_get_validated_content_returns_none_for_rejected_step() -> None:
+    session = HITLSession(workflow_name="review", item_slug="example")
+    session.add_step(name="review", content="Texte")
+    session.reject_step("review")
+
+    assert session.get_validated_content("review") is None
+
+
+def test_validated_contents_returns_all_steps() -> None:
+    session = HITLSession(workflow_name="review", item_slug="example")
+    session.add_step(name="comedy", content="A")
+    session.add_step(name="review", content="B")
+    session.reject_step("review")
+
+    assert session.validated_contents() == {
+        "comedy": "A",
+        "review": None,
+    }
+
+
+def test_from_dict_ignores_validated_content() -> None:
+    session = HITLSession.from_dict(
+        {
+            "workflow_name": "review",
+            "item_slug": "example",
+            "steps": [
+                {
+                    "name": "social",
+                    "status": "edited",
+                    "content": "Texte initial",
+                    "edited_content": "Texte corrigé",
+                    "validated_content": "ignored",
+                    "metadata": {"source": "llm"},
+                }
+            ],
+        }
+    )
+
+    step = session.get_step("social")
+    assert step.validated_content == "Texte corrigé"
+    assert session.get_validated_content("social") == "Texte corrigé"
 
 
 def test_missing_step_raises_hitl_step_not_found_error() -> None:

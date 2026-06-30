@@ -58,6 +58,13 @@ class HITLSession:
         step.comment = comment
         return step
 
+    def get_validated_content(self, name: str) -> Any:
+        step = self.get_step(name)
+        return step.validated_content
+
+    def validated_contents(self) -> dict[str, Any]:
+        return {name: step.validated_content for name, step in self._steps.items()}
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "workflow_name": self.workflow_name,
@@ -68,6 +75,7 @@ class HITLSession:
                     "status": step.status.value,
                     "content": step.content,
                     "edited_content": step.edited_content,
+                    "validated_content": step.validated_content,
                     "comment": step.comment,
                     "metadata": step.metadata,
                 }

@@ -22,3 +22,11 @@ class HITLStep:
     edited_content: Any | None = None
     comment: str | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def validated_content(self) -> Any:
+        if self.status == HITLStatus.EDITED:
+            return self.edited_content
+        if self.status in (HITLStatus.APPROVED, HITLStatus.PENDING):
+            return self.content
+        return None
