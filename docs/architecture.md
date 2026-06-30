@@ -198,3 +198,25 @@ Ces commandes ne relancent pas les workflows.
 Elles modifient uniquement le fichier JSON de session HITL.
 
 Elles permettent de reprendre une génération, d’approuver des étapes, de rejeter des propositions ou d’enregistrer une version corrigée.
+
+## CLI Learning Loop
+
+La CLI expose une commande `learning`.
+
+Commandes disponibles :
+
+```text
+bookstai learning extract
+bookstai learning draft
+bookstai learning apply
+```
+
+`learning extract` lit une session HITL et extrait les candidates d'apprentissage.
+
+`learning draft` génère un brouillon Markdown dans `outputs/learning`.
+
+`learning apply` applique explicitement un draft dans `memory/` avec sauvegarde.
+
+La Learning Loop ne modifie jamais la mémoire automatiquement.
+
+L'application dans `memory/` nécessite une commande explicite.

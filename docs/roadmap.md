@@ -331,3 +331,5 @@ Les sessions HITL exposent maintenant une version validée de chaque étape via 
 La Learning Loop peut maintenant extraire des candidates d'apprentissage depuis une session HITL.
 
 La Learning Loop peut maintenant générer un brouillon Markdown de mise à jour mémoire.
+
+La Learning Loop est maintenant accessible depuis la CLI via `bookstai learning`.
