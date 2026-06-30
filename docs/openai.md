@@ -42,3 +42,40 @@ response = client.generate("Écris une review courte.")
 - pas encore de suivi de coût ;
 - pas encore de retry avancé ;
 - pas de génération d’image avec OpenAI.
+
+## Factory LLM
+
+BookstAI fournit une factory simple pour créer un client LLM selon le provider demandé.
+
+```python
+from bookstai.llm import create_llm_client
+
+client = create_llm_client(
+    provider="mock",
+)
+```
+
+Pour OpenAI :
+
+```python
+from bookstai.llm import create_llm_client
+
+client = create_llm_client(
+    provider="openai",
+    model="gpt-4o-mini",
+    temperature=0.7,
+)
+```
+
+La factory ne branche pas encore OpenAI automatiquement dans les workflows.
+Elle sert uniquement à centraliser la création du client LLM.
+
+Providers supportés actuellement :
+
+- `mock`
+- `openai`
+
+Providers connus mais non supportés dans cette factory :
+
+- `anthropic`
+- `ollama`

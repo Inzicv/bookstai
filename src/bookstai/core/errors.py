@@ -13,6 +13,12 @@ class MissingAPIKeyError(BookstAIError):
     pass
 
 
+class UnsupportedProviderError(BookstAIError):
+    """Raised when a provider is known but not supported yet."""
+
+    pass
+
+
 class MemoryFileNotFoundError(BookstAIError):
     """Raised when a memory file is not found."""
 
