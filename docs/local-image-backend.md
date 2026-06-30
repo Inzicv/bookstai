@@ -263,3 +263,27 @@ Le backend ne lance pas ComfyUI automatiquement.
 Le backend ne télécharge pas encore l'image via `/view`.
 
 Le backend ne fait aucun appel OpenAI.
+
+## Téléchargement de l'image ComfyUI
+
+Après récupération de l'image dans `/history/{prompt_id}`, BookstAI appelle `/view` pour télécharger l'image générée.
+
+Le fichier est écrit dans le dossier configuré par `output_dir`.
+
+Exemple :
+
+```text
+outputs/images/bookstai_00001.png
+```
+
+Si ComfyUI retourne un `subfolder`, BookstAI écrit l'image dans :
+
+```text
+outputs/images/<subfolder>/<filename>
+```
+
+Le backend ne lance pas ComfyUI automatiquement.
+
+Le backend ne fait aucun appel OpenAI.
+
+Les tests utilisent des faux clients HTTP et ne nécessitent pas de serveur ComfyUI réel.

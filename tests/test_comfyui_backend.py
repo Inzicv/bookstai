@@ -12,14 +12,22 @@ from bookstai.image.comfyui_backend import ComfyUIHTTPClient, ComfyUIImageBacken
 
 
 class FakeHTTPClient:
-    def __init__(self, post_response: dict[str, object] | None = None, get_responses: list[dict[str, object]] | None = None) -> None:
+    def __init__(
+        self,
+        post_response: dict[str, object] | None = None,
+        get_responses: list[dict[str, object]] | None = None,
+        bytes_response: bytes | None = None,
+    ) -> None:
         self.post_response = post_response or {}
         self.get_responses = get_responses or []
+        self.bytes_response = bytes_response or b""
         self.last_post_url = None
         self.last_post_payload = None
         self.last_post_timeout = None
         self.last_get_urls: list[str] = []
         self.last_get_timeouts: list[float] = []
+        self.last_bytes_url = None
+        self.last_bytes_timeout = None
 
     def post_json(self, url: str, payload: dict[str, object], timeout: float) -> dict[str, object]:
         self.last_post_url = url
@@ -33,6 +41,11 @@ class FakeHTTPClient:
         if self.get_responses:
             return self.get_responses.pop(0)
         return {}
+
+    def get_bytes(self, url: str, timeout: float) -> bytes:
+        self.last_bytes_url = url
+        self.last_bytes_timeout = timeout
+        return self.bytes_response
 
 
 def _workflow_file(tmp_path: Path, content: str = """{"6": {"class_type": "CLIPTextEncode", "inputs": {"text": "__BOOKSTAI_PROMPT__"}}}""") -> Path:
@@ -82,6 +95,7 @@ def test_generate_uses_real_cycle_when_workflow_exists(tmp_path: Path) -> None:
     fake_client = FakeHTTPClient(
         post_response={"prompt_id": "abc123"},
         get_responses=[{"abc123": {"outputs": {"9": {"images": [{"filename": "bookstai_00001.png", "subfolder": "", "type": "output"}]}}}}],
+        bytes_response=b"PNGDATA",
     )
     backend = ComfyUIImageBackend(
         workflow_path=workflow_path,
@@ -104,6 +118,9 @@ def test_generate_uses_real_cycle_when_workflow_exists(tmp_path: Path) -> None:
     assert fake_client.last_post_timeout == 60.0
     assert fake_client.last_get_urls == ["http://127.0.0.1:8188/history/abc123"]
     assert fake_client.last_get_timeouts == [60.0]
+    assert fake_client.last_bytes_url == "http://127.0.0.1:8188/view?filename=bookstai_00001.png&subfolder=&type=output"
+    assert fake_client.last_bytes_timeout == 60.0
+    assert (tmp_path / "images" / "bookstai_00001.png").read_bytes() == b"PNGDATA"
 
 
 def test_generate_handles_existing_image_path_fallback(tmp_path: Path) -> None:
@@ -128,6 +145,7 @@ def test_generate_handles_existing_image_path_fallback(tmp_path: Path) -> None:
             }
         }
     }
+    assert fake_client.last_bytes_url is None
 
 
 def test_generate_raises_when_workflow_file_missing(tmp_path: Path) -> None:
@@ -186,6 +204,38 @@ def test_generate_raises_when_prompt_id_is_missing(tmp_path: Path) -> None:
     )
 
     with pytest.raises(ImageGenerationError, match="ComfyUI response did not contain a prompt id."):
+        backend.generate("prompt")
+
+
+def test_generate_raises_when_history_contains_invalid_image_reference(tmp_path: Path) -> None:
+    workflow_path = _workflow_file(tmp_path)
+    fake_client = FakeHTTPClient(
+        post_response={"prompt_id": "abc123"},
+        get_responses=[{"abc123": {"outputs": {"9": {"images": [{"filename": "../evil.png", "subfolder": "", "type": "output"}]}}}}],
+    )
+    backend = ComfyUIImageBackend(
+        workflow_path=workflow_path,
+        output_dir=tmp_path / "images",
+        http_client=fake_client,
+    )
+
+    with pytest.raises(ImageGenerationError, match="ComfyUI history contained an invalid image reference."):
+        backend.generate("prompt")
+
+
+def test_generate_raises_when_history_contains_dangerous_subfolder(tmp_path: Path) -> None:
+    workflow_path = _workflow_file(tmp_path)
+    fake_client = FakeHTTPClient(
+        post_response={"prompt_id": "abc123"},
+        get_responses=[{"abc123": {"outputs": {"9": {"images": [{"filename": "image.png", "subfolder": "../secret", "type": "output"}]}}}}],
+    )
+    backend = ComfyUIImageBackend(
+        workflow_path=workflow_path,
+        output_dir=tmp_path / "images",
+        http_client=fake_client,
+    )
+
+    with pytest.raises(ImageGenerationError, match="ComfyUI history contained an invalid image reference."):
         backend.generate("prompt")
 
 

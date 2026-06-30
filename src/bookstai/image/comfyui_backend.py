@@ -7,6 +7,7 @@ import json
 import time
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlencode
 from urllib import error, request
 
 from ..core.errors import (
@@ -35,6 +36,19 @@ class ComfyUIHTTPClient:
     def get_json(self, url: str, timeout: float) -> dict[str, Any]:
         req = request.Request(url, method="GET")
         return self._request_json(req, timeout)
+
+    def get_bytes(self, url: str, timeout: float) -> bytes:
+        req = request.Request(url, method="GET")
+        try:
+            with request.urlopen(req, timeout=timeout) as response:
+                body = response.read()
+        except (error.URLError, TimeoutError, ValueError, OSError) as exc:
+            raise ImageBackendConnectionError("Could not reach ComfyUI backend.") from exc
+
+        if not body:
+            raise ImageBackendConnectionError("Could not reach ComfyUI backend.")
+
+        return body
 
     def _request_json(self, req: request.Request, timeout: float) -> dict[str, Any]:
         try:
@@ -103,9 +117,9 @@ class ComfyUIImageBackend(ImageBackend):
                 f"{self.comfyui_url}/history/{prompt_id}",
                 timeout=self.timeout,
             )
-            image_path = self._extract_image_path_from_history(history, prompt_id)
-            if image_path:
-                return image_path
+            image_reference = self._extract_image_reference_from_history(history, prompt_id)
+            if image_reference:
+                return self._download_image(image_reference)
             if time.monotonic() > deadline:
                 break
             time.sleep(self.poll_interval)
@@ -177,7 +191,44 @@ class ComfyUIImageBackend(ImageBackend):
                 return True
         return False
 
-    def _extract_image_path_from_history(self, history: dict[str, Any], prompt_id: str) -> str | None:
+    def _download_image(self, image_reference: dict[str, str]) -> str:
+        filename = image_reference["filename"]
+        subfolder = image_reference["subfolder"]
+        image_type = image_reference["type"]
+        query = urlencode(
+            {
+                "filename": filename,
+                "subfolder": subfolder,
+                "type": image_type,
+            }
+        )
+        url = f"{self.comfyui_url}/view?{query}"
+        image_bytes = self.http_client.get_bytes(url, timeout=self.timeout)
+
+        target_path = self._resolve_output_path(filename, subfolder)
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+        target_path.write_bytes(image_bytes)
+        return str(target_path)
+
+    def _resolve_output_path(self, filename: str, subfolder: str) -> Path:
+        safe_filename = Path(filename).name
+        if self._is_dangerous_path_component(subfolder):
+            raise ImageGenerationError("ComfyUI history contained an invalid image reference.")
+        safe_subfolder = Path(subfolder) if subfolder else Path()
+        if any(part == ".." for part in safe_subfolder.parts):
+            raise ImageGenerationError("ComfyUI history contained an invalid image reference.")
+        relative_target = safe_subfolder / safe_filename
+        target_path = self.output_dir / relative_target
+        resolved_root = self.output_dir.resolve()
+        resolved_target = target_path.resolve()
+        if resolved_root not in resolved_target.parents and resolved_target != resolved_root / safe_filename:
+            raise ImageGenerationError("ComfyUI history contained an invalid image reference.")
+        return target_path
+
+    def _is_dangerous_path_component(self, value: str) -> bool:
+        return ".." in Path(value).parts
+
+    def _extract_image_reference_from_history(self, history: dict[str, Any], prompt_id: str) -> dict[str, str] | None:
         prompt_history = history.get(prompt_id)
         if not isinstance(prompt_history, dict):
             return None
@@ -199,7 +250,10 @@ class ComfyUIImageBackend(ImageBackend):
                 if not isinstance(filename, str) or not filename.strip():
                     continue
                 subfolder = image.get("subfolder")
-                if isinstance(subfolder, str) and subfolder.strip():
-                    return str(self.output_dir / subfolder / filename)
-                return str(self.output_dir / filename)
+                image_type = image.get("type")
+                return {
+                    "filename": filename,
+                    "subfolder": subfolder if isinstance(subfolder, str) else "",
+                    "type": image_type if isinstance(image_type, str) and image_type.strip() else "output",
+                }
         return None

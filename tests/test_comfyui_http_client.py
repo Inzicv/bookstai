@@ -108,3 +108,44 @@ def test_get_json_converts_network_errors(monkeypatch) -> None:
 
     with pytest.raises(ImageBackendConnectionError):
         client.get_json("http://example.test/history/abc123", timeout=1.0)
+
+
+def test_get_bytes_makes_get_request(monkeypatch) -> None:
+    captured = {}
+
+    def fake_urlopen(req, timeout):
+        captured["method"] = req.method
+        captured["url"] = req.full_url
+        captured["timeout"] = timeout
+        return FakeResponse("image-bytes")
+
+    monkeypatch.setattr("bookstai.image.comfyui_backend.request.urlopen", fake_urlopen)
+
+    client = ComfyUIHTTPClient()
+    result = client.get_bytes("http://example.test/view?filename=a.png", timeout=4.5)
+
+    assert result == b"image-bytes"
+    assert captured["method"] == "GET"
+    assert captured["url"] == "http://example.test/view?filename=a.png"
+    assert captured["timeout"] == 4.5
+
+
+def test_get_bytes_rejects_empty_response(monkeypatch) -> None:
+    monkeypatch.setattr("bookstai.image.comfyui_backend.request.urlopen", lambda req, timeout: FakeResponse(""))
+
+    client = ComfyUIHTTPClient()
+
+    with pytest.raises(ImageBackendConnectionError):
+        client.get_bytes("http://example.test/view?filename=a.png", timeout=1.0)
+
+
+def test_get_bytes_converts_network_errors(monkeypatch) -> None:
+    def fake_urlopen(req, timeout):
+        raise error.URLError("boom")
+
+    monkeypatch.setattr("bookstai.image.comfyui_backend.request.urlopen", fake_urlopen)
+
+    client = ComfyUIHTTPClient()
+
+    with pytest.raises(ImageBackendConnectionError):
+        client.get_bytes("http://example.test/view?filename=a.png", timeout=1.0)
