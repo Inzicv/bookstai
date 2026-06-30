@@ -175,5 +175,5 @@ def test_cli_accepts_memory_and_prompt_roots(monkeypatch) -> None:
         ]
     )
 
-    assert str(captured["memory_root"]) == "custom/memory"
-    assert str(captured["prompt_root"]) == "custom/prompts"
+    assert captured["memory_root"] == Path("custom/memory")
+    assert captured["prompt_root"] == Path("custom/prompts")
