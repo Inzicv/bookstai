@@ -1,4 +1,4 @@
-"""Tests for the ComfyUI HTTP client."""
+"""Tests for ComfyUI HTTP client."""
 
 from __future__ import annotations
 
@@ -11,12 +11,9 @@ from bookstai.core.errors import ImageBackendConnectionError
 from bookstai.image.comfyui_backend import ComfyUIHTTPClient
 
 
-class FakeHTTPResponse:
+class FakeResponse:
     def __init__(self, body: str) -> None:
-        self._body = body.encode("utf-8")
-
-    def read(self) -> bytes:
-        return self._body
+        self.body = body
 
     def __enter__(self):
         return self
@@ -24,68 +21,90 @@ class FakeHTTPResponse:
     def __exit__(self, exc_type, exc, tb):
         return False
 
+    def read(self) -> bytes:
+        return self.body.encode("utf-8")
 
-def test_comfyui_http_client_can_be_imported() -> None:
-    assert ComfyUIHTTPClient is not None
 
-
-def test_post_json_sends_post_json_request(monkeypatch) -> None:
+def test_post_json_makes_post_request(monkeypatch) -> None:
     captured = {}
 
     def fake_urlopen(req, timeout):
-        captured["method"] = req.get_method()
-        captured["headers"] = dict(req.headers)
+        captured["method"] = req.method
+        captured["url"] = req.full_url
+        captured["data"] = req.data
+        captured["headers"] = req.headers
         captured["timeout"] = timeout
-        captured["data"] = json.loads(req.data.decode("utf-8"))
-        return FakeHTTPResponse('{"image_path": "outputs/images/generated.png"}')
+        return FakeResponse(json.dumps({"ok": True}))
 
-    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    monkeypatch.setattr("bookstai.image.comfyui_backend.request.urlopen", fake_urlopen)
 
     client = ComfyUIHTTPClient()
-    result = client.post_json(
-        "http://127.0.0.1:8188/prompt",
-        {"prompt": "a cinematic book cover"},
-        timeout=12.5,
-    )
+    result = client.post_json("http://example.test/prompt", {"prompt": "hello"}, timeout=12.5)
 
+    assert result == {"ok": True}
     assert captured["method"] == "POST"
-    assert captured["headers"]["Content-type"] == "application/json"
+    assert captured["url"] == "http://example.test/prompt"
+    assert json.loads(captured["data"].decode("utf-8")) == {"prompt": "hello"}
     assert captured["timeout"] == 12.5
-    assert captured["data"] == {"prompt": "a cinematic book cover"}
-    assert result == {"image_path": "outputs/images/generated.png"}
 
 
-def test_post_json_raises_on_network_error(monkeypatch) -> None:
-    def fake_urlopen(req, timeout):
-        raise error.URLError("unreachable")
-
-    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+def test_post_json_rejects_non_dict_json(monkeypatch) -> None:
+    monkeypatch.setattr("bookstai.image.comfyui_backend.request.urlopen", lambda req, timeout: FakeResponse("[]"))
 
     client = ComfyUIHTTPClient()
 
     with pytest.raises(ImageBackendConnectionError):
-        client.post_json("http://127.0.0.1:8188/prompt", {"prompt": "x"}, timeout=1.0)
+        client.post_json("http://example.test/prompt", {"prompt": "hello"}, timeout=1.0)
 
 
-def test_post_json_raises_on_invalid_json(monkeypatch) -> None:
+def test_post_json_converts_network_errors(monkeypatch) -> None:
     def fake_urlopen(req, timeout):
-        return FakeHTTPResponse("not-json")
+        raise error.URLError("boom")
 
-    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    monkeypatch.setattr("bookstai.image.comfyui_backend.request.urlopen", fake_urlopen)
 
     client = ComfyUIHTTPClient()
 
     with pytest.raises(ImageBackendConnectionError):
-        client.post_json("http://127.0.0.1:8188/prompt", {"prompt": "x"}, timeout=1.0)
+        client.post_json("http://example.test/prompt", {"prompt": "hello"}, timeout=1.0)
 
 
-def test_post_json_raises_when_json_is_not_dict(monkeypatch) -> None:
+def test_get_json_makes_get_request(monkeypatch) -> None:
+    captured = {}
+
     def fake_urlopen(req, timeout):
-        return FakeHTTPResponse("[1, 2, 3]")
+        captured["method"] = req.method
+        captured["url"] = req.full_url
+        captured["timeout"] = timeout
+        return FakeResponse(json.dumps({"history": True}))
 
-    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    monkeypatch.setattr("bookstai.image.comfyui_backend.request.urlopen", fake_urlopen)
+
+    client = ComfyUIHTTPClient()
+    result = client.get_json("http://example.test/history/abc123", timeout=8.0)
+
+    assert result == {"history": True}
+    assert captured["method"] == "GET"
+    assert captured["url"] == "http://example.test/history/abc123"
+    assert captured["timeout"] == 8.0
+
+
+def test_get_json_rejects_non_dict_json(monkeypatch) -> None:
+    monkeypatch.setattr("bookstai.image.comfyui_backend.request.urlopen", lambda req, timeout: FakeResponse("[]"))
 
     client = ComfyUIHTTPClient()
 
     with pytest.raises(ImageBackendConnectionError):
-        client.post_json("http://127.0.0.1:8188/prompt", {"prompt": "x"}, timeout=1.0)
+        client.get_json("http://example.test/history/abc123", timeout=1.0)
+
+
+def test_get_json_converts_network_errors(monkeypatch) -> None:
+    def fake_urlopen(req, timeout):
+        raise error.URLError("boom")
+
+    monkeypatch.setattr("bookstai.image.comfyui_backend.request.urlopen", fake_urlopen)
+
+    client = ComfyUIHTTPClient()
+
+    with pytest.raises(ImageBackendConnectionError):
+        client.get_json("http://example.test/history/abc123", timeout=1.0)

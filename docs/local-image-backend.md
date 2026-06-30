@@ -240,3 +240,26 @@ Elle ne génère une image réelle que si :
 - `image_backend` vaut `comfyui` ;
 - un workflow ComfyUI compatible est fourni ;
 - le flow Song est exécuté.
+
+## Cycle ComfyUI réel
+
+Le backend ComfyUI suit le cycle minimal suivant :
+
+1. lire un workflow JSON ComfyUI ;
+2. injecter le prompt BookstAI dans le workflow ;
+3. envoyer le workflow à `/prompt` ;
+4. récupérer un `prompt_id` ;
+5. interroger `/history/{prompt_id}` ;
+6. retrouver le fichier image généré dans l'historique ;
+7. retourner un chemin exploitable.
+
+Le workflow JSON doit contenir soit :
+
+- le placeholder `__BOOKSTAI_PROMPT__` ;
+- soit un node `CLIPTextEncode` avec `inputs.text`.
+
+Le backend ne lance pas ComfyUI automatiquement.
+
+Le backend ne télécharge pas encore l'image via `/view`.
+
+Le backend ne fait aucun appel OpenAI.
