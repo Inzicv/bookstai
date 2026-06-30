@@ -37,6 +37,7 @@ from .prompts.renderer import PromptRenderer
 from .exports.markdown import MarkdownExporter
 from .exports.json import JSONExporter
 from .exports.service import ExportService
+from .hitl import HITLStatus, HITLStep, HITLSession
 from .workflows.review import ReviewWorkflow
 from .workflows.song import SongWorkflow
 from .langflow.review_component import run_review_workflow
@@ -81,6 +82,9 @@ __all__ = [
     "MarkdownExporter",
     "JSONExporter",
     "ExportService",
+    "HITLStatus",
+    "HITLStep",
+    "HITLSession",
     "main",
     "PromptBuilder",
     "PromptLoader",

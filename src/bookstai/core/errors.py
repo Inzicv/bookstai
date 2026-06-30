@@ -119,3 +119,9 @@ class UnsupportedImageBackendError(BookstAIError):
     """Raised when an image backend is not supported."""
 
     pass
+
+
+class HITLStepNotFoundError(BookstAIError):
+    """Raised when a HITL step does not exist."""
+
+    pass

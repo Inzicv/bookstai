@@ -34,3 +34,22 @@ Objectif :
 - éviter les couches inutiles ;
 - préserver la rapidité d'usage ;
 - garder l'architecture alignée avec le workflow agen.
+
+## Human In The Loop
+
+BookstAI utilise un socle HITL pour représenter les étapes créatives à valider.
+
+Une étape HITL peut être :
+
+- `pending` ;
+- `approved` ;
+- `rejected` ;
+- `edited`.
+
+Le contenu original généré par l'IA doit toujours rester disponible.
+
+Quand l'utilisateur corrige une sortie, la version corrigée est stockée séparément dans `edited_content`.
+
+Le HITL ne remplace pas les workflows existants.
+
+Il sert d'abord à structurer les validations avant l'ajout d'une UI ou d'un mode interactif.
