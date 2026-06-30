@@ -70,7 +70,7 @@ def test_generate_calls_http_client_and_returns_image_path(tmp_path: Path) -> No
     result = backend.generate("a cinematic book cover")
 
     assert result == "outputs/images/generated.png"
-    assert fake_client.last_url == "http://127.0.0.1:8188"
+    assert fake_client.last_url == "http://127.0.0.1:8188/prompt"
     assert fake_client.last_payload == {"prompt": "a cinematic book cover"}
     assert fake_client.last_timeout == 60.0
 
