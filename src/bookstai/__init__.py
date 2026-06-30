@@ -35,6 +35,7 @@ from .prompts.builder import PromptBuilder
 from .prompts.loader import PromptLoader
 from .prompts.renderer import PromptRenderer
 from .workflows.review import ReviewWorkflow
+from .workflows.song import SongWorkflow
 
 __all__ = [
     "BookstAISettings",
@@ -65,6 +66,7 @@ __all__ = [
     "ImageBackend",
     "MockImageBackend",
     "ReviewWorkflow",
+    "SongWorkflow",
     "PromptBuilder",
     "PromptLoader",
     "PromptRenderer",
