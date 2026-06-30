@@ -7,6 +7,7 @@ from typing import Any
 
 from ..agents.comedy_room import ComedyRoomAgent
 from ..agents.context_builder import ContextBuilder
+from ..hitl import HITLSession
 from ..agents.review_writer import ReviewWriterAgent
 from ..agents.social_media import SocialMediaAgent
 from ..agents.style_memory import StyleMemoryAgent
@@ -38,6 +39,39 @@ class ReviewWorkflow:
         )
 
     def run(
+        self,
+        book_slug: str,
+        user_opinion: str,
+        platform: str,
+    ) -> dict[str, Any]:
+        return self._run_steps(
+            book_slug=book_slug,
+            user_opinion=user_opinion,
+            platform=platform,
+        )
+
+    def run_with_hitl(
+        self,
+        book_slug: str,
+        user_opinion: str,
+        platform: str,
+    ) -> dict[str, Any]:
+        result = self._run_steps(
+            book_slug=book_slug,
+            user_opinion=user_opinion,
+            platform=platform,
+        )
+        session = HITLSession(
+            workflow_name="review",
+            item_slug=book_slug,
+        )
+        session.add_step(name="comedy", content=result["comedy"])
+        session.add_step(name="review", content=result["review"])
+        session.add_step(name="social", content=result["social"])
+        result["hitl"] = session.to_dict()
+        return result
+
+    def _run_steps(
         self,
         book_slug: str,
         user_opinion: str,

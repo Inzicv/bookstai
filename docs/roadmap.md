@@ -307,3 +307,7 @@ Critères
 ✓ Facile à faire évoluer
 
 ✓ Agréable à utiliser
+
+## Note HITL
+
+Le socle Human In The Loop peut maintenant être utilisé par le workflow Review via `run_with_hitl(...)`.
