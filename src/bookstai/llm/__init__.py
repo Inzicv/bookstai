@@ -1,0 +1,6 @@
+"""LLM client abstractions for BookstAI."""
+
+from .client import LLMClient
+from .mock import MockLLMClient
+
+__all__ = ["LLMClient", "MockLLMClient"]

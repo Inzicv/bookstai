@@ -6,7 +6,6 @@ import pytest
 
 from bookstai.core.errors import (
     EmptyPromptFileError,
-    EmptyPromptTemplateError,
     MissingPromptVariableError,
     PromptFileNotFoundError,
 )
@@ -101,7 +100,7 @@ def test_missing_variable_error_propagates(tmp_path: Path) -> None:
         builder.build("agents/review_writer.md", {})
 
 
-def test_empty_template_error_propagates(tmp_path: Path) -> None:
+def test_empty_prompt_template_error_propagates(tmp_path: Path) -> None:
     prompt_root = tmp_path / "prompts"
     prompt_file = prompt_root / "agents" / "review_writer.md"
     prompt_file.parent.mkdir(parents=True)
@@ -109,7 +108,7 @@ def test_empty_template_error_propagates(tmp_path: Path) -> None:
 
     builder = PromptBuilder(prompt_root=prompt_root)
 
-    with pytest.raises(EmptyPromptTemplateError):
+    with pytest.raises(EmptyPromptFileError):
         builder.build("agents/review_writer.md", {"x": "y"})
 
 

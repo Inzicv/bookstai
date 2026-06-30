@@ -53,3 +53,9 @@ class EmptyPromptTemplateError(BookstAIError):
     """Raised when a prompt template is empty."""
 
     pass
+
+
+class EmptyPromptError(BookstAIError):
+    """Raised when a prompt sent to an LLM is empty."""
+
+    pass
