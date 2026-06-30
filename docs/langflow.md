@@ -141,3 +141,59 @@ result = run_song_workflow(
     platform="tiktok",
 )
 ```
+
+## Custom Component Langflow — Song
+
+Objectif :
+Utiliser BookstAI Song directement dans Langflow.
+
+Prérequis :
+- BookstAI installé en editable install
+- Langflow installé localement
+- être à la racine du dépôt BookstAI
+
+Fichier composant :
+`langflow_components/bookstai_song_component.py`
+
+Entrées :
+- `book_slug`
+- `spoiler_mode`
+- `prompt_type`
+- `platform`
+- `memory_root`
+- `prompt_root`
+- `image_path`
+
+Sortie :
+Dictionnaire complet du `SongWorkflow`.
+
+Limites :
+- mocks uniquement
+- `MockLLMClient`
+- `MockImageBackend`
+- aucun appel OpenAI
+- aucune génération d'image réelle
+- pas encore de validation humaine entre les étapes
+
+### Vérification manuelle
+
+1. Lancer Langflow.
+2. Ajouter le dossier `langflow_components` comme source de Custom Components.
+3. Ajouter le composant `BookstAISongComponent` dans un flow.
+4. Renseigner :
+   - `book_slug`
+   - `spoiler_mode`
+   - `prompt_type`
+   - `platform`
+5. Exécuter le composant.
+6. Vérifier que la sortie contient :
+   - `workflow`
+   - `book_slug`
+   - `context`
+   - `style`
+   - `comedy`
+   - `song`
+   - `art_direction`
+   - `image_prompt`
+   - `image`
+   - `social`
