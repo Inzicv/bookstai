@@ -11,6 +11,14 @@ from ..workflows.review import ReviewWorkflow
 from .paths import resolve_bookstai_path
 
 
+def _to_bool(value: object) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.strip().lower() in {"true", "1", "yes", "y"}
+    return bool(value)
+
+
 def run_review_workflow(
     book_slug: str,
     user_opinion: str,
@@ -20,6 +28,7 @@ def run_review_workflow(
     provider: ProviderType = "mock",
     model: str = "gpt-4o-mini",
     temperature: float = 0.7,
+    hitl: bool = False,
 ) -> dict[str, Any]:
     """Run the existing Review workflow with a configurable LLM client."""
 
@@ -36,6 +45,12 @@ def run_review_workflow(
         prompt_root=prompt_root_path,
         llm_client=llm_client,
     )
+    if _to_bool(hitl):
+        return workflow.run_with_hitl(
+            book_slug=book_slug,
+            user_opinion=user_opinion,
+            platform=platform,
+        )
     return workflow.run(
         book_slug=book_slug,
         user_opinion=user_opinion,

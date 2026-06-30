@@ -288,3 +288,23 @@ image_poll_interval = 1.0
 ComfyUI n'est jamais utilisé par défaut.
 
 Les tests et les premiers flows doivent rester en mock.
+
+## HITL dans Langflow
+
+Les composants Langflow BookstAI exposent un champ `hitl`.
+
+Par défaut :
+
+```text
+hitl = false
+```
+
+Quand `hitl` est désactivé, les composants utilisent le comportement historique.
+
+Quand `hitl` est activé, les composants appellent `run_with_hitl(...)` et ajoutent une session HITL dans le résultat.
+
+Cette étape ne rend pas Langflow interactif.
+
+Elle ne demande pas de validation utilisateur pendant l'exécution.
+
+Elle prépare seulement l'exploitation future des validations humaines.

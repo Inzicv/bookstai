@@ -28,6 +28,7 @@ def test_langflow_song_custom_component_file_has_expected_contract() -> None:
     assert "image_output_dir" in content
     assert "image_timeout" in content
     assert "image_poll_interval" in content
+    assert "hitl" in content
     assert "provider=self.provider" in content
     assert "model=self.model" in content
     assert "temperature=float(self.temperature)" in content
@@ -35,6 +36,7 @@ def test_langflow_song_custom_component_file_has_expected_contract() -> None:
     assert "comfyui_url=self.comfyui_url" in content
     assert "image_timeout=float(self.image_timeout)" in content
     assert "image_poll_interval=float(self.image_poll_interval)" in content
+    assert "hitl=_to_bool(self.hitl)" in content
     assert "openai" not in content.lower()
     assert "requests." not in content.lower()
     assert "httpx." not in content.lower()

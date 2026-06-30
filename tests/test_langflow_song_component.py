@@ -186,3 +186,103 @@ def test_run_song_workflow_defaults_to_mock(monkeypatch, tmp_path: Path) -> None
         "temperature": 0.7,
     }
     assert captured["image_factory"]["backend"] == "mock"
+
+
+def test_run_song_workflow_accepts_hitl_and_calls_run_with_hitl(monkeypatch, tmp_path: Path) -> None:
+    memory_root = tmp_path / "memory"
+    book_file = memory_root / "books" / "example.md"
+    book_file.parent.mkdir(parents=True)
+    book_file.write_text("# Example\nA small memory file.", encoding="utf-8")
+
+    prompt_root = tmp_path / "prompts"
+    _write_prompt(prompt_root, "comedy_room.md", "Comedy: {{book_context}}")
+    _write_prompt(prompt_root, "song_writer.md", "Song: {{comedy_bank}}")
+    _write_prompt(prompt_root, "art_director.md", "Art: {{validated_content}}")
+    _write_prompt(prompt_root, "prompt_maker.md", "Prompt: {{art_direction}}")
+    _write_prompt(prompt_root, "social_media.md", "Social: {{validated_content}}")
+
+    captured = {}
+
+    class DummyWorkflow:
+        def __init__(self, memory_root, prompt_root, llm_client, image_backend) -> None:
+            pass
+
+        def run(self, **kwargs):
+            captured["run"] = kwargs
+            return {"workflow": "song"}
+
+        def run_with_hitl(self, **kwargs):
+            captured["run_with_hitl"] = kwargs
+            return {"workflow": "song", "hitl": {"workflow_name": "song"}}
+
+    monkeypatch.setattr("bookstai.langflow.song_component.SongWorkflow", DummyWorkflow)
+    monkeypatch.setattr("bookstai.langflow.song_component.create_llm_client", lambda **kwargs: "mock-client")
+    monkeypatch.setattr("bookstai.langflow.song_component.create_image_backend", lambda **kwargs: "mock-image-backend")
+
+    result = run_song_workflow(
+        book_slug="example",
+        spoiler_mode="spoiler_free",
+        prompt_type="thumbnail",
+        platform="tiktok",
+        memory_root=str(memory_root),
+        prompt_root=str(prompt_root),
+        hitl="true",
+    )
+
+    assert "run" not in captured
+    assert captured["run_with_hitl"] == {
+        "book_slug": "example",
+        "spoiler_mode": "spoiler_free",
+        "prompt_type": "thumbnail",
+        "platform": "tiktok",
+    }
+    assert result["hitl"]["workflow_name"] == "song"
+
+
+def test_run_song_workflow_hitl_defaults_to_false(monkeypatch, tmp_path: Path) -> None:
+    memory_root = tmp_path / "memory"
+    book_file = memory_root / "books" / "example.md"
+    book_file.parent.mkdir(parents=True)
+    book_file.write_text("# Example\nA small memory file.", encoding="utf-8")
+
+    prompt_root = tmp_path / "prompts"
+    _write_prompt(prompt_root, "comedy_room.md", "Comedy: {{book_context}}")
+    _write_prompt(prompt_root, "song_writer.md", "Song: {{comedy_bank}}")
+    _write_prompt(prompt_root, "art_director.md", "Art: {{validated_content}}")
+    _write_prompt(prompt_root, "prompt_maker.md", "Prompt: {{art_direction}}")
+    _write_prompt(prompt_root, "social_media.md", "Social: {{validated_content}}")
+
+    captured = {}
+
+    class DummyWorkflow:
+        def __init__(self, memory_root, prompt_root, llm_client, image_backend) -> None:
+            pass
+
+        def run(self, **kwargs):
+            captured["run"] = kwargs
+            return {"workflow": "song"}
+
+        def run_with_hitl(self, **kwargs):
+            captured["run_with_hitl"] = kwargs
+            return {"workflow": "song", "hitl": {"workflow_name": "song"}}
+
+    monkeypatch.setattr("bookstai.langflow.song_component.SongWorkflow", DummyWorkflow)
+    monkeypatch.setattr("bookstai.langflow.song_component.create_llm_client", lambda **kwargs: "mock-client")
+    monkeypatch.setattr("bookstai.langflow.song_component.create_image_backend", lambda **kwargs: "mock-image-backend")
+
+    run_song_workflow(
+        book_slug="example",
+        spoiler_mode="spoiler_free",
+        prompt_type="thumbnail",
+        platform="tiktok",
+        memory_root=str(memory_root),
+        prompt_root=str(prompt_root),
+    )
+
+    assert captured["run"] == {
+        "book_slug": "example",
+        "spoiler_mode": "spoiler_free",
+        "prompt_type": "thumbnail",
+        "platform": "tiktok",
+    }
+    assert "run_with_hitl" not in captured

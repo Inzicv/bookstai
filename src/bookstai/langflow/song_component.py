@@ -12,6 +12,14 @@ from ..workflows.song import SongWorkflow
 from .paths import resolve_bookstai_path
 
 
+def _to_bool(value: object) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.strip().lower() in {"true", "1", "yes", "y"}
+    return bool(value)
+
+
 def run_song_workflow(
     book_slug: str,
     spoiler_mode: str,
@@ -29,6 +37,7 @@ def run_song_workflow(
     image_output_dir: str | Path = "outputs/images",
     image_timeout: float = 60.0,
     image_poll_interval: float = 1.0,
+    hitl: bool = False,
 ) -> dict[str, Any]:
     """Run the existing Song workflow with a configurable LLM client."""
 
@@ -55,6 +64,13 @@ def run_song_workflow(
         llm_client=llm_client,
         image_backend=image_backend_instance,
     )
+    if _to_bool(hitl):
+        return workflow.run_with_hitl(
+            book_slug=book_slug,
+            spoiler_mode=spoiler_mode,
+            prompt_type=prompt_type,
+            platform=platform,
+        )
     return workflow.run(
         book_slug=book_slug,
         spoiler_mode=spoiler_mode,

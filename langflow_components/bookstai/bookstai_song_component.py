@@ -11,6 +11,14 @@ from langflow.schema import Data
 from bookstai.langflow.song_component import run_song_workflow
 
 
+def _to_bool(value: object) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.strip().lower() in {"true", "1", "yes", "y"}
+    return bool(value)
+
+
 class BookstAISongComponent(Component):
     display_name = "BookstAI Song"
     name = "BookstAISongComponent"
@@ -113,6 +121,12 @@ class BookstAISongComponent(Component):
             value="1.0",
             info="Polling interval passed to the image backend factory.",
         ),
+        MessageTextInput(
+            name="hitl",
+            display_name="HITL",
+            value="false",
+            info="Enable Human In The Loop output.",
+        ),
     ]
 
     outputs = [
@@ -142,5 +156,6 @@ class BookstAISongComponent(Component):
             image_output_dir=Path(self.image_output_dir),
             image_timeout=float(self.image_timeout),
             image_poll_interval=float(self.image_poll_interval),
+            hitl=_to_bool(self.hitl),
         )
         return Data(value=result)

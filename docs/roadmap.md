@@ -317,3 +317,7 @@ Le socle Human In The Loop peut maintenant être utilisé par le workflow Song v
 ## Note HITL CLI
 
 HITL est maintenant accessible depuis la CLI via `--hitl`.
+
+## Note HITL Langflow
+
+HITL est maintenant accessible depuis Langflow via le champ `hitl`.

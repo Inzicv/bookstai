@@ -12,6 +12,14 @@ from langflow.schema import Data
 from bookstai.langflow.review_component import run_review_workflow
 
 
+def _to_bool(value: object) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.strip().lower() in {"true", "1", "yes", "y"}
+    return bool(value)
+
+
 class BookstAIReviewComponent(Component):
     display_name = "BookstAI Review"
     name = "BookstAIReviewComponent"
@@ -65,6 +73,12 @@ class BookstAIReviewComponent(Component):
             value="prompts",
             info="Root folder for BookstAI prompt files.",
         ),
+        MessageTextInput(
+            name="hitl",
+            display_name="HITL",
+            value="false",
+            info="Enable Human In The Loop output.",
+        ),
     ]
 
     outputs = [
@@ -86,5 +100,6 @@ class BookstAIReviewComponent(Component):
             provider=self.provider,
             model=self.model,
             temperature=float(self.temperature),
+            hitl=_to_bool(self.hitl),
         )
         return Data(value=result)
