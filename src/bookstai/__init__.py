@@ -34,6 +34,7 @@ from .image.mock_backend import MockImageBackend
 from .prompts.builder import PromptBuilder
 from .prompts.loader import PromptLoader
 from .prompts.renderer import PromptRenderer
+from .workflows.review import ReviewWorkflow
 
 __all__ = [
     "BookstAISettings",
@@ -63,6 +64,7 @@ __all__ = [
     "StyleMemoryAgent",
     "ImageBackend",
     "MockImageBackend",
+    "ReviewWorkflow",
     "PromptBuilder",
     "PromptLoader",
     "PromptRenderer",
