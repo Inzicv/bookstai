@@ -314,3 +314,6 @@ Le socle Human In The Loop peut maintenant être utilisé par le workflow Review
 ## Note HITL Song
 
 Le socle Human In The Loop peut maintenant être utilisé par le workflow Song via `run_with_hitl(...)`.
+## Note HITL CLI
+
+HITL est maintenant accessible depuis la CLI via `--hitl`.

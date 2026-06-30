@@ -70,3 +70,13 @@ Les étapes créatives à valider sont :
 - `social`
 
 Les étapes techniques comme `context` et `style` ne sont pas encore validées manuellement.
+
+## HITL dans la CLI
+
+La CLI expose l'option `--hitl`.
+
+Sans cette option, les workflows utilisent leur comportement historique.
+
+Avec `--hitl`, la CLI appelle `run_with_hitl(...)` et ajoute une session HITL dans le résultat.
+
+La CLI ne devient pas interactive dans cette étape.

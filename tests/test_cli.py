@@ -99,6 +99,46 @@ def test_cli_review_calls_workflow(monkeypatch) -> None:
         "user_opinion": "J'ai adoré",
         "platform": "instagram",
     }
+    assert "hitl" not in captured
+
+
+def test_cli_review_hitl_calls_run_with_hitl(monkeypatch) -> None:
+    captured = {}
+
+    class DummyWorkflow:
+        def __init__(self, memory_root, prompt_root, llm_client) -> None:
+            pass
+
+        def run(self, **kwargs):
+            captured["run"] = kwargs
+            return {"workflow": "review"}
+
+        def run_with_hitl(self, **kwargs):
+            captured["run_with_hitl"] = kwargs
+            return {"workflow": "review", "hitl": {"workflow_name": "review"}}
+
+    monkeypatch.setattr(cli, "ReviewWorkflow", DummyWorkflow)
+    monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
+    monkeypatch.setattr(cli, "create_llm_client", lambda **kwargs: "mock-client")
+    monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
+
+    cli.main([
+        "review",
+        "--book",
+        "alchemised",
+        "--opinion",
+        "J'ai adoré",
+        "--platform",
+        "instagram",
+        "--hitl",
+    ])
+
+    assert "run" not in captured
+    assert captured["run_with_hitl"] == {
+        "book_slug": "alchemised",
+        "user_opinion": "J'ai adoré",
+        "platform": "instagram",
+    }
 
 
 def test_cli_song_calls_workflow(monkeypatch) -> None:
@@ -136,6 +176,50 @@ def test_cli_song_calls_workflow(monkeypatch) -> None:
     assert captured["llm_client"] == "mock-client"
     assert captured["image_backend"] == "mock-image-backend"
     assert captured["run"] == {
+        "book_slug": "alchemised",
+        "spoiler_mode": "spoiler_free",
+        "prompt_type": "scene",
+        "platform": "instagram",
+    }
+    assert "hitl" not in captured
+
+
+def test_cli_song_hitl_calls_run_with_hitl(monkeypatch) -> None:
+    captured = {}
+
+    class DummyWorkflow:
+        def __init__(self, memory_root, prompt_root, llm_client, image_backend) -> None:
+            pass
+
+        def run(self, **kwargs):
+            captured["run"] = kwargs
+            return {"workflow": "song"}
+
+        def run_with_hitl(self, **kwargs):
+            captured["run_with_hitl"] = kwargs
+            return {"workflow": "song", "hitl": {"workflow_name": "song"}}
+
+    monkeypatch.setattr(cli, "SongWorkflow", DummyWorkflow)
+    monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
+    monkeypatch.setattr(cli, "create_llm_client", lambda **kwargs: "mock-client")
+    monkeypatch.setattr(cli, "create_image_backend", lambda **kwargs: "mock-image-backend")
+    monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
+
+    cli.main([
+        "song",
+        "--book",
+        "alchemised",
+        "--spoiler-mode",
+        "spoiler_free",
+        "--prompt-type",
+        "scene",
+        "--platform",
+        "instagram",
+        "--hitl",
+    ])
+
+    assert "run" not in captured
+    assert captured["run_with_hitl"] == {
         "book_slug": "alchemised",
         "spoiler_mode": "spoiler_free",
         "prompt_type": "scene",
@@ -214,6 +298,44 @@ def test_cli_review_defaults_to_mock_provider(monkeypatch) -> None:
         "temperature": 0.7,
         "llm_client": "mock-client",
     }
+
+
+def test_cli_hitl_does_not_change_review_defaults(monkeypatch) -> None:
+    captured = {}
+
+    def fake_create_llm_client(*, provider, model, temperature):
+        captured["provider"] = provider
+        captured["model"] = model
+        captured["temperature"] = temperature
+        return "mock-client"
+
+    class DummyWorkflow:
+        def __init__(self, memory_root, prompt_root, llm_client) -> None:
+            pass
+
+        def run_with_hitl(self, **kwargs):
+            captured["run_with_hitl"] = kwargs
+            return {"workflow": "review", "hitl": {"workflow_name": "review"}}
+
+    monkeypatch.setattr(cli, "ReviewWorkflow", DummyWorkflow)
+    monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
+    monkeypatch.setattr(cli, "create_llm_client", fake_create_llm_client)
+    monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
+
+    cli.main([
+        "review",
+        "--book",
+        "alchemised",
+        "--opinion",
+        "J'ai adoré",
+        "--platform",
+        "instagram",
+        "--hitl",
+    ])
+
+    assert captured["provider"] == "mock"
+    assert captured["model"] == "gpt-4o-mini"
+    assert captured["temperature"] == 0.7
 
 
 def test_cli_review_accepts_openai_provider_configuration(monkeypatch) -> None:
@@ -296,6 +418,52 @@ def test_cli_song_defaults_to_mock_image_backend(monkeypatch) -> None:
     assert captured["backend"] == "mock"
     assert captured["image_path"] == "outputs/mock/image.png"
     assert captured["image_backend"] == "mock-image-backend"
+
+
+def test_cli_hitl_does_not_change_song_defaults(monkeypatch) -> None:
+    captured = {}
+
+    def fake_create_llm_client(*, provider, model, temperature):
+        captured["provider"] = provider
+        captured["model"] = model
+        captured["temperature"] = temperature
+        return "mock-client"
+
+    def fake_create_image_backend(**kwargs):
+        captured["image_factory"] = kwargs
+        return "mock-image-backend"
+
+    class DummyWorkflow:
+        def __init__(self, memory_root, prompt_root, llm_client, image_backend) -> None:
+            pass
+
+        def run_with_hitl(self, **kwargs):
+            captured["run_with_hitl"] = kwargs
+            return {"workflow": "song", "hitl": {"workflow_name": "song"}}
+
+    monkeypatch.setattr(cli, "SongWorkflow", DummyWorkflow)
+    monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
+    monkeypatch.setattr(cli, "create_llm_client", fake_create_llm_client)
+    monkeypatch.setattr(cli, "create_image_backend", fake_create_image_backend)
+    monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
+
+    cli.main([
+        "song",
+        "--book",
+        "alchemised",
+        "--spoiler-mode",
+        "spoiler_free",
+        "--prompt-type",
+        "scene",
+        "--platform",
+        "instagram",
+        "--hitl",
+    ])
+
+    assert captured["provider"] == "mock"
+    assert captured["model"] == "gpt-4o-mini"
+    assert captured["temperature"] == 0.7
+    assert captured["image_factory"]["backend"] == "mock"
 
 
 def test_cli_song_accepts_custom_mock_image_path(monkeypatch) -> None:
@@ -516,6 +684,58 @@ def test_cli_review_exports_markdown(monkeypatch) -> None:
     }
 
 
+def test_cli_review_exports_json_with_hitl(monkeypatch) -> None:
+    captured = {}
+
+    class DummyWorkflow:
+        def __init__(self, memory_root, prompt_root, llm_client) -> None:
+            pass
+
+        def run_with_hitl(self, **kwargs):
+            return {
+                "workflow": "review",
+                "book_slug": "alchemised",
+                "hitl": {"workflow_name": "review", "item_slug": "alchemised", "steps": []},
+            }
+
+    class DummyExportService:
+        def __init__(self, output_root) -> None:
+            captured["output_root"] = output_root
+
+        def export(self, workflow_name, item_slug, data, formats):
+            captured["export"] = {
+                "workflow_name": workflow_name,
+                "item_slug": item_slug,
+                "data": data,
+                "formats": formats,
+            }
+            return {"json": Path("custom_outputs/review.json")}
+
+    monkeypatch.setattr(cli, "ReviewWorkflow", DummyWorkflow)
+    monkeypatch.setattr(cli, "ExportService", DummyExportService)
+    monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
+    monkeypatch.setattr(cli, "create_llm_client", lambda **kwargs: "mock-client")
+    monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
+
+    cli.main([
+        "review",
+        "--book",
+        "alchemised",
+        "--opinion",
+        "J'ai adoré",
+        "--platform",
+        "instagram",
+        "--hitl",
+        "--export",
+        "json",
+        "--output-root",
+        "custom_outputs",
+    ])
+
+    assert captured["export"]["workflow_name"] == "review"
+    assert "hitl" in captured["export"]["data"]
+
+
 def test_cli_review_exports_markdown_and_json(monkeypatch) -> None:
     captured = {}
 
@@ -610,6 +830,61 @@ def test_cli_song_exports_json(monkeypatch) -> None:
         "data": {"workflow": "song", "book_slug": "alchemised"},
         "formats": ["json"],
     }
+
+
+def test_cli_song_exports_json_with_hitl(monkeypatch) -> None:
+    captured = {}
+
+    class DummyWorkflow:
+        def __init__(self, memory_root, prompt_root, llm_client, image_backend) -> None:
+            pass
+
+        def run_with_hitl(self, **kwargs):
+            return {
+                "workflow": "song",
+                "book_slug": "alchemised",
+                "hitl": {"workflow_name": "song", "item_slug": "alchemised", "steps": []},
+            }
+
+    class DummyExportService:
+        def __init__(self, output_root) -> None:
+            captured["output_root"] = output_root
+
+        def export(self, workflow_name, item_slug, data, formats):
+            captured["export"] = {
+                "workflow_name": workflow_name,
+                "item_slug": item_slug,
+                "data": data,
+                "formats": formats,
+            }
+            return {"json": Path("custom_outputs/song.json")}
+
+    monkeypatch.setattr(cli, "SongWorkflow", DummyWorkflow)
+    monkeypatch.setattr(cli, "ExportService", DummyExportService)
+    monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
+    monkeypatch.setattr(cli, "create_llm_client", lambda **kwargs: "mock-client")
+    monkeypatch.setattr(cli, "create_image_backend", lambda **kwargs: "mock-image-backend")
+    monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
+
+    cli.main([
+        "song",
+        "--book",
+        "alchemised",
+        "--spoiler-mode",
+        "spoiler_free",
+        "--prompt-type",
+        "scene",
+        "--platform",
+        "instagram",
+        "--hitl",
+        "--export",
+        "json",
+        "--output-root",
+        "custom_outputs",
+    ])
+
+    assert captured["export"]["workflow_name"] == "song"
+    assert "hitl" in captured["export"]["data"]
 
 
 def test_cli_rejects_invalid_export_format(monkeypatch) -> None:

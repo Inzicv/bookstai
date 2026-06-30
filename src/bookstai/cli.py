@@ -28,6 +28,7 @@ def build_parser() -> argparse.ArgumentParser:
     review_parser.add_argument("--provider", default="mock")
     review_parser.add_argument("--model", default="gpt-4o-mini")
     review_parser.add_argument("--temperature", type=float, default=0.7)
+    review_parser.add_argument("--hitl", action="store_true")
     review_parser.add_argument("--export", nargs="+", choices=["markdown", "json"])
     review_parser.add_argument("--output-root", default="outputs")
 
@@ -48,6 +49,7 @@ def build_parser() -> argparse.ArgumentParser:
     song_parser.add_argument("--image-output-dir", default="outputs/images")
     song_parser.add_argument("--image-timeout", type=float, default=60.0)
     song_parser.add_argument("--image-poll-interval", type=float, default=1.0)
+    song_parser.add_argument("--hitl", action="store_true")
     song_parser.add_argument("--export", nargs="+", choices=["markdown", "json"])
     song_parser.add_argument("--output-root", default="outputs")
 
@@ -77,11 +79,18 @@ def main(argv: Sequence[str] | None = None) -> int:
             prompt_root=prompt_root,
             llm_client=llm_client,
         )
-        result = workflow.run(
-            book_slug=args.book,
-            user_opinion=args.opinion,
-            platform=args.platform,
-        )
+        if args.hitl:
+            result = workflow.run_with_hitl(
+                book_slug=args.book,
+                user_opinion=args.opinion,
+                platform=args.platform,
+            )
+        else:
+            result = workflow.run(
+                book_slug=args.book,
+                user_opinion=args.opinion,
+                platform=args.platform,
+            )
     else:
         image_backend = create_image_backend(
             backend=args.image_backend,
@@ -98,12 +107,20 @@ def main(argv: Sequence[str] | None = None) -> int:
             llm_client=llm_client,
             image_backend=image_backend,
         )
-        result = workflow.run(
-            book_slug=args.book,
-            spoiler_mode=args.spoiler_mode,
-            prompt_type=args.prompt_type,
-            platform=args.platform,
-        )
+        if args.hitl:
+            result = workflow.run_with_hitl(
+                book_slug=args.book,
+                spoiler_mode=args.spoiler_mode,
+                prompt_type=args.prompt_type,
+                platform=args.platform,
+            )
+        else:
+            result = workflow.run(
+                book_slug=args.book,
+                spoiler_mode=args.spoiler_mode,
+                prompt_type=args.prompt_type,
+                platform=args.platform,
+            )
 
     pprint(result)
     if args.export:
