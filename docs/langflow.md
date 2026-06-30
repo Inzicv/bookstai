@@ -75,6 +75,9 @@ Entrées :
 - `book_slug`
 - `user_opinion`
 - `platform`
+- `provider`
+- `model`
+- `temperature`
 - `memory_root`
 - `prompt_root`
 
@@ -82,8 +85,8 @@ Sortie :
 Dictionnaire complet du `ReviewWorkflow`.
 
 Limites :
-- mocks uniquement
-- aucun appel OpenAI
+- mocks uniquement par défaut
+- aucun appel OpenAI tant que `provider` vaut `mock`
 - pas encore de validation humaine entre les étapes
 
 ### Vérification manuelle
@@ -115,6 +118,9 @@ Entrées :
 - `spoiler_mode`
 - `prompt_type`
 - `platform`
+- `provider`
+- `model`
+- `temperature`
 - `memory_root`
 - `prompt_root`
 - `image_path`
@@ -123,10 +129,8 @@ Sortie :
 Dictionnaire complet du `SongWorkflow`.
 
 Limites :
-- utilise `MockLLMClient`
 - utilise `MockImageBackend`
-- aucun appel API
-- aucune génération d'image réelle
+- aucun appel API image réel
 - pas encore de Human In The Loop Langflow
 
 ## Import Python
@@ -160,6 +164,9 @@ Entrées :
 - `spoiler_mode`
 - `prompt_type`
 - `platform`
+- `provider`
+- `model`
+- `temperature`
 - `memory_root`
 - `prompt_root`
 - `image_path`
@@ -168,10 +175,9 @@ Sortie :
 Dictionnaire complet du `SongWorkflow`.
 
 Limites :
-- mocks uniquement
-- `MockLLMClient`
+- mocks uniquement par défaut
 - `MockImageBackend`
-- aucun appel OpenAI
+- aucun appel OpenAI tant que `provider` vaut `mock`
 - aucune génération d'image réelle
 - pas encore de validation humaine entre les étapes
 
@@ -198,37 +204,25 @@ Limites :
    - `image`
    - `social`
 
-## Provider LLM dans Langflow
+## OpenAI dans Langflow
 
-Les composants Langflow Review et Song acceptent maintenant :
+Les composants Langflow BookstAI peuvent utiliser OpenAI via les champs :
 
 - `provider`
 - `model`
 - `temperature`
 
-Par défaut :
+Par défaut, `provider` vaut `mock`.
 
-- `provider = mock`
-- `model = gpt-4o-mini`
-- `temperature = 0.7`
+Pour activer OpenAI :
 
-Le provider `mock` reste le comportement par défaut afin d’éviter tout appel API involontaire.
+1. installer BookstAI avec l'extra OpenAI ;
+2. définir `OPENAI_API_KEY` dans l'environnement qui exécute Langflow ;
+3. ouvrir le composant BookstAI dans Langflow ;
+4. définir `provider` à `openai` ;
+5. choisir le modèle ;
+6. exécuter le flow.
 
-Pour utiliser OpenAI depuis Langflow :
+La clé API ne doit jamais être saisie directement dans Langflow.
 
-1. installer BookstAI avec l’extra OpenAI ;
-2. définir la variable d’environnement `OPENAI_API_KEY` ;
-3. mettre `provider` à `openai` dans le composant Langflow ;
-4. choisir le `model` ;
-5. régler `temperature`.
-
-Exemple :
-
-```text
-provider = openai
-model = gpt-4o-mini
-temperature = 0.7
-```
-
-La clé API n’est jamais saisie dans Langflow.
-Elle est lue uniquement par `OpenAILLMClient` via la variable d’environnement `OPENAI_API_KEY`.
+Le provider `mock` doit être utilisé pour les tests, les démos et les essais sans coût.
