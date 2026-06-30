@@ -57,3 +57,50 @@ Le composant retourne directement le dictionnaire produit par `ReviewWorkflow.ru
 
 Importez la fonction `run_review_workflow` comme point d'entrée Python dans un composant Langflow.
 Le composant agit comme un adaptateur fin autour du workflow existant.
+
+## Custom Component Langflow
+
+Objectif :
+Utiliser BookstAI Review directement dans Langflow.
+
+Prérequis :
+- BookstAI installé en editable install
+- Langflow installé localement
+- être à la racine du dépôt BookstAI
+
+Fichier composant :
+`langflow_components/bookstai_review_component.py`
+
+Entrées :
+- `book_slug`
+- `user_opinion`
+- `platform`
+- `memory_root`
+- `prompt_root`
+
+Sortie :
+Dictionnaire complet du `ReviewWorkflow`.
+
+Limites :
+- mocks uniquement
+- aucun appel OpenAI
+- pas encore de validation humaine entre les étapes
+
+### Vérification manuelle
+
+1. Lancer Langflow.
+2. Ajouter le dossier `langflow_components` comme source de Custom Components.
+3. Ajouter le composant `BookstAIReviewComponent` dans un flow.
+4. Renseigner :
+   - `book_slug`
+   - `user_opinion`
+   - `platform`
+5. Exécuter le composant.
+6. Vérifier que la sortie contient :
+   - `workflow`
+   - `book_slug`
+   - `context`
+   - `style`
+   - `comedy`
+   - `review`
+   - `social`
