@@ -218,11 +218,11 @@ class ComfyUIImageBackend(ImageBackend):
         if not safe_filename or safe_filename in {".", ".."}:
             raise ImageGenerationError("ComfyUI history contained an invalid image reference.")
 
-        if self._is_dangerous_path_component(subfolder):
+        if subfolder and self._is_dangerous_path_component(subfolder):
             raise ImageGenerationError("ComfyUI history contained an invalid image reference.")
 
         safe_subfolder = Path(subfolder) if subfolder else Path()
-        if any(part == ".." for part in safe_subfolder.parts):
+        if subfolder and any(part == ".." for part in safe_subfolder.parts):
             raise ImageGenerationError("ComfyUI history contained an invalid image reference.")
 
         relative_target = safe_subfolder / safe_filename
