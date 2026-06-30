@@ -1,26 +1,22 @@
-"""Langflow custom component for the BookstAI Song workflow."""
+"""Langflow custom component for the BookstAI Review workflow."""
 
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
-from bookstai.langflow.song_component import run_song_workflow
+from langflow.custom import Component
+from langflow.io import MessageTextInput, Output
+from langflow.schema import Data
 
-try:
-    from langflow.custom import Component
-    from langflow.io import MessageTextInput, Output
-    from langflow.schema import Data
-except ImportError as exc:  # pragma: no cover - only affects local Langflow runtime
-    raise ImportError(
-        "Langflow is required to use BookstAISongComponent."
-    ) from exc
+from bookstai.langflow.review_component import run_review_workflow
 
 
-class BookstAISongComponent(Component):
-    display_name = "BookstAI Song"
-    name = "BookstAISongComponent"
-    description = "Run the BookstAI Song workflow with local mocks."
-    icon = "music"
+class BookstAIReviewComponent(Component):
+    display_name = "BookstAI Review"
+    name = "BookstAIReviewComponent"
+    description = "Run the BookstAI Review workflow with local mocks."
+    icon = "book-open"
 
     inputs = [
         MessageTextInput(
@@ -29,16 +25,9 @@ class BookstAISongComponent(Component):
             info="Slug of the book memory file to load.",
         ),
         MessageTextInput(
-            name="spoiler_mode",
-            display_name="Spoiler mode",
-            value="spoiler_free",
-            info="Spoiler mode passed to the Song workflow.",
-        ),
-        MessageTextInput(
-            name="prompt_type",
-            display_name="Prompt type",
-            value="thumbnail",
-            info="Prompt type passed to the Song workflow.",
+            name="user_opinion",
+            display_name="User opinion",
+            info="User opinion passed to the Review workflow.",
         ),
         MessageTextInput(
             name="platform",
@@ -76,12 +65,6 @@ class BookstAISongComponent(Component):
             value="prompts",
             info="Root folder for BookstAI prompt files.",
         ),
-        MessageTextInput(
-            name="image_path",
-            display_name="Image path",
-            value="outputs/mock/image.png",
-            info="Mock image output path.",
-        ),
     ]
 
     outputs = [
@@ -94,14 +77,12 @@ class BookstAISongComponent(Component):
     ]
 
     def build(self) -> Data:
-        result = run_song_workflow(
+        result = run_review_workflow(
             book_slug=self.book_slug,
-            spoiler_mode=self.spoiler_mode,
-            prompt_type=self.prompt_type,
+            user_opinion=self.user_opinion,
             platform=self.platform,
             memory_root=Path(self.memory_root),
             prompt_root=Path(self.prompt_root),
-            image_path=Path(self.image_path),
             provider=self.provider,
             model=self.model,
             temperature=float(self.temperature),
