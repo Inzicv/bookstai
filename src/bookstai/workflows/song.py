@@ -13,6 +13,7 @@ from ..agents.prompt_maker import PromptMakerAgent
 from ..agents.social_media import SocialMediaAgent
 from ..agents.song_writer import SongWriterAgent
 from ..agents.style_memory import StyleMemoryAgent
+from ..hitl import HITLSession
 from ..image.backend import ImageBackend
 from ..llm.client import LLMClient
 
@@ -52,6 +53,46 @@ class SongWorkflow:
         )
 
     def run(
+        self,
+        book_slug: str,
+        spoiler_mode: str,
+        prompt_type: str,
+        platform: str,
+    ) -> dict[str, Any]:
+        return self._run_steps(
+            book_slug=book_slug,
+            spoiler_mode=spoiler_mode,
+            prompt_type=prompt_type,
+            platform=platform,
+        )
+
+    def run_with_hitl(
+        self,
+        book_slug: str,
+        spoiler_mode: str,
+        prompt_type: str,
+        platform: str,
+    ) -> dict[str, Any]:
+        result = self._run_steps(
+            book_slug=book_slug,
+            spoiler_mode=spoiler_mode,
+            prompt_type=prompt_type,
+            platform=platform,
+        )
+        session = HITLSession(
+            workflow_name="song",
+            item_slug=book_slug,
+        )
+        session.add_step(name="comedy", content=result["comedy"])
+        session.add_step(name="song", content=result["song"])
+        session.add_step(name="art_direction", content=result["art_direction"])
+        session.add_step(name="image_prompt", content=result["image_prompt"])
+        session.add_step(name="image", content=result["image"])
+        session.add_step(name="social", content=result["social"])
+        result["hitl"] = session.to_dict()
+        return result
+
+    def _run_steps(
         self,
         book_slug: str,
         spoiler_mode: str,

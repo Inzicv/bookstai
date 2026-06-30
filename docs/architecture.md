@@ -53,3 +53,20 @@ Quand l'utilisateur corrige une sortie, la version corrigée est stockée sépar
 Le HITL ne remplace pas les workflows existants.
 
 Il sert d'abord à structurer les validations avant l'ajout d'une UI ou d'un mode interactif.
+
+## HITL dans le workflow Song
+
+`SongWorkflow.run(...)` conserve le comportement historique.
+
+`SongWorkflow.run_with_hitl(...)` exécute le même workflow, mais ajoute une session HITL.
+
+Les étapes créatives à valider sont :
+
+- `comedy`
+- `song`
+- `art_direction`
+- `image_prompt`
+- `image`
+- `social`
+
+Les étapes techniques comme `context` et `style` ne sont pas encore validées manuellement.

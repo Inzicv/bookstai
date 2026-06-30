@@ -311,3 +311,6 @@ Critères
 ## Note HITL
 
 Le socle Human In The Loop peut maintenant être utilisé par le workflow Review via `run_with_hitl(...)`.
+## Note HITL Song
+
+Le socle Human In The Loop peut maintenant être utilisé par le workflow Song via `run_with_hitl(...)`.
