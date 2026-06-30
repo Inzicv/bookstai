@@ -7,6 +7,12 @@ class BookstAIError(Exception):
     pass
 
 
+class MissingAPIKeyError(BookstAIError):
+    """Raised when a required API key is missing."""
+
+    pass
+
+
 class MemoryFileNotFoundError(BookstAIError):
     """Raised when a memory file is not found."""
 
