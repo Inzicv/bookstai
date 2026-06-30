@@ -104,3 +104,40 @@ Limites :
    - `comedy`
    - `review`
    - `social`
+
+## Epic 2 — Song Workflow avec mocks
+
+Objectif :
+Permettre à Langflow d'exécuter le workflow Song existant sans appel OpenAI et sans backend image réel.
+
+Entrées :
+- `book_slug`
+- `spoiler_mode`
+- `prompt_type`
+- `platform`
+- `memory_root`
+- `prompt_root`
+- `image_path`
+
+Sortie :
+Dictionnaire complet du `SongWorkflow`.
+
+Limites :
+- utilise `MockLLMClient`
+- utilise `MockImageBackend`
+- aucun appel API
+- aucune génération d'image réelle
+- pas encore de Human In The Loop Langflow
+
+## Import Python
+
+```python
+from bookstai.langflow.song_component import run_song_workflow
+
+result = run_song_workflow(
+    book_slug="example",
+    spoiler_mode="spoiler_free",
+    prompt_type="thumbnail",
+    platform="tiktok",
+)
+```
