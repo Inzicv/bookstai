@@ -113,3 +113,9 @@ class ImageBackendConnectionError(ImageBackendError):
     """Raised when an image backend cannot be reached."""
 
     pass
+
+
+class UnsupportedImageBackendError(BookstAIError):
+    """Raised when an image backend is not supported."""
+
+    pass

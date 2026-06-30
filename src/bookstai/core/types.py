@@ -5,3 +5,4 @@ from typing import Literal
 WorkflowType = Literal["review", "song", "visual", "social"]
 SpoilerLevel = Literal["none", "light", "full"]
 ProviderType = Literal["openai", "anthropic", "ollama", "mock"]
+ImageBackendType = Literal["mock", "comfyui"]

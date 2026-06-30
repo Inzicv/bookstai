@@ -199,3 +199,28 @@ Dans cette étape, le backend prépare l’appel à l’API ComfyUI mais ne gèr
 - récupération du fichier image final
 
 Ce cycle sera ajouté dans une étape suivante.
+
+## Factory image backend
+
+BookstAI fournit une factory image simple :
+
+```python
+from bookstai.image import create_image_backend
+
+image_backend = create_image_backend(
+    backend="mock",
+)
+```
+
+Backends supportés actuellement :
+
+- `mock`
+- `comfyui`
+
+Le backend mock reste le comportement recommandé pour les tests.
+
+Le backend comfyui prépare l’utilisation locale de ComfyUI, mais il n’est pas encore branché automatiquement dans la CLI ni dans Langflow.
+
+La factory ne génère aucune image directement.
+
+Elle construit seulement un backend compatible `ImageBackend`.
