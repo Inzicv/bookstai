@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
 
@@ -29,7 +30,18 @@ class HistoryEntry:
             "hitl_enabled": self.hitl_enabled,
             "provider": self.provider,
             "image_backend": self.image_backend,
-            "artifacts": self.artifacts,
+            "artifacts": self._normalize(self.artifacts),
             "error": self.error,
             "created_at": self.created_at,
         }
+
+    def _normalize(self, value: Any) -> Any:
+        if isinstance(value, Path):
+            return str(value)
+        if isinstance(value, dict):
+            return {key: self._normalize(inner) for key, inner in value.items()}
+        if isinstance(value, list):
+            return [self._normalize(inner) for inner in value]
+        if isinstance(value, tuple):
+            return [self._normalize(inner) for inner in value]
+        return value

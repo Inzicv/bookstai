@@ -160,8 +160,4 @@ def test_hitl_unknown_step_raises(monkeypatch, tmp_path) -> None:
     monkeypatch.setattr(cli, "HITLSessionStorage", lambda: storage)
     monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
 
-    try:
-        cli.main(["hitl", "approve", "--file", str(session_path), "--step", "missing"])
-        assert False, "HITLStepNotFoundError expected"
-    except Exception as exc:
-        assert exc.__class__.__name__ == "HITLStepNotFoundError"
+    assert cli.main(["hitl", "approve", "--file", str(session_path), "--step", "missing"]) == 1
