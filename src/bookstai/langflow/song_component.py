@@ -9,6 +9,7 @@ from ..core.types import ProviderType
 from ..image.mock_backend import MockImageBackend
 from ..llm import create_llm_client
 from ..workflows.song import SongWorkflow
+from .paths import resolve_bookstai_path
 
 
 def run_song_workflow(
@@ -25,8 +26,8 @@ def run_song_workflow(
 ) -> dict[str, Any]:
     """Run the existing Song workflow with a configurable LLM client."""
 
-    memory_root_path = Path(memory_root)
-    prompt_root_path = Path(prompt_root)
+    memory_root_path = resolve_bookstai_path(memory_root)
+    prompt_root_path = resolve_bookstai_path(prompt_root)
     llm_client = create_llm_client(
         provider=provider,
         model=model,

@@ -241,3 +241,9 @@ L’objectif est de permettre ensuite à Langflow de choisir :
 OpenAI ne sera pas utilisé pour générer les images.
 
 La génération image locale sera traitée dans un Epic dédié.
+
+## Résolution des chemins BookstAI
+
+Les adaptateurs Langflow résolvent désormais les chemins de BookstAI indépendamment du dossier courant.
+
+Cela permet de charger les prompts et la mémoire depuis l’architecture réelle du projet sans demander de dossier `prompts` à la racine du repo Langflow.

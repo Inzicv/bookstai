@@ -8,6 +8,7 @@ from typing import Any
 from ..core.types import ProviderType
 from ..llm import create_llm_client
 from ..workflows.review import ReviewWorkflow
+from .paths import resolve_bookstai_path
 
 
 def run_review_workflow(
@@ -22,8 +23,8 @@ def run_review_workflow(
 ) -> dict[str, Any]:
     """Run the existing Review workflow with a configurable LLM client."""
 
-    memory_root_path = Path(memory_root)
-    prompt_root_path = Path(prompt_root)
+    memory_root_path = resolve_bookstai_path(memory_root)
+    prompt_root_path = resolve_bookstai_path(prompt_root)
     llm_client = create_llm_client(
         provider=provider,
         model=model,
