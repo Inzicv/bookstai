@@ -329,3 +329,5 @@ Les sessions HITL peuvent maintenant être relues, approuvées, rejetées et éd
 Les sessions HITL exposent maintenant une version validée de chaque étape via `validated_content`.
 
 La Learning Loop peut maintenant extraire des candidates d'apprentissage depuis une session HITL.
+
+La Learning Loop peut maintenant générer un brouillon Markdown de mise à jour mémoire.

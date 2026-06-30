@@ -2,5 +2,11 @@
 
 from .models import LearningCandidate, LearningExtraction
 from .extractor import LearningExtractor
+from .draft import LearningDraftWriter
 
-__all__ = ["LearningCandidate", "LearningExtraction", "LearningExtractor"]
+__all__ = [
+    "LearningCandidate",
+    "LearningExtraction",
+    "LearningExtractor",
+    "LearningDraftWriter",
+]

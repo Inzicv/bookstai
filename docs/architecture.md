@@ -129,6 +129,28 @@ Cette étape ne modifie pas encore la mémoire.
 
 Elle prépare seulement une structure exploitable pour générer ensuite un brouillon de mise à jour mémoire.
 
+## Learning Draft
+
+BookstAI ne modifie pas directement la mémoire depuis une session HITL.
+
+La Learning Loop génère d'abord un brouillon Markdown dans :
+
+```text
+outputs/learning/
+```
+
+Ce brouillon contient :
+
+- les étapes validées ;
+- les étapes éditées ;
+- les contenus originaux ;
+- les contenus validés ;
+- les commentaires ;
+- les étapes rejetées ;
+- les étapes en attente.
+
+Le brouillon doit être relu avant application.
+
 ## Persistance HITL
 
 Les sessions HITL peuvent être sauvegardées en JSON.
