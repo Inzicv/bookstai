@@ -11,7 +11,14 @@ def test_langflow_custom_component_file_has_expected_contract() -> None:
     assert component_file.exists()
     assert "BookstAIReviewComponent" in content
     assert "from bookstai.langflow.review_component import run_review_workflow" in content
+    assert "provider" in content
+    assert "model" in content
+    assert "temperature" in content
+    assert "provider=self.provider" in content
+    assert "model=self.model" in content
+    assert "temperature=float(self.temperature)" in content
     assert "openai" not in content.lower()
     assert "requests." not in content.lower()
     assert "httpx." not in content.lower()
     assert "urllib" not in content.lower()
+    assert "OPENAI_API_KEY" not in content

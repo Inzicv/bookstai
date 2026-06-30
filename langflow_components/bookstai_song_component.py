@@ -47,6 +47,24 @@ class BookstAISongComponent(Component):
             info="Target social platform.",
         ),
         MessageTextInput(
+            name="provider",
+            display_name="Provider",
+            value="mock",
+            info="LLM provider used by the adapter.",
+        ),
+        MessageTextInput(
+            name="model",
+            display_name="Model",
+            value="gpt-4o-mini",
+            info="Model name passed to the LLM factory.",
+        ),
+        MessageTextInput(
+            name="temperature",
+            display_name="Temperature",
+            value="0.7",
+            info="Sampling temperature passed to the LLM factory.",
+        ),
+        MessageTextInput(
             name="memory_root",
             display_name="Memory root",
             value="memory",
@@ -84,5 +102,8 @@ class BookstAISongComponent(Component):
             memory_root=Path(self.memory_root),
             prompt_root=Path(self.prompt_root),
             image_path=Path(self.image_path),
+            provider=self.provider,
+            model=self.model,
+            temperature=float(self.temperature),
         )
         return Data(value=result)

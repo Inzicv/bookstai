@@ -197,3 +197,38 @@ Limites :
    - `image_prompt`
    - `image`
    - `social`
+
+## Provider LLM dans Langflow
+
+Les composants Langflow Review et Song acceptent maintenant :
+
+- `provider`
+- `model`
+- `temperature`
+
+Par défaut :
+
+- `provider = mock`
+- `model = gpt-4o-mini`
+- `temperature = 0.7`
+
+Le provider `mock` reste le comportement par défaut afin d’éviter tout appel API involontaire.
+
+Pour utiliser OpenAI depuis Langflow :
+
+1. installer BookstAI avec l’extra OpenAI ;
+2. définir la variable d’environnement `OPENAI_API_KEY` ;
+3. mettre `provider` à `openai` dans le composant Langflow ;
+4. choisir le `model` ;
+5. régler `temperature`.
+
+Exemple :
+
+```text
+provider = openai
+model = gpt-4o-mini
+temperature = 0.7
+```
+
+La clé API n’est jamais saisie dans Langflow.
+Elle est lue uniquement par `OpenAILLMClient` via la variable d’environnement `OPENAI_API_KEY`.

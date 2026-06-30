@@ -79,3 +79,21 @@ Providers connus mais non supportés dans cette factory :
 
 - `anthropic`
 - `ollama`
+
+## Utilisation via Langflow
+
+Les composants Langflow BookstAI peuvent utiliser OpenAI via le champ `provider`.
+
+Par défaut, ils utilisent `mock`.
+
+Pour activer OpenAI :
+
+- `provider` : `openai`
+- `model` : `gpt-4o-mini`
+- `temperature` : `0.7`
+
+La variable `OPENAI_API_KEY` doit être définie dans l’environnement qui exécute Langflow.
+
+La clé API ne doit pas être saisie directement dans le flow.
+
+OpenAI reste optionnel et désactivé par défaut.
