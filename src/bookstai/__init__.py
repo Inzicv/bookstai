@@ -38,6 +38,7 @@ from .exports.markdown import MarkdownExporter
 from .exports.json import JSONExporter
 from .exports.service import ExportService
 from .hitl import HITLStatus, HITLStep, HITLSession
+from .learning import LearningCandidate, LearningExtraction, LearningExtractor
 from .workflows.review import ReviewWorkflow
 from .workflows.song import SongWorkflow
 from .langflow.review_component import run_review_workflow
@@ -85,6 +86,9 @@ __all__ = [
     "HITLStatus",
     "HITLStep",
     "HITLSession",
+    "LearningCandidate",
+    "LearningExtraction",
+    "LearningExtractor",
     "main",
     "PromptBuilder",
     "PromptLoader",

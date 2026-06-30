@@ -112,6 +112,23 @@ La source de vérité reste :
 
 Cette logique prépare la Learning Loop et l'enrichissement futur de la mémoire.
 
+## Learning Loop - extraction
+
+La Learning Loop commence par une extraction depuis une session HITL.
+
+Seules les étapes explicitement validées par l'utilisateur sont exploitables :
+
+- `approved`
+- `edited`
+
+Les étapes `pending` sont ignorées car elles n'ont pas encore été validées.
+
+Les étapes `rejected` sont conservées comme information, mais ne deviennent pas des candidates d'apprentissage.
+
+Cette étape ne modifie pas encore la mémoire.
+
+Elle prépare seulement une structure exploitable pour générer ensuite un brouillon de mise à jour mémoire.
+
 ## Persistance HITL
 
 Les sessions HITL peuvent être sauvegardées en JSON.
