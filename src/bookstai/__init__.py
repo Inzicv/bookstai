@@ -11,6 +11,8 @@ from .core.errors import (
     MemoryFileNotFoundError,
     InvalidWorkflowError,
     InvalidSpoilerLevelError,
+    InvalidSpoilerModeError,
+    InvalidPromptTypeError,
     EmptyMemoryFileError,
     EmptyPromptError,
 )
@@ -18,8 +20,14 @@ from .core.types import WorkflowType, SpoilerLevel, ProviderType
 from .memory.reader import MemoryReader
 from .agents.context_builder import ContextBuilder
 from .agents.comedy_room import ComedyRoomAgent
+from .agents.art_director import ArtDirectorAgent
+from .agents.image_gen import ImageGenAgent
 from .agents.review_writer import ReviewWriterAgent
+from .agents.song_writer import SongWriterAgent
+from .agents.prompt_maker import PromptMakerAgent
 from .agents.style_memory import StyleMemoryAgent
+from .image.backend import ImageBackend
+from .image.mock_backend import MockImageBackend
 from .prompts.builder import PromptBuilder
 from .prompts.loader import PromptLoader
 from .prompts.renderer import PromptRenderer
@@ -31,6 +39,8 @@ __all__ = [
     "MemoryFileNotFoundError",
     "InvalidWorkflowError",
     "InvalidSpoilerLevelError",
+    "InvalidSpoilerModeError",
+    "InvalidPromptTypeError",
     "EmptyMemoryFileError",
     "EmptyPromptError",
     "WorkflowType",
@@ -39,8 +49,14 @@ __all__ = [
     "MemoryReader",
     "ContextBuilder",
     "ComedyRoomAgent",
+    "ArtDirectorAgent",
+    "ImageGenAgent",
     "ReviewWriterAgent",
+    "SongWriterAgent",
+    "PromptMakerAgent",
     "StyleMemoryAgent",
+    "ImageBackend",
+    "MockImageBackend",
     "PromptBuilder",
     "PromptLoader",
     "PromptRenderer",

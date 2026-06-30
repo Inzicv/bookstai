@@ -59,3 +59,15 @@ class EmptyPromptError(BookstAIError):
     """Raised when a prompt sent to an LLM is empty."""
 
     pass
+
+
+class InvalidSpoilerModeError(BookstAIError):
+    """Raised when a song spoiler mode is invalid."""
+
+    pass
+
+
+class InvalidPromptTypeError(BookstAIError):
+    """Raised when an image prompt type is invalid."""
+
+    pass
