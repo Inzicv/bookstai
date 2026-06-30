@@ -138,6 +138,23 @@ Sprint 1 establishes the core foundation of BookstAI:
 
 See [Sprint Documentation](docs/roadmap.md) for more details.
 
+## Usage rapide
+
+Voir :
+
+- `docs/commands.md`
+- `docs/daily-usage.md`
+
+Commandes principales :
+
+```text
+bookstai review
+bookstai song
+bookstai hitl
+bookstai learning
+bookstai history
+```
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.

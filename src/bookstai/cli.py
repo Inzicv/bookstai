@@ -3,19 +3,23 @@
 from __future__ import annotations
 
 import argparse
+import logging
 from pathlib import Path
 from pprint import pprint
 from typing import Sequence
 
 from .core.config import load_settings
+from .core.errors import BookstAIError
 from .image import create_image_backend
 from .exports import ExportService
 from .hitl import HITLSessionStorage
+from .history import HistoryEntry, HistoryStore
 from .learning import (
     LearningDraftApplier,
     LearningDraftWriter,
     LearningExtractor,
 )
+from .logging import configure_logging
 from .llm import create_llm_client
 from .workflows.review import ReviewWorkflow
 from .workflows.song import SongWorkflow
@@ -35,6 +39,8 @@ def build_parser() -> argparse.ArgumentParser:
     review_parser.add_argument("--model", default="gpt-4o-mini")
     review_parser.add_argument("--temperature", type=float, default=0.7)
     review_parser.add_argument("--hitl", action="store_true")
+    review_parser.add_argument("--verbose", action="store_true")
+    review_parser.add_argument("--no-history", action="store_true")
     review_parser.add_argument("--export", nargs="+", choices=["markdown", "json"])
     review_parser.add_argument("--output-root", default="outputs")
 
@@ -56,6 +62,8 @@ def build_parser() -> argparse.ArgumentParser:
     song_parser.add_argument("--image-timeout", type=float, default=60.0)
     song_parser.add_argument("--image-poll-interval", type=float, default=1.0)
     song_parser.add_argument("--hitl", action="store_true")
+    song_parser.add_argument("--verbose", action="store_true")
+    song_parser.add_argument("--no-history", action="store_true")
     song_parser.add_argument("--export", nargs="+", choices=["markdown", "json"])
     song_parser.add_argument("--output-root", default="outputs")
 
@@ -80,6 +88,8 @@ def build_parser() -> argparse.ArgumentParser:
     edit_parser.add_argument("--step", required=True)
     edit_parser.add_argument("--content", required=True)
     edit_parser.add_argument("--comment")
+    hitl_parser.add_argument("--verbose", action="store_true")
+    hitl_parser.add_argument("--no-history", action="store_true")
 
     learning_parser = subparsers.add_parser("learning")
     learning_subparsers = learning_parser.add_subparsers(dest="learning_command", required=True)
@@ -95,6 +105,20 @@ def build_parser() -> argparse.ArgumentParser:
     learning_apply_parser.add_argument("--draft-file", required=True)
     learning_apply_parser.add_argument("--memory-file", required=True)
     learning_apply_parser.add_argument("--memory-root", default="memory")
+    learning_parser.add_argument("--verbose", action="store_true")
+    learning_parser.add_argument("--no-history", action="store_true")
+
+    history_parser = subparsers.add_parser("history")
+    history_subparsers = history_parser.add_subparsers(dest="history_command", required=True)
+    history_show = history_subparsers.add_parser("show")
+    history_show.add_argument("--file", default="outputs/history/bookstai-history.jsonl")
+    history_show.add_argument("--verbose", action="store_true")
+    history_show.add_argument("--no-history", action="store_true")
+    history_tail = history_subparsers.add_parser("tail")
+    history_tail.add_argument("--file", default="outputs/history/bookstai-history.jsonl")
+    history_tail.add_argument("--limit", type=int, default=10)
+    history_tail.add_argument("--verbose", action="store_true")
+    history_tail.add_argument("--no-history", action="store_true")
 
     return parser
 
@@ -102,85 +126,155 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    configure_logging(verbose=getattr(args, "verbose", False))
 
-    if args.command == "hitl":
-        return _run_hitl_command(args)
+    history_store = HistoryStore()
+    use_history = not getattr(args, "no_history", False)
 
-    if args.command == "learning":
-        return _run_learning_command(args)
+    try:
+        if args.command == "hitl":
+            exit_code = _run_hitl_command(args)
+            if use_history:
+                history_store.append(
+                    HistoryEntry(
+                        command=f"hitl {args.hitl_command}",
+                        status="success",
+                        artifacts={"file": args.file, "step": getattr(args, "step", None)},
+                    )
+                )
+            return exit_code
 
-    settings = load_settings(
-        memory_root=args.memory_root,
-        output_root=None,
-    )
-    memory_root = Path(args.memory_root) if args.memory_root else settings.memory_root
-    prompt_root = Path(args.prompt_root) if args.prompt_root else Path("prompts")
+        if args.command == "learning":
+            exit_code = _run_learning_command(args)
+            if use_history:
+                artifacts = {"hitl_file": getattr(args, "hitl_file", None)}
+                if args.learning_command == "draft":
+                    artifacts["draft_path"] = getattr(args, "_learning_draft_path", None)
+                if args.learning_command == "apply":
+                    artifacts = {
+                        "draft_file": args.draft_file,
+                        "memory_file": args.memory_file,
+                        "memory_path": getattr(args, "_memory_path", None),
+                        "backup_path": getattr(args, "_backup_path", None),
+                    }
+                history_store.append(
+                    HistoryEntry(
+                        command=f"learning {args.learning_command}",
+                        status="success",
+                        artifacts=artifacts,
+                    )
+                )
+            return exit_code
 
-    llm_client = create_llm_client(
-        provider=args.provider,
-        model=args.model,
-        temperature=args.temperature,
-    )
+        if args.command == "history":
+            return _run_history_command(args)
 
-    if args.command == "review":
-        workflow = ReviewWorkflow(
-            memory_root=memory_root,
-            prompt_root=prompt_root,
-            llm_client=llm_client,
+        settings = load_settings(
+            memory_root=args.memory_root,
+            output_root=None,
         )
-        if args.hitl:
-            result = workflow.run_with_hitl(
-                book_slug=args.book,
-                user_opinion=args.opinion,
-                platform=args.platform,
+        memory_root = Path(args.memory_root) if args.memory_root else settings.memory_root
+        prompt_root = Path(args.prompt_root) if args.prompt_root else Path("prompts")
+
+        llm_client = create_llm_client(
+            provider=args.provider,
+            model=args.model,
+            temperature=args.temperature,
+        )
+
+        if args.command == "review":
+            workflow = ReviewWorkflow(
+                memory_root=memory_root,
+                prompt_root=prompt_root,
+                llm_client=llm_client,
             )
+            if args.hitl:
+                result = workflow.run_with_hitl(
+                    book_slug=args.book,
+                    user_opinion=args.opinion,
+                    platform=args.platform,
+                )
+            else:
+                result = workflow.run(
+                    book_slug=args.book,
+                    user_opinion=args.opinion,
+                    platform=args.platform,
+                )
         else:
-            result = workflow.run(
-                book_slug=args.book,
-                user_opinion=args.opinion,
-                platform=args.platform,
+            image_backend = create_image_backend(
+                backend=args.image_backend,
+                image_path=args.image_path,
+                comfyui_url=args.comfyui_url,
+                workflow_path=args.comfyui_workflow_path,
+                output_dir=args.image_output_dir,
+                timeout=args.image_timeout,
+                poll_interval=args.image_poll_interval,
             )
-    else:
-        image_backend = create_image_backend(
-            backend=args.image_backend,
-            image_path=args.image_path,
-            comfyui_url=args.comfyui_url,
-            workflow_path=args.comfyui_workflow_path,
-            output_dir=args.image_output_dir,
-            timeout=args.image_timeout,
-            poll_interval=args.image_poll_interval,
-        )
-        workflow = SongWorkflow(
-            memory_root=memory_root,
-            prompt_root=prompt_root,
-            llm_client=llm_client,
-            image_backend=image_backend,
-        )
-        if args.hitl:
-            result = workflow.run_with_hitl(
-                book_slug=args.book,
-                spoiler_mode=args.spoiler_mode,
-                prompt_type=args.prompt_type,
-                platform=args.platform,
+            workflow = SongWorkflow(
+                memory_root=memory_root,
+                prompt_root=prompt_root,
+                llm_client=llm_client,
+                image_backend=image_backend,
             )
-        else:
-            result = workflow.run(
-                book_slug=args.book,
-                spoiler_mode=args.spoiler_mode,
-                prompt_type=args.prompt_type,
-                platform=args.platform,
-            )
+            if args.hitl:
+                result = workflow.run_with_hitl(
+                    book_slug=args.book,
+                    spoiler_mode=args.spoiler_mode,
+                    prompt_type=args.prompt_type,
+                    platform=args.platform,
+                )
+            else:
+                result = workflow.run(
+                    book_slug=args.book,
+                    spoiler_mode=args.spoiler_mode,
+                    prompt_type=args.prompt_type,
+                    platform=args.platform,
+                )
 
-    pprint(result)
-    if args.export:
-        exported_paths = ExportService(output_root=Path(args.output_root)).export(
-            workflow_name=args.command,
-            item_slug=args.book,
-            data=result,
-            formats=args.export,
-        )
-        pprint({"exports": exported_paths})
-    return 0
+        pprint(result)
+        exported_paths = None
+        if args.export:
+            exported_paths = ExportService(output_root=Path(args.output_root)).export(
+                workflow_name=args.command,
+                item_slug=args.book,
+                data=result,
+                formats=args.export,
+            )
+            pprint({"exports": exported_paths})
+        if use_history:
+            history_store.append(
+                HistoryEntry(
+                    command=args.command,
+                    status="success",
+                    workflow_name=args.command,
+                    item_slug=args.book,
+                    hitl_enabled=args.hitl,
+                    provider=args.provider,
+                    image_backend=getattr(args, "image_backend", None),
+                    artifacts={
+                        "exports": {k: str(v) for k, v in (exported_paths or {}).items()},
+                        "has_hitl": "hitl" in result,
+                        "image": result.get("image"),
+                    },
+                )
+            )
+        return 0
+    except BookstAIError as exc:
+        print(f"BookstAI error: {exc}")
+        if use_history:
+            history_store.append(
+                HistoryEntry(
+                    command=args.command,
+                    status="failed",
+                    workflow_name=getattr(args, "command", None) if args.command in {"review", "song"} else None,
+                    item_slug=getattr(args, "book", None),
+                    hitl_enabled=getattr(args, "hitl", False),
+                    provider=getattr(args, "provider", None),
+                    image_backend=getattr(args, "image_backend", None),
+                    error=str(exc),
+                )
+            )
+        return 1
 
 
 def _run_hitl_command(args: argparse.Namespace) -> int:
@@ -210,12 +304,14 @@ def _run_learning_command(args: argparse.Namespace) -> int:
         session = HITLSessionStorage().load(args.hitl_file)
         extraction = LearningExtractor().extract(session)
         pprint(extraction.to_dict() if hasattr(extraction, "to_dict") else extraction)
+        args._learning_draft_path = None
         return 0
 
     if args.learning_command == "draft":
         session = HITLSessionStorage().load(args.hitl_file)
         extraction = LearningExtractor().extract(session)
         path = LearningDraftWriter(output_root=args.output_root).write(extraction)
+        args._learning_draft_path = path
         pprint({"learning_draft": str(path)})
         return 0
 
@@ -224,6 +320,8 @@ def _run_learning_command(args: argparse.Namespace) -> int:
             draft_path=args.draft_file,
             memory_file=args.memory_file,
         )
+        args._memory_path = result.memory_path
+        args._backup_path = result.backup_path
         pprint(
             {
                 "draft_path": str(result.draft_path),
@@ -235,6 +333,17 @@ def _run_learning_command(args: argparse.Namespace) -> int:
         return 0
 
     raise ValueError(f"Unknown learning command: {args.learning_command}")
+
+
+def _run_history_command(args: argparse.Namespace) -> int:
+    store = HistoryStore(args.file)
+    if args.history_command == "show":
+        pprint(store.read_all())
+        return 0
+    if args.history_command == "tail":
+        pprint(store.tail(limit=args.limit))
+        return 0
+    raise ValueError(f"Unknown history command: {args.history_command}")
 
 
 if __name__ == "__main__":  # pragma: no cover
