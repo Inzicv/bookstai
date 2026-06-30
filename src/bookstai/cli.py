@@ -11,6 +11,11 @@ from .core.config import load_settings
 from .image import create_image_backend
 from .exports import ExportService
 from .hitl import HITLSessionStorage
+from .learning import (
+    LearningDraftApplier,
+    LearningDraftWriter,
+    LearningExtractor,
+)
 from .llm import create_llm_client
 from .workflows.review import ReviewWorkflow
 from .workflows.song import SongWorkflow
@@ -76,6 +81,21 @@ def build_parser() -> argparse.ArgumentParser:
     edit_parser.add_argument("--content", required=True)
     edit_parser.add_argument("--comment")
 
+    learning_parser = subparsers.add_parser("learning")
+    learning_subparsers = learning_parser.add_subparsers(dest="learning_command", required=True)
+
+    learning_extract_parser = learning_subparsers.add_parser("extract")
+    learning_extract_parser.add_argument("--hitl-file", required=True)
+
+    learning_draft_parser = learning_subparsers.add_parser("draft")
+    learning_draft_parser.add_argument("--hitl-file", required=True)
+    learning_draft_parser.add_argument("--output-root", default="outputs/learning")
+
+    learning_apply_parser = learning_subparsers.add_parser("apply")
+    learning_apply_parser.add_argument("--draft-file", required=True)
+    learning_apply_parser.add_argument("--memory-file", required=True)
+    learning_apply_parser.add_argument("--memory-root", default="memory")
+
     return parser
 
 
@@ -85,6 +105,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if args.command == "hitl":
         return _run_hitl_command(args)
+
+    if args.command == "learning":
+        return _run_learning_command(args)
 
     settings = load_settings(
         memory_root=args.memory_root,
@@ -180,6 +203,38 @@ def _run_hitl_command(args: argparse.Namespace) -> int:
     storage.save_to_path(session, args.file)
     pprint(session.to_dict())
     return 0
+
+
+def _run_learning_command(args: argparse.Namespace) -> int:
+    if args.learning_command == "extract":
+        session = HITLSessionStorage().load(args.hitl_file)
+        extraction = LearningExtractor().extract(session)
+        pprint(extraction.to_dict() if hasattr(extraction, "to_dict") else extraction)
+        return 0
+
+    if args.learning_command == "draft":
+        session = HITLSessionStorage().load(args.hitl_file)
+        extraction = LearningExtractor().extract(session)
+        path = LearningDraftWriter(output_root=args.output_root).write(extraction)
+        pprint({"learning_draft": str(path)})
+        return 0
+
+    if args.learning_command == "apply":
+        result = LearningDraftApplier(memory_root=args.memory_root).apply(
+            draft_path=args.draft_file,
+            memory_file=args.memory_file,
+        )
+        pprint(
+            {
+                "draft_path": str(result.draft_path),
+                "memory_path": str(result.memory_path),
+                "backup_path": str(result.backup_path) if result.backup_path else None,
+                "applied": result.applied,
+            }
+        )
+        return 0
+
+    raise ValueError(f"Unknown learning command: {args.learning_command}")
 
 
 if __name__ == "__main__":  # pragma: no cover

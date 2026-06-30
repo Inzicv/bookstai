@@ -131,3 +131,9 @@ class HITLSessionStorageError(BookstAIError):
     """Raised when a HITL session cannot be saved or loaded."""
 
     pass
+
+
+class LearningApplyError(BookstAIError):
+    """Raised when a learning draft cannot be applied."""
+
+    pass
