@@ -7,6 +7,8 @@ from .image_gen import ImageGenAgent
 from .review_writer import ReviewWriterAgent
 from .song_writer import SongWriterAgent
 from .prompt_maker import PromptMakerAgent
+from .social_media import SocialMediaAgent
+from .memory_manager import MemoryManagerAgent
 from .style_memory import StyleMemoryAgent
 
 __all__ = [
@@ -17,5 +19,7 @@ __all__ = [
     "ReviewWriterAgent",
     "SongWriterAgent",
     "PromptMakerAgent",
+    "SocialMediaAgent",
+    "MemoryManagerAgent",
     "StyleMemoryAgent",
 ]

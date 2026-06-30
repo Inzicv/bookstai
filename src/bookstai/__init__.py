@@ -13,6 +13,7 @@ from .core.errors import (
     InvalidSpoilerLevelError,
     InvalidSpoilerModeError,
     InvalidPromptTypeError,
+    InvalidPlatformError,
     EmptyMemoryFileError,
     EmptyPromptError,
 )
@@ -25,6 +26,8 @@ from .agents.image_gen import ImageGenAgent
 from .agents.review_writer import ReviewWriterAgent
 from .agents.song_writer import SongWriterAgent
 from .agents.prompt_maker import PromptMakerAgent
+from .agents.social_media import SocialMediaAgent
+from .agents.memory_manager import MemoryManagerAgent
 from .agents.style_memory import StyleMemoryAgent
 from .image.backend import ImageBackend
 from .image.mock_backend import MockImageBackend
@@ -41,6 +44,7 @@ __all__ = [
     "InvalidSpoilerLevelError",
     "InvalidSpoilerModeError",
     "InvalidPromptTypeError",
+    "InvalidPlatformError",
     "EmptyMemoryFileError",
     "EmptyPromptError",
     "WorkflowType",
@@ -54,6 +58,8 @@ __all__ = [
     "ReviewWriterAgent",
     "SongWriterAgent",
     "PromptMakerAgent",
+    "SocialMediaAgent",
+    "MemoryManagerAgent",
     "StyleMemoryAgent",
     "ImageBackend",
     "MockImageBackend",

@@ -71,3 +71,9 @@ class InvalidPromptTypeError(BookstAIError):
     """Raised when an image prompt type is invalid."""
 
     pass
+
+
+class InvalidPlatformError(BookstAIError):
+    """Raised when a social media platform is invalid."""
+
+    pass
