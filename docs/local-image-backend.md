@@ -176,3 +176,26 @@ Dans cette première version :
 - le payload ComfyUI reste minimal et pourra évoluer.
 
 L’objectif est de poser une base testable avant l’intégration réelle avec un workflow ComfyUI complet.
+
+## Client HTTP ComfyUI
+
+`ComfyUIImageBackend` dispose maintenant d’un client HTTP minimal :
+
+`ComfyUIHTTPClient`
+
+Ce client :
+
+- utilise la librairie standard Python ;
+- envoie des requêtes JSON ;
+- reste remplaçable par un faux client dans les tests ;
+- ne nécessite pas de serveur ComfyUI pendant les tests ;
+- ne génère aucune image directement.
+
+Dans cette étape, le backend prépare l’appel à l’API ComfyUI mais ne gère pas encore le cycle complet :
+
+- `/prompt`
+- `prompt_id`
+- `/history`
+- récupération du fichier image final
+
+Ce cycle sera ajouté dans une étape suivante.

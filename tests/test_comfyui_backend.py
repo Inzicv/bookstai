@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 from bookstai.core.errors import EmptyPromptError, ImageGenerationError
-from bookstai.image.comfyui_backend import ComfyUIImageBackend
+from bookstai.image.comfyui_backend import ComfyUIHTTPClient, ComfyUIImageBackend
 
 
 class FakeHTTPClient:
@@ -101,3 +101,9 @@ def test_generate_raises_when_response_lacks_image_path(tmp_path: Path) -> None:
 
     with pytest.raises(ImageGenerationError):
         backend.generate("prompt")
+
+
+def test_backend_uses_comfyui_http_client_by_default(tmp_path: Path) -> None:
+    backend = ComfyUIImageBackend(output_dir=tmp_path / "images")
+
+    assert isinstance(backend.http_client, ComfyUIHTTPClient)

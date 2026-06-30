@@ -7,11 +7,11 @@ from pathlib import Path
 from typing import Any
 from urllib import error, request
 
-from ..core.errors import EmptyPromptError, ImageGenerationError
+from ..core.errors import EmptyPromptError, ImageBackendConnectionError, ImageGenerationError
 from .backend import ImageBackend
 
 
-class _StdlibHTTPClient:
+class ComfyUIHTTPClient:
     """Small HTTP client wrapper built on the standard library."""
 
     def post_json(self, url: str, payload: dict[str, object], timeout: float) -> dict[str, Any]:
@@ -25,12 +25,21 @@ class _StdlibHTTPClient:
         try:
             with request.urlopen(req, timeout=timeout) as response:
                 body = response.read().decode("utf-8")
-        except error.URLError as exc:  # pragma: no cover - network failures are not exercised in tests
-            raise ImageGenerationError("Failed to contact the ComfyUI backend.") from exc
+        except (error.URLError, TimeoutError, ValueError, OSError, json.JSONDecodeError) as exc:
+            raise ImageBackendConnectionError("Could not reach ComfyUI backend.") from exc
 
         if not body.strip():
-            return {}
-        return json.loads(body)
+            raise ImageBackendConnectionError("Could not reach ComfyUI backend.")
+
+        try:
+            parsed = json.loads(body)
+        except json.JSONDecodeError as exc:
+            raise ImageBackendConnectionError("Could not reach ComfyUI backend.") from exc
+
+        if not isinstance(parsed, dict):
+            raise ImageBackendConnectionError("Could not reach ComfyUI backend.")
+
+        return parsed
 
 
 class ComfyUIImageBackend(ImageBackend):
@@ -48,7 +57,7 @@ class ComfyUIImageBackend(ImageBackend):
         self.output_dir = Path(output_dir)
         self.timeout = timeout
         self.poll_interval = poll_interval
-        self.http_client = http_client or _StdlibHTTPClient()
+        self.http_client = http_client or ComfyUIHTTPClient()
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def generate(self, prompt: str) -> str:
@@ -60,7 +69,7 @@ class ComfyUIImageBackend(ImageBackend):
             payload["workflow_path"] = str(self.workflow_path)
 
         response = self.http_client.post_json(
-            self.comfyui_url,
+            f"{self.comfyui_url}/prompt",
             payload,
             timeout=self.timeout,
         )

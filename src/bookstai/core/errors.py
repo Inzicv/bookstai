@@ -107,3 +107,9 @@ class ImageGenerationError(ImageBackendError):
     """Raised when image generation fails."""
 
     pass
+
+
+class ImageBackendConnectionError(ImageBackendError):
+    """Raised when an image backend cannot be reached."""
+
+    pass
