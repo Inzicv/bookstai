@@ -17,6 +17,8 @@ from .core.errors import (
 from .core.types import WorkflowType, SpoilerLevel, ProviderType
 from .memory.reader import MemoryReader
 from .agents.context_builder import ContextBuilder
+from .agents.comedy_room import ComedyRoomAgent
+from .agents.review_writer import ReviewWriterAgent
 from .agents.style_memory import StyleMemoryAgent
 from .prompts.builder import PromptBuilder
 from .prompts.loader import PromptLoader
@@ -36,6 +38,8 @@ __all__ = [
     "ProviderType",
     "MemoryReader",
     "ContextBuilder",
+    "ComedyRoomAgent",
+    "ReviewWriterAgent",
     "StyleMemoryAgent",
     "PromptBuilder",
     "PromptLoader",
