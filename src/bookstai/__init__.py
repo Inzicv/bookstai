@@ -39,6 +39,7 @@ from .exports.json import JSONExporter
 from .exports.service import ExportService
 from .workflows.review import ReviewWorkflow
 from .workflows.song import SongWorkflow
+from .langflow.review_component import run_review_workflow
 from .cli import main
 
 __all__ = [
@@ -71,6 +72,7 @@ __all__ = [
     "MockImageBackend",
     "ReviewWorkflow",
     "SongWorkflow",
+    "run_review_workflow",
     "MarkdownExporter",
     "JSONExporter",
     "ExportService",
