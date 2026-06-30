@@ -125,3 +125,9 @@ class HITLStepNotFoundError(BookstAIError):
     """Raised when a HITL step does not exist."""
 
     pass
+
+
+class HITLSessionStorageError(BookstAIError):
+    """Raised when a HITL session cannot be saved or loaded."""
+
+    pass

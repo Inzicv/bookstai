@@ -74,3 +74,23 @@ class HITLSession:
                 for step in self._steps.values()
             ],
         }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "HITLSession":
+        session = cls(
+            workflow_name=data["workflow_name"],
+            item_slug=data["item_slug"],
+        )
+        for step_data in data["steps"]:
+            status_value = step_data["status"]
+            status = HITLStatus(status_value)
+            step = HITLStep(
+                name=step_data["name"],
+                content=step_data["content"],
+                status=status,
+                edited_content=step_data.get("edited_content"),
+                comment=step_data.get("comment"),
+                metadata=step_data.get("metadata") or {},
+            )
+            session._steps[step.name] = step
+        return session

@@ -88,3 +88,32 @@ Langflow peut activer HITL via un champ booléen `hitl`.
 Ce champ ne bloque pas le workflow.
 
 Il ajoute seulement la session HITL au résultat pour permettre une validation ultérieure.
+
+## Persistance HITL
+
+Les sessions HITL peuvent être sauvegardées en JSON.
+
+Le stockage par défaut est :
+
+```text
+outputs/hitl/
+```
+
+Une session est stockée par workflow et par livre :
+
+```text
+outputs/hitl/<workflow_name>/<item_slug>.json
+```
+
+Le JSON conserve :
+
+- le nom du workflow ;
+- le slug du livre ;
+- les étapes HITL ;
+- le statut de chaque étape ;
+- le contenu original ;
+- le contenu édité si disponible ;
+- les commentaires éventuels ;
+- les métadonnées.
+
+Cette persistance prépare les futures commandes de validation et d’édition.
