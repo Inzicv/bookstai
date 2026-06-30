@@ -1,11 +1,11 @@
 # Langflow Integration
 
-## Epic 1 — Review Workflow avec mocks
+## Epic 1 â€” Review Workflow avec mocks
 
 Objectif :
-Permettre à Langflow d'exécuter le workflow Review existant sans appel OpenAI.
+Permettre Ã  Langflow d'exÃ©cuter le workflow Review existant sans appel OpenAI.
 
-Entrées :
+EntrÃ©es :
 - `book_slug`
 - `user_opinion`
 - `platform`
@@ -18,7 +18,7 @@ Dictionnaire complet du `ReviewWorkflow`.
 Limites :
 - utilise `MockLLMClient`
 - aucun appel API
-- aucune génération d'image
+- aucune gÃ©nÃ©ration d'image
 - pas encore de Human In The Loop Langflow
 
 ## Import Python
@@ -28,20 +28,20 @@ from bookstai.langflow.review_component import run_review_workflow
 
 result = run_review_workflow(
     book_slug="example",
-    user_opinion="J'ai aimé l'ambiance et les personnages.",
+    user_opinion="J'ai aimÃ© l'ambiance et les personnages.",
     platform="tiktok",
 )
 ```
 
-## Paramètres
+## ParamÃ¨tres
 
-- `book_slug`: slug du livre à charger depuis `memory_root/books`.
+- `book_slug`: slug du livre Ã  charger depuis `memory_root/books`.
 - `user_opinion`: avis utilisateur transmis au workflow.
-- `platform`: plateforme sociale utilisée par le workflow.
-- `memory_root`: racine des fichiers mémoire, accepte `str` ou `Path`.
+- `platform`: plateforme sociale utilisÃ©e par le workflow.
+- `memory_root`: racine des fichiers mÃ©moire, accepte `str` ou `Path`.
 - `prompt_root`: racine des prompts, accepte `str` ou `Path`.
 
-## Résultat attendu
+## RÃ©sultat attendu
 
 Le composant retourne directement le dictionnaire produit par `ReviewWorkflow.run(...)`, avec au minimum :
 
@@ -55,7 +55,7 @@ Le composant retourne directement le dictionnaire produit par `ReviewWorkflow.ru
 
 ## Utilisation dans Langflow
 
-Importez la fonction `run_review_workflow` comme point d'entrée Python dans un composant Langflow.
+Importez la fonction `run_review_workflow` comme point d'entrÃ©e Python dans un composant Langflow.
 Le composant agit comme un adaptateur fin autour du workflow existant.
 
 ## Custom Component Langflow
@@ -63,15 +63,15 @@ Le composant agit comme un adaptateur fin autour du workflow existant.
 Objectif :
 Utiliser BookstAI Review directement dans Langflow.
 
-Prérequis :
-- BookstAI installé en editable install
-- Langflow installé localement
-- être à la racine du dépôt BookstAI
+PrÃ©requis :
+- BookstAI installÃ© en editable install
+- Langflow installÃ© localement
+- Ãªtre Ã  la racine du dÃ©pÃ´t BookstAI
 
 Fichier composant :
 `langflow_components/bookstai_review_component.py`
 
-Entrées :
+EntrÃ©es :
 - `book_slug`
 - `user_opinion`
 - `platform`
@@ -85,11 +85,11 @@ Sortie :
 Dictionnaire complet du `ReviewWorkflow`.
 
 Limites :
-- mocks uniquement par défaut
+- mocks uniquement par dÃ©faut
 - aucun appel OpenAI tant que `provider` vaut `mock`
-- pas encore de validation humaine entre les étapes
+- pas encore de validation humaine entre les Ã©tapes
 
-### Vérification manuelle
+### VÃ©rification manuelle
 
 1. Lancer Langflow.
 2. Ajouter le dossier `langflow_components` comme source de Custom Components.
@@ -98,8 +98,8 @@ Limites :
    - `book_slug`
    - `user_opinion`
    - `platform`
-5. Exécuter le composant.
-6. Vérifier que la sortie contient :
+5. ExÃ©cuter le composant.
+6. VÃ©rifier que la sortie contient :
    - `workflow`
    - `book_slug`
    - `context`
@@ -108,12 +108,12 @@ Limites :
    - `review`
    - `social`
 
-## Epic 2 — Song Workflow avec mocks
+## Epic 2 â€” Song Workflow avec mocks
 
 Objectif :
-Permettre à Langflow d'exécuter le workflow Song existant sans appel OpenAI et sans backend image réel.
+Permettre Ã  Langflow d'exÃ©cuter le workflow Song existant sans appel OpenAI et sans backend image rÃ©el.
 
-Entrées :
+EntrÃ©es :
 - `book_slug`
 - `spoiler_mode`
 - `prompt_type`
@@ -130,7 +130,7 @@ Dictionnaire complet du `SongWorkflow`.
 
 Limites :
 - utilise `MockImageBackend`
-- aucun appel API image réel
+- aucun appel API image rÃ©el
 - pas encore de Human In The Loop Langflow
 
 ## Import Python
@@ -146,20 +146,20 @@ result = run_song_workflow(
 )
 ```
 
-## Custom Component Langflow — Song
+## Custom Component Langflow â€” Song
 
 Objectif :
 Utiliser BookstAI Song directement dans Langflow.
 
-Prérequis :
-- BookstAI installé en editable install
-- Langflow installé localement
-- être à la racine du dépôt BookstAI
+PrÃ©requis :
+- BookstAI installÃ© en editable install
+- Langflow installÃ© localement
+- Ãªtre Ã  la racine du dÃ©pÃ´t BookstAI
 
 Fichier composant :
 `langflow_components/bookstai_song_component.py`
 
-Entrées :
+EntrÃ©es :
 - `book_slug`
 - `spoiler_mode`
 - `prompt_type`
@@ -175,13 +175,13 @@ Sortie :
 Dictionnaire complet du `SongWorkflow`.
 
 Limites :
-- mocks uniquement par défaut
+- mocks uniquement par dÃ©faut
 - `MockImageBackend`
 - aucun appel OpenAI tant que `provider` vaut `mock`
-- aucune génération d'image réelle
-- pas encore de validation humaine entre les étapes
+- aucune gÃ©nÃ©ration d'image rÃ©elle
+- pas encore de validation humaine entre les Ã©tapes
 
-### Vérification manuelle
+### VÃ©rification manuelle
 
 1. Lancer Langflow.
 2. Ajouter le dossier `langflow_components` comme source de Custom Components.
@@ -191,8 +191,8 @@ Limites :
    - `spoiler_mode`
    - `prompt_type`
    - `platform`
-5. Exécuter le composant.
-6. Vérifier que la sortie contient :
+5. ExÃ©cuter le composant.
+6. VÃ©rifier que la sortie contient :
    - `workflow`
    - `book_slug`
    - `context`
@@ -212,38 +212,48 @@ Les composants Langflow BookstAI peuvent utiliser OpenAI via les champs :
 - `model`
 - `temperature`
 
-Par défaut, `provider` vaut `mock`.
+Par dÃ©faut, `provider` vaut `mock`.
 
 Pour activer OpenAI :
 
 1. installer BookstAI avec l'extra OpenAI ;
-2. définir `OPENAI_API_KEY` dans l'environnement qui exécute Langflow ;
+2. dÃ©finir `OPENAI_API_KEY` dans l'environnement qui exÃ©cute Langflow ;
 3. ouvrir le composant BookstAI dans Langflow ;
-4. définir `provider` à `openai` ;
-5. choisir le modèle ;
-6. exécuter le flow.
+4. dÃ©finir `provider` Ã  `openai` ;
+5. choisir le modÃ¨le ;
+6. exÃ©cuter le flow.
 
-La clé API ne doit jamais être saisie directement dans Langflow.
+La clÃ© API ne doit jamais Ãªtre saisie directement dans Langflow.
 
-Le provider `mock` doit être utilisé pour les tests, les démos et les essais sans coût.
+Le provider `mock` doit Ãªtre utilisÃ© pour les tests, les dÃ©mos et les essais sans coÃ»t.
 
 ## Images locales dans Langflow
 
-Pour l’instant, les workflows Langflow utilisent encore `MockImageBackend`.
+Pour lâ€™instant, les workflows Langflow utilisent encore `MockImageBackend`.
 
-Le futur backend image local sera branché derrière l’interface `ImageBackend`.
+Le futur backend image local sera branchÃ© derriÃ¨re lâ€™interface `ImageBackend`.
 
-L’objectif est de permettre ensuite à Langflow de choisir :
+Lâ€™objectif est de permettre ensuite Ã  Langflow de choisir :
 
 - `mock`
 - `comfyui`
 
-OpenAI ne sera pas utilisé pour générer les images.
+OpenAI ne sera pas utilisÃ© pour gÃ©nÃ©rer les images.
 
-La génération image locale sera traitée dans un Epic dédié.
+La gÃ©nÃ©ration image locale sera traitÃ©e dans un Epic dÃ©diÃ©.
 
-## Résolution des chemins BookstAI
+## RÃ©solution des chemins BookstAI
 
-Les adaptateurs Langflow résolvent désormais les chemins de BookstAI indépendamment du dossier courant.
+Les adaptateurs Langflow rÃ©solvent dÃ©sormais les chemins de BookstAI indÃ©pendamment du dossier courant.
 
-Cela permet de charger les prompts et la mémoire depuis l’architecture réelle du projet sans demander de dossier `prompts` à la racine du repo Langflow.
+Cela permet de charger les prompts et la mÃ©moire depuis lâ€™architecture rÃ©elle du projet sans demander de dossier `prompts` Ã  la racine du repo Langflow.
+
+## Prompts projet et prÃ©-check
+
+Les prompts agents BookstAI vivent dans :
+
+`prompts/agents/`
+
+Le prÃ©-check projet permet de vÃ©rifier rapidement que les prompts obligatoires sont bien prÃ©sents avant de relancer Langflow.
+
+Il ne corrige rien automatiquement et sert uniquement Ã  diagnostiquer l'Ã©tat du projet.
