@@ -5,88 +5,115 @@ from pathlib import Path
 from bookstai.exports.markdown import MarkdownExporter
 
 
-def test_exports_markdown_file(tmp_path: Path) -> None:
+def test_markdown_exporter_writes_readable_review_export(tmp_path: Path) -> None:
     exporter = MarkdownExporter(output_root=tmp_path / "outputs")
+    data = {
+        "workflow": "review",
+        "book_slug": "alchemised",
+        "comedy": {"response": "Idées drôles"},
+        "review": {"response": "Review générée"},
+        "social": {"response": "Caption générée"},
+    }
 
-    path = exporter.export(
-        workflow_name="review",
-        item_slug="alchemised",
-        data={
-            "workflow": "review",
-            "book_slug": "alchemised",
-            "review": {"response": "Review générée"},
-            "social": {"response": "Caption générée"},
-        },
-    )
+    path = exporter.export(workflow_name="review", item_slug="alchemised", data=data)
 
-    assert path == tmp_path / "outputs" / "review" / "alchemised.md"
+    content = path.read_text(encoding="utf-8")
+
     assert path.exists()
-    assert path.is_file()
+    assert "# BookstAI — Review Export" in content
+    assert "## Métadonnées" in content
+    assert "Workflow : review" in content
+    assert "Livre : alchemised" in content
+    assert "draft_needs_human_review" in content
+    assert "## Review draft" in content
+    assert "Review générée" in content
+    assert "## Social media draft" in content
+    assert "Caption générée" in content
+    assert "## Comedy room" in content
+    assert "Idées drôles" in content
+    assert "## Validation humaine" in content
+    assert "## Données techniques" in content
 
 
-def test_creates_workflow_directory_automatically(tmp_path: Path) -> None:
+def test_markdown_exporter_writes_readable_song_export(tmp_path: Path) -> None:
     exporter = MarkdownExporter(output_root=tmp_path / "outputs")
+    data = {
+        "workflow": "song",
+        "book_slug": "alchemised",
+        "comedy": {"response": "Idées drôles"},
+        "song": {"response": "Chanson générée"},
+        "art_direction": {"response": "Direction artistique"},
+        "image_prompt": {"response": "Prompt image"},
+        "image": {
+            "backend": "mock",
+            "image_path": "outputs/mock/image.png",
+        },
+        "social": {"response": "Caption générée"},
+    }
 
-    path = exporter.export(
-        workflow_name="song",
-        item_slug="alchemised",
-        data={"workflow": "song"},
-    )
+    path = exporter.export(workflow_name="song", item_slug="alchemised", data=data)
 
-    assert (tmp_path / "outputs" / "song").exists()
-    assert path.parent == tmp_path / "outputs" / "song"
+    content = path.read_text(encoding="utf-8")
+
+    assert path.exists()
+    assert "# BookstAI — Song Export" in content
+    assert "## Métadonnées" in content
+    assert "Workflow : song" in content
+    assert "Livre : alchemised" in content
+    assert "draft_needs_human_review" in content
+    assert "## Song draft" in content
+    assert "Chanson générée" in content
+    assert "## Art direction" in content
+    assert "Direction artistique" in content
+    assert "## Image prompt" in content
+    assert "Prompt image" in content
+    assert "## Image result" in content
+    assert "mock" in content
+    assert "outputs/mock/image.png" in content
+    assert "## Social media draft" in content
+    assert "Caption générée" in content
+    assert "## Comedy room" in content
+    assert "Idées drôles" in content
+    assert "## Validation humaine" in content
+    assert "## Données techniques" in content
 
 
-def test_returns_path_object(tmp_path: Path) -> None:
+def test_markdown_exporter_handles_missing_sections_gracefully(tmp_path: Path) -> None:
     exporter = MarkdownExporter(output_root=tmp_path / "outputs")
 
     path = exporter.export(
         workflow_name="review",
-        item_slug="alchemised",
-        data={"workflow": "review"},
-    )
-
-    assert isinstance(path, Path)
-
-
-def test_exported_content_contains_workflow_item_and_data(tmp_path: Path) -> None:
-    exporter = MarkdownExporter(output_root=tmp_path / "outputs")
-
-    path = exporter.export(
-        workflow_name="review",
-        item_slug="alchemised",
+        item_slug="minimal",
         data={
             "workflow": "review",
-            "book_slug": "alchemised",
-            "social": {"response": "Caption générée"},
+            "book_slug": "minimal",
         },
+    )
+
+    content = path.read_text(encoding="utf-8")
+
+    assert "_Non généré_" in content
+    assert "Review draft" in content
+    assert "Social media draft" in content
+    assert "Comedy room" in content
+
+
+def test_markdown_exporter_keeps_generic_fallback_for_unknown_workflow(tmp_path: Path) -> None:
+    exporter = MarkdownExporter(output_root=tmp_path / "outputs")
+
+    path = exporter.export(
+        workflow_name="unknown",
+        item_slug="example",
+        data={"hello": "world"},
     )
 
     content = path.read_text(encoding="utf-8")
 
     assert "# BookstAI Export" in content
-    assert "review" in content
-    assert "alchemised" in content
-    assert "Caption générée" in content
-
-
-def test_supports_nested_dictionary_data(tmp_path: Path) -> None:
-    exporter = MarkdownExporter(output_root=tmp_path / "outputs")
-
-    path = exporter.export(
-        workflow_name="review",
-        item_slug="nested",
-        data={
-            "level1": {
-                "level2": {
-                    "value": 42,
-                }
-            }
-        },
-    )
-
-    content = path.read_text(encoding="utf-8")
-
-    assert "level1" in content
-    assert "level2" in content
-    assert "42" in content
+    assert "## Workflow" in content
+    assert "unknown" in content
+    assert "## Item" in content
+    assert "example" in content
+    assert "## Data" in content
+    assert "hello" in content
+    assert "world" in content
