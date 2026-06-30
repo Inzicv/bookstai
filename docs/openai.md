@@ -188,3 +188,13 @@ OpenAI est un moteur texte interchangeable.
 Les workflows ne dépendent pas directement d’OpenAI.
 
 Ils reçoivent uniquement un client compatible `LLMClient`.
+
+## Images
+
+OpenAI n’est pas utilisé pour la génération d’images dans BookstAI.
+
+Les images seront générées localement via un backend dédié implémentant `ImageBackend`.
+
+Le backend local cible est ComfyUI ou équivalent.
+
+OpenAI reste réservé aux tâches de génération de texte.

@@ -226,3 +226,18 @@ Pour activer OpenAI :
 La clé API ne doit jamais être saisie directement dans Langflow.
 
 Le provider `mock` doit être utilisé pour les tests, les démos et les essais sans coût.
+
+## Images locales dans Langflow
+
+Pour l’instant, les workflows Langflow utilisent encore `MockImageBackend`.
+
+Le futur backend image local sera branché derrière l’interface `ImageBackend`.
+
+L’objectif est de permettre ensuite à Langflow de choisir :
+
+- `mock`
+- `comfyui`
+
+OpenAI ne sera pas utilisé pour générer les images.
+
+La génération image locale sera traitée dans un Epic dédié.
