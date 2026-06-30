@@ -11,9 +11,12 @@ from bookstai.langflow import song_component
 
 def test_run_song_workflow_resolves_prompt_root_from_package(monkeypatch, tmp_path: Path) -> None:
     package_root = tmp_path / "site-packages" / "bookstai"
+    package_root.mkdir(parents=True, exist_ok=True)
     fake_init = package_root / "__init__.py"
     fake_init.write_text("__all__ = []", encoding="utf-8")
     monkeypatch.setattr(bookstai, "__file__", str(fake_init))
+    memory_dir = tmp_path / "memory"
+    memory_dir.mkdir(parents=True, exist_ok=True)
     prompts_dir = tmp_path / "prompts"
     prompts_dir.mkdir(parents=True, exist_ok=True)
     workspace = tmp_path / "workspace"
@@ -44,4 +47,4 @@ def test_run_song_workflow_resolves_prompt_root_from_package(monkeypatch, tmp_pa
     )
 
     assert captured["prompt_root"] == prompts_dir
-    assert captured["memory_root"] == tmp_path / "memory"
+    assert captured["memory_root"] == memory_dir

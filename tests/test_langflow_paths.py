@@ -28,6 +28,7 @@ def test_resolve_bookstai_path_prefers_package_prompts_when_missing_elsewhere(
     tmp_path: Path,
 ) -> None:
     package_root = tmp_path / "site-packages" / "bookstai"
+    package_root.mkdir(parents=True, exist_ok=True)
     fake_init = package_root / "__init__.py"
     fake_init.write_text("__all__ = []", encoding="utf-8")
     monkeypatch.setattr(bookstai, "__file__", str(fake_init))
