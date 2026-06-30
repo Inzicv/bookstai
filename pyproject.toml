@@ -45,8 +45,9 @@ Issues = "https://github.com/Inzicv/bookstai/issues"
 [project.scripts]
 bookstai = "bookstai.cli:main"
 
-[tool.setuptools]
-packages = ["bookstai"]
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["bookstai*"]
 
 [tool.setuptools.package-dir]
 "" = "src"
