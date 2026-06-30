@@ -34,6 +34,7 @@ from .image.mock_backend import MockImageBackend
 from .prompts.builder import PromptBuilder
 from .prompts.loader import PromptLoader
 from .prompts.renderer import PromptRenderer
+from .exports.markdown import MarkdownExporter
 from .workflows.review import ReviewWorkflow
 from .workflows.song import SongWorkflow
 
@@ -67,6 +68,7 @@ __all__ = [
     "MockImageBackend",
     "ReviewWorkflow",
     "SongWorkflow",
+    "MarkdownExporter",
     "PromptBuilder",
     "PromptLoader",
     "PromptRenderer",
