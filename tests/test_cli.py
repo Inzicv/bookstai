@@ -1,8 +1,13 @@
 """Tests for the BookstAI CLI."""
 
-from argparse import Namespace
+from pathlib import Path
 
 from bookstai import cli
+
+
+class DummySettings:
+    def __init__(self, memory_root: Path) -> None:
+        self.memory_root = memory_root
 
 
 def test_main_review_returns_zero(monkeypatch) -> None:
@@ -16,7 +21,7 @@ def test_main_review_returns_zero(monkeypatch) -> None:
             return {"workflow": "review"}
 
     monkeypatch.setattr(cli, "ReviewWorkflow", DummyWorkflow)
-    monkeypatch.setattr(cli, "load_settings", lambda **kwargs: Namespace(memory_root=None))
+    monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
     monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
 
     exit_code = cli.main(
@@ -49,7 +54,7 @@ def test_main_song_returns_zero(monkeypatch) -> None:
             return {"workflow": "song"}
 
     monkeypatch.setattr(cli, "SongWorkflow", DummyWorkflow)
-    monkeypatch.setattr(cli, "load_settings", lambda **kwargs: Namespace(memory_root=None))
+    monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
     monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
 
     exit_code = cli.main(
@@ -87,7 +92,7 @@ def test_cli_review_calls_workflow(monkeypatch) -> None:
             return {"workflow": "review"}
 
     monkeypatch.setattr(cli, "ReviewWorkflow", DummyWorkflow)
-    monkeypatch.setattr(cli, "load_settings", lambda **kwargs: Namespace(memory_root=None))
+    monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
     monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
 
     cli.main(["review", "--book", "alchemised", "--opinion", "J’ai adoré", "--platform", "instagram"])
@@ -114,7 +119,7 @@ def test_cli_song_calls_workflow(monkeypatch) -> None:
             return {"workflow": "song"}
 
     monkeypatch.setattr(cli, "SongWorkflow", DummyWorkflow)
-    monkeypatch.setattr(cli, "load_settings", lambda **kwargs: Namespace(memory_root=None))
+    monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
     monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
 
     cli.main(
@@ -151,7 +156,7 @@ def test_cli_accepts_memory_and_prompt_roots(monkeypatch) -> None:
             return {"workflow": "review"}
 
     monkeypatch.setattr(cli, "ReviewWorkflow", DummyWorkflow)
-    monkeypatch.setattr(cli, "load_settings", lambda **kwargs: Namespace(memory_root=None))
+    monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
     monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
 
     cli.main(
