@@ -161,3 +161,18 @@ Les workflows restent stables.
 Les agents restent spécialisés.
 
 La génération image reste séparée de la génération texte.
+
+## Squelette ComfyUIImageBackend
+
+Le backend `ComfyUIImageBackend` existe comme première implémentation locale derrière l’interface `ImageBackend`.
+
+Dans cette première version :
+
+- il n’est pas branché automatiquement ;
+- il n’est pas utilisé par la CLI ;
+- il n’est pas utilisé par Langflow ;
+- il ne nécessite pas de serveur ComfyUI pendant les tests ;
+- les appels HTTP sont isolés et mockables ;
+- le payload ComfyUI reste minimal et pourra évoluer.
+
+L’objectif est de poser une base testable avant l’intégration réelle avec un workflow ComfyUI complet.

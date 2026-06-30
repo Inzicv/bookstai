@@ -95,3 +95,15 @@ class InvalidExportFormatError(BookstAIError):
     """Raised when an export format is invalid."""
 
     pass
+
+
+class ImageBackendError(BookstAIError):
+    """Raised when an image backend fails."""
+
+    pass
+
+
+class ImageGenerationError(ImageBackendError):
+    """Raised when image generation fails."""
+
+    pass
