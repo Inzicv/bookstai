@@ -35,6 +35,7 @@ from .prompts.builder import PromptBuilder
 from .prompts.loader import PromptLoader
 from .prompts.renderer import PromptRenderer
 from .exports.markdown import MarkdownExporter
+from .exports.json import JSONExporter
 from .workflows.review import ReviewWorkflow
 from .workflows.song import SongWorkflow
 
@@ -69,6 +70,7 @@ __all__ = [
     "ReviewWorkflow",
     "SongWorkflow",
     "MarkdownExporter",
+    "JSONExporter",
     "PromptBuilder",
     "PromptLoader",
     "PromptRenderer",
