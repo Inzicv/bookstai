@@ -9,6 +9,7 @@ from typing import Sequence
 
 from .core.config import load_settings
 from .image import create_image_backend
+from .exports import ExportService
 from .llm import create_llm_client
 from .workflows.review import ReviewWorkflow
 from .workflows.song import SongWorkflow
@@ -27,6 +28,8 @@ def build_parser() -> argparse.ArgumentParser:
     review_parser.add_argument("--provider", default="mock")
     review_parser.add_argument("--model", default="gpt-4o-mini")
     review_parser.add_argument("--temperature", type=float, default=0.7)
+    review_parser.add_argument("--export", nargs="+", choices=["markdown", "json"])
+    review_parser.add_argument("--output-root", default="outputs")
 
     song_parser = subparsers.add_parser("song")
     song_parser.add_argument("--book", required=True)
@@ -45,6 +48,8 @@ def build_parser() -> argparse.ArgumentParser:
     song_parser.add_argument("--image-output-dir", default="outputs/images")
     song_parser.add_argument("--image-timeout", type=float, default=60.0)
     song_parser.add_argument("--image-poll-interval", type=float, default=1.0)
+    song_parser.add_argument("--export", nargs="+", choices=["markdown", "json"])
+    song_parser.add_argument("--output-root", default="outputs")
 
     return parser
 
@@ -101,6 +106,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
 
     pprint(result)
+    if args.export:
+        exported_paths = ExportService(output_root=Path(args.output_root)).export(
+            workflow_name=args.command,
+            item_slug=args.book,
+            data=result,
+            formats=args.export,
+        )
+        pprint({"exports": exported_paths})
     return 0
 
 
