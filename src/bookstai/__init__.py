@@ -17,6 +17,7 @@ from .core.errors import (
 from .core.types import WorkflowType, SpoilerLevel, ProviderType
 from .memory.reader import MemoryReader
 from .agents.context_builder import ContextBuilder
+from .agents.style_memory import StyleMemoryAgent
 from .prompts.builder import PromptBuilder
 from .prompts.loader import PromptLoader
 from .prompts.renderer import PromptRenderer
@@ -35,6 +36,7 @@ __all__ = [
     "ProviderType",
     "MemoryReader",
     "ContextBuilder",
+    "StyleMemoryAgent",
     "PromptBuilder",
     "PromptLoader",
     "PromptRenderer",
