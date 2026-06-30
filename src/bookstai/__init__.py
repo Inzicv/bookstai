@@ -39,6 +39,7 @@ from .exports.json import JSONExporter
 from .exports.service import ExportService
 from .workflows.review import ReviewWorkflow
 from .workflows.song import SongWorkflow
+from .cli import main
 
 __all__ = [
     "BookstAISettings",
@@ -73,6 +74,7 @@ __all__ = [
     "MarkdownExporter",
     "JSONExporter",
     "ExportService",
+    "main",
     "PromptBuilder",
     "PromptLoader",
     "PromptRenderer",

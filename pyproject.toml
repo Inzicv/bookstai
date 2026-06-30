@@ -42,6 +42,9 @@ Homepage = "https://github.com/Inzicv/bookstai"
 Repository = "https://github.com/Inzicv/bookstai.git"
 Issues = "https://github.com/Inzicv/bookstai/issues"
 
+[project.scripts]
+bookstai = "bookstai.cli:main"
+
 [tool.setuptools]
 packages = ["bookstai"]
 
