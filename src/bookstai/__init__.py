@@ -17,6 +17,7 @@ from .core.types import WorkflowType, SpoilerLevel, ProviderType
 from .memory.reader import MemoryReader
 from .agents.context_builder import ContextBuilder
 from .prompts.loader import PromptLoader
+from .prompts.renderer import PromptRenderer
 
 __all__ = [
     "BookstAISettings",
@@ -32,4 +33,5 @@ __all__ = [
     "MemoryReader",
     "ContextBuilder",
     "PromptLoader",
+    "PromptRenderer",
 ]

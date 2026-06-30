@@ -41,3 +41,15 @@ class EmptyPromptFileError(BookstAIError):
     """Raised when a prompt file exists but is empty."""
 
     pass
+
+
+class MissingPromptVariableError(BookstAIError):
+    """Raised when a prompt template variable is missing."""
+
+    pass
+
+
+class EmptyPromptTemplateError(BookstAIError):
+    """Raised when a prompt template is empty."""
+
+    pass
