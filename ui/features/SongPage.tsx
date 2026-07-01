@@ -23,7 +23,7 @@ export default function SongPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-semibold">Song</h1>
+      <h1 className="text-3xl font-semibold text-slate-100">Song</h1>
       <form
         className="panel grid gap-4 rounded-3xl p-6"
         onSubmit={async (event) => {
@@ -41,14 +41,14 @@ export default function SongPage() {
         }}
       >
         <FormField label="book_slug">
-          <input className="w-full rounded-xl border border-zinc-200 px-3 py-2" value={form.book_slug} onChange={(e) => setForm({ ...form, book_slug: e.target.value })} />
+          <input className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 placeholder:text-slate-500" value={form.book_slug} onChange={(e) => setForm({ ...form, book_slug: e.target.value })} />
         </FormField>
         <div className="grid gap-4 md:grid-cols-2">
           <FormField label="spoiler_mode">
-            <input className="w-full rounded-xl border border-zinc-200 px-3 py-2" value={form.spoiler_mode} onChange={(e) => setForm({ ...form, spoiler_mode: e.target.value })} />
+            <input className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 placeholder:text-slate-500" value={form.spoiler_mode} onChange={(e) => setForm({ ...form, spoiler_mode: e.target.value })} />
           </FormField>
           <FormField label="prompt_type">
-            <select className="w-full rounded-xl border border-zinc-200 px-3 py-2" value={form.prompt_type} onChange={(e) => setForm({ ...form, prompt_type: e.target.value })}>
+            <select className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100" value={form.prompt_type} onChange={(e) => setForm({ ...form, prompt_type: e.target.value })}>
               <option value="character">character</option>
               <option value="scene">scene</option>
               <option value="thumbnail">thumbnail</option>
@@ -58,21 +58,21 @@ export default function SongPage() {
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           <FormField label="platform">
-            <input className="w-full rounded-xl border border-zinc-200 px-3 py-2" value={form.platform} onChange={(e) => setForm({ ...form, platform: e.target.value })} />
+            <input className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 placeholder:text-slate-500" value={form.platform} onChange={(e) => setForm({ ...form, platform: e.target.value })} />
           </FormField>
           <FormField label="provider">
-            <select className="w-full rounded-xl border border-zinc-200 px-3 py-2" value={form.provider} onChange={(e) => setForm({ ...form, provider: e.target.value })}>
+            <select className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100" value={form.provider} onChange={(e) => setForm({ ...form, provider: e.target.value })}>
               <option value="mock">mock</option>
             </select>
           </FormField>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           <FormField label="image_backend">
-            <select className="w-full rounded-xl border border-zinc-200 px-3 py-2" value={form.image_backend} onChange={(e) => setForm({ ...form, image_backend: e.target.value })}>
+            <select className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100" value={form.image_backend} onChange={(e) => setForm({ ...form, image_backend: e.target.value })}>
               <option value="mock">mock</option>
             </select>
           </FormField>
-          <label className="flex items-center gap-2 text-sm">
+          <label className="flex items-center gap-2 text-sm text-slate-300">
             <input type="checkbox" checked={form.hitl_enabled} onChange={(e) => setForm({ ...form, hitl_enabled: e.target.checked })} />
             HITL activé
           </label>
@@ -84,4 +84,3 @@ export default function SongPage() {
     </div>
   )
 }
-

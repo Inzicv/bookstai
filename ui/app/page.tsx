@@ -12,9 +12,9 @@ export default function HomePage() {
   return (
     <div className="space-y-8">
       <section className="space-y-4">
-        <p className="text-sm uppercase tracking-[0.3em] text-zinc-500">Studio local</p>
-        <h1 className="text-4xl font-semibold tracking-tight text-zinc-950 sm:text-6xl">BookstAI</h1>
-        <p className="max-w-2xl text-base text-zinc-700 sm:text-lg">
+        <p className="text-sm uppercase tracking-[0.3em] text-slate-400">Studio local</p>
+        <h1 className="text-4xl font-semibold tracking-tight text-slate-100 sm:text-6xl">BookstAI</h1>
+        <p className="max-w-2xl text-base text-slate-300 sm:text-lg">
           Une application web locale pour piloter BookstAI dans le navigateur, avec FastAPI en
           arrière-plan.
         </p>
@@ -29,8 +29,8 @@ export default function HomePage() {
             href={item.href}
             className="panel rounded-2xl px-5 py-4 transition hover:-translate-y-0.5 hover:shadow-lg"
           >
-            <div className="text-sm text-zinc-500">Accès rapide</div>
-            <div className="mt-1 text-lg font-medium text-zinc-950">{item.label}</div>
+            <div className="text-sm text-slate-400">Accès rapide</div>
+            <div className="mt-1 text-lg font-medium text-slate-100">{item.label}</div>
           </Link>
         ))}
       </section>
