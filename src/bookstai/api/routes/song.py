@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+import os
 from typing import Any
 
 from fastapi import APIRouter
 
-from ...core.errors import UnsupportedProviderError
+from ...core.errors import MissingAPIKeyError, UnsupportedProviderError
 from ...llm import create_llm_client
 from ...workflows.song import SongWorkflow
 from ..schemas.song import SongRunRequest
@@ -17,10 +18,15 @@ router = APIRouter(prefix="/song", tags=["song"])
 
 @router.post("/run")
 def run_song(payload: SongRunRequest) -> dict[str, Any]:
-    if payload.provider != "mock":
-        return api_error("INVALID_PROVIDER", "Only the mock provider is allowed in local API mode.")
+    if payload.provider not in {"mock", "openai"}:
+        return api_error("INVALID_PROVIDER", "Provider must be one of: mock, openai.")
 
     try:
+        if payload.provider == "openai" and not os.getenv("OPENAI_API_KEY"):
+            return api_error(
+                "MISSING_API_KEY",
+                "OPENAI_API_KEY is required to use the openai provider.",
+            )
         workflow = SongWorkflow(
             memory_root=build_memory_root(),
             prompt_root=build_prompt_root(),
@@ -62,6 +68,10 @@ def run_song(payload: SongRunRequest) -> dict[str, Any]:
             "result": result,
             "hitl_session_path": hitl_path,
         }
+    except MissingAPIKeyError:
+        return api_error("MISSING_API_KEY", "OPENAI_API_KEY is required to use the openai provider.")
+    except ImportError:
+        return api_error("OPENAI_DEPENDENCY_MISSING", "The openai package is required to use the openai provider.")
     except UnsupportedProviderError as exc:
         return api_error("INVALID_PROVIDER", str(exc))
     except Exception as exc:  # pragma: no cover - defensive boundary

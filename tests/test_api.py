@@ -63,6 +63,84 @@ def test_review_run_mock_creates_hitl_session(tmp_path: Path, monkeypatch) -> No
     assert body["hitl_session_path"] == "outputs/hitl/review/alchemised.json"
 
 
+def test_review_run_defaults_to_mock_provider(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    _prepare_workspace(tmp_path)
+    client = TestClient(create_app())
+
+    response = client.post(
+        "/review/run",
+        json={
+            "book_slug": "alchemised",
+            "user_opinion": "J'ai aimÃ©.",
+            "platform": "tiktok",
+            "model": None,
+            "temperature": 0.7,
+            "hitl_enabled": False,
+        },
+    )
+
+    body = response.json()
+    assert response.status_code == 200
+    assert body["provider"] == "mock"
+
+
+def test_review_run_accepts_openai_provider_without_api_key(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    _prepare_workspace(tmp_path)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    client = TestClient(create_app())
+
+    response = client.post(
+        "/review/run",
+        json={
+            "book_slug": "alchemised",
+            "user_opinion": "J'ai aimÃ©.",
+            "platform": "tiktok",
+            "provider": "openai",
+            "model": None,
+            "temperature": 0.7,
+            "hitl_enabled": False,
+        },
+    )
+
+    body = response.json()
+    assert response.status_code == 200
+    assert body["ok"] is False
+    assert body["error"]["code"] == "MISSING_API_KEY"
+
+
+def test_review_run_reports_missing_openai_dependency(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    _prepare_workspace(tmp_path)
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+    from bookstai.api.routes import review as review_routes
+
+    def fake_create_llm_client(**kwargs):
+        raise ImportError("missing openai")
+
+    monkeypatch.setattr(review_routes, "create_llm_client", fake_create_llm_client)
+    client = TestClient(create_app())
+
+    response = client.post(
+        "/review/run",
+        json={
+            "book_slug": "alchemised",
+            "user_opinion": "J'ai aimÃ©.",
+            "platform": "tiktok",
+            "provider": "openai",
+            "model": None,
+            "temperature": 0.7,
+            "hitl_enabled": False,
+        },
+    )
+
+    body = response.json()
+    assert response.status_code == 200
+    assert body["ok"] is False
+    assert body["error"]["code"] == "OPENAI_DEPENDENCY_MISSING"
+
+
 def test_song_run_mock(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.chdir(tmp_path)
     _prepare_workspace(tmp_path)
@@ -95,6 +173,87 @@ def test_song_run_mock(tmp_path: Path, monkeypatch) -> None:
     assert "image" not in body["result"]
     assert "storyboard" in body["result"]
     assert "prompts" in body["result"]
+
+
+def test_song_run_defaults_to_mock_provider(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    _prepare_workspace(tmp_path)
+    client = TestClient(create_app())
+
+    response = client.post(
+        "/song/run",
+        json={
+            "book_slug": "alchemised",
+            "story_scope": "pitch_only",
+            "song_style": "parody",
+            "platform": "tiktok",
+            "model": None,
+            "temperature": 0.7,
+            "hitl_enabled": False,
+        },
+    )
+
+    body = response.json()
+    assert response.status_code == 200
+    assert body["provider"] == "mock"
+
+
+def test_song_run_accepts_openai_provider_without_api_key(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    _prepare_workspace(tmp_path)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    client = TestClient(create_app())
+
+    response = client.post(
+        "/song/run",
+        json={
+            "book_slug": "alchemised",
+            "story_scope": "pitch_only",
+            "song_style": "parody",
+            "platform": "tiktok",
+            "provider": "openai",
+            "model": None,
+            "temperature": 0.7,
+            "hitl_enabled": False,
+        },
+    )
+
+    body = response.json()
+    assert response.status_code == 200
+    assert body["ok"] is False
+    assert body["error"]["code"] == "MISSING_API_KEY"
+
+
+def test_song_run_reports_missing_openai_dependency(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    _prepare_workspace(tmp_path)
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+    from bookstai.api.routes import song as song_routes
+
+    def fake_create_llm_client(**kwargs):
+        raise ImportError("missing openai")
+
+    monkeypatch.setattr(song_routes, "create_llm_client", fake_create_llm_client)
+    client = TestClient(create_app())
+
+    response = client.post(
+        "/song/run",
+        json={
+            "book_slug": "alchemised",
+            "story_scope": "pitch_only",
+            "song_style": "parody",
+            "platform": "tiktok",
+            "provider": "openai",
+            "model": None,
+            "temperature": 0.7,
+            "hitl_enabled": False,
+        },
+    )
+
+    body = response.json()
+    assert response.status_code == 200
+    assert body["ok"] is False
+    assert body["error"]["code"] == "OPENAI_DEPENDENCY_MISSING"
 
 
 def test_song_run_mock_full_spoilers(tmp_path: Path, monkeypatch) -> None:

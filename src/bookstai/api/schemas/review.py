@@ -11,7 +11,7 @@ class ReviewRunRequest(BaseModel):
     book_slug: str
     user_opinion: str
     platform: str
-    provider: Literal["mock"] = "mock"
+    provider: Literal["mock", "openai"] = "mock"
     model: str | None = None
     temperature: float = 0.7
     hitl_enabled: bool = True
@@ -21,8 +21,7 @@ class ReviewRunResponse(BaseModel):
     ok: bool
     type: Literal["review"]
     book_slug: str
-    provider: Literal["mock"]
+    provider: Literal["mock", "openai"]
     hitl_enabled: bool
     result: dict[str, Any]
     hitl_session_path: str | None = None
-

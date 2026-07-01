@@ -12,7 +12,7 @@ class SongRunRequest(BaseModel):
     story_scope: Literal["pitch_only", "full_spoilers"] = "pitch_only"
     song_style: Literal["parody"] = "parody"
     platform: Literal["tiktok", "instagram"] = "tiktok"
-    provider: Literal["mock"] = "mock"
+    provider: Literal["mock", "openai"] = "mock"
     model: str | None = None
     temperature: float = 0.7
     hitl_enabled: bool = True
@@ -25,7 +25,7 @@ class SongRunResponse(BaseModel):
     story_scope: Literal["pitch_only", "full_spoilers"]
     song_style: Literal["parody"]
     platform: Literal["tiktok", "instagram"]
-    provider: Literal["mock"]
+    provider: Literal["mock", "openai"]
     model: str | None = None
     temperature: float
     result: dict[str, Any]
