@@ -20,6 +20,9 @@ Requires-Python: >=3.10
 Description-Content-Type: text/markdown
 Provides-Extra: openai
 Requires-Dist: openai>=1.0.0; extra == "openai"
+Provides-Extra: api
+Requires-Dist: fastapi>=0.115.0; extra == "api"
+Requires-Dist: uvicorn[standard]>=0.30.0; extra == "api"
 Provides-Extra: dev
 Requires-Dist: pytest>=7.4.0; extra == "dev"
 Requires-Dist: pytest-cov>=4.1.0; extra == "dev"
@@ -31,7 +34,13 @@ Requires-Dist: ruff>=0.0.280; extra == "dev"
 
 # BookstAI
 
-**BookstAI** is an AI-powered book analysis and content generation framework designed to help analyze books, generate summaries, create reviews, and produce visual designs.
+**BookstAI** is a local-first book analysis and content generation framework built around:
+
+Next.js UI
+↓
+FastAPI API
+↓
+Python workflows
 
 ## Features
 
@@ -167,7 +176,24 @@ Sprint 1 establishes the core foundation of BookstAI:
 - ✅ MemoryReader component for parsing Markdown files
 - ✅ Comprehensive test suite
 
-See [Sprint Documentation](docs/roadmap.md) for more details.
+See [Roadmap](docs/roadmap.md) for more details.
+
+## Usage rapide
+
+Voir :
+
+- `docs/commands.md`
+- `docs/daily-usage.md`
+
+Commandes principales :
+
+```text
+bookstai review
+bookstai song
+bookstai hitl
+bookstai learning
+bookstai history
+```
 
 ## Contributing
 

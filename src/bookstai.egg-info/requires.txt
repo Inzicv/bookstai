@@ -1,4 +1,8 @@
 
+[api]
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+
 [dev]
 pytest>=7.4.0
 pytest-cov>=4.1.0
