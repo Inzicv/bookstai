@@ -27,8 +27,7 @@ export type SongRunResponse = ApiSuccess<{
   book_slug: string
   story_scope: 'pitch_only' | 'full_spoilers'
   song_style: 'parody'
-  reference_song: string
-  platform: string
+  platform: 'tiktok' | 'instagram'
   provider: 'mock'
   model: string | null
   temperature: number

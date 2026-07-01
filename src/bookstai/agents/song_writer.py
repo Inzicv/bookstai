@@ -23,7 +23,6 @@ class SongWriterAgent:
         comedy_bank: dict[str, Any],
         story_scope: str = "pitch_only",
         song_style: str = "parody",
-        reference_song: str = "",
         spoiler_mode: str | None = None,
     ) -> dict[str, Any]:
         effective_story_scope = story_scope
@@ -40,7 +39,6 @@ class SongWriterAgent:
                 "comedy_bank": comedy_bank,
                 "story_scope": effective_story_scope,
                 "song_style": song_style,
-                "reference_song": reference_song,
             },
         )
         response = self.llm_client.generate(prompt)
@@ -48,9 +46,8 @@ class SongWriterAgent:
         return {
             "agent": "song_writer",
             "prompt_path": "agents/song_writer.md",
-            "title": reference_song or "BookstAI Song",
+            "title": "BookstAI Song",
             "concept": "Parodie musicale du livre",
-            "reference_song": reference_song,
             "story_scope": effective_story_scope,
             "spoiler_mode": "spoiler_free" if effective_story_scope == "pitch_only" else "full",
             "song_style": song_style,

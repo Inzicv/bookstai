@@ -45,7 +45,6 @@ def test_song_workflow_runs_end_to_end(tmp_path: Path) -> None:
         book_slug="alchemised",
         story_scope="pitch_only",
         song_style="parody",
-        reference_song="Mockingbird - Eminem",
         platform="instagram",
     )
 
@@ -53,7 +52,6 @@ def test_song_workflow_runs_end_to_end(tmp_path: Path) -> None:
     assert result["book_slug"] == "alchemised"
     assert result["story_scope"] == "pitch_only"
     assert result["song_style"] == "parody"
-    assert result["reference_song"] == "Mockingbird - Eminem"
     assert "context" in result
     assert "style" in result
     assert "comedy" in result

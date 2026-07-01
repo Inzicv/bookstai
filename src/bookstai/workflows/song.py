@@ -24,7 +24,7 @@ class SongWorkflow:
         memory_root: Path,
         prompt_root: Path,
         llm_client: LLMClient,
-        image_backend: Any | None = None,
+        **_: Any,
     ) -> None:
         self.context_builder = ContextBuilder(memory_root=memory_root)
         self.style_memory_agent = StyleMemoryAgent(memory_root=memory_root)
@@ -33,14 +33,12 @@ class SongWorkflow:
         self.art_director_agent = ArtDirectorAgent(prompt_root=prompt_root, llm_client=llm_client)
         self.prompt_maker_agent = PromptMakerAgent(prompt_root=prompt_root, llm_client=llm_client)
         self.social_media_agent = SocialMediaAgent(prompt_root=prompt_root, llm_client=llm_client)
-        self.image_backend = image_backend
 
     def run(
         self,
         book_slug: str,
         story_scope: str = "pitch_only",
         song_style: str = "parody",
-        reference_song: str = "",
         platform: str = "tiktok",
         **legacy_kwargs: Any,
     ) -> dict[str, Any]:
@@ -48,7 +46,6 @@ class SongWorkflow:
             book_slug=book_slug,
             story_scope=story_scope,
             song_style=song_style,
-            reference_song=reference_song,
             platform=platform,
             legacy_kwargs=legacy_kwargs,
         )
@@ -58,7 +55,6 @@ class SongWorkflow:
         book_slug: str,
         story_scope: str = "pitch_only",
         song_style: str = "parody",
-        reference_song: str = "",
         platform: str = "tiktok",
         **legacy_kwargs: Any,
     ) -> dict[str, Any]:
@@ -66,7 +62,6 @@ class SongWorkflow:
             book_slug=book_slug,
             story_scope=story_scope,
             song_style=song_style,
-            reference_song=reference_song,
             platform=platform,
             legacy_kwargs=legacy_kwargs,
         )
@@ -84,7 +79,6 @@ class SongWorkflow:
         book_slug: str,
         story_scope: str,
         song_style: str,
-        reference_song: str,
         platform: str,
         legacy_kwargs: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
@@ -101,7 +95,6 @@ class SongWorkflow:
             comedy_bank=comedy,
             story_scope=story_scope,
             song_style=song_style,
-            reference_song=reference_song,
         )
         art_direction = self.art_director_agent.generate(
             book_context=context,
@@ -120,7 +113,6 @@ class SongWorkflow:
             "book_slug": book_slug,
             "story_scope": story_scope,
             "song_style": song_style,
-            "reference_song": reference_song,
             "context": context,
             "style": style,
             "comedy": comedy,

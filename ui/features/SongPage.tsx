@@ -11,8 +11,7 @@ type SongFormState = {
   book_slug: string
   story_scope: 'pitch_only' | 'full_spoilers'
   song_style: 'parody'
-  reference_song: string
-  platform: string
+  platform: 'tiktok' | 'instagram'
   provider: 'mock'
   model: string
   temperature: string
@@ -24,7 +23,6 @@ export default function SongPage() {
     book_slug: 'alchemised',
     story_scope: 'pitch_only',
     song_style: 'parody',
-    reference_song: '',
     platform: 'tiktok',
     provider: 'mock',
     model: '',
@@ -62,7 +60,6 @@ export default function SongPage() {
             book_slug: form.book_slug,
             story_scope: form.story_scope,
             song_style: form.song_style,
-            reference_song: form.reference_song,
             platform: form.platform,
             provider: form.provider,
             model: form.model || null,
@@ -109,21 +106,18 @@ export default function SongPage() {
             </select>
           </FormField>
         </div>
-        <FormField label="Chanson de référence">
-          <input
-            className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 placeholder:text-slate-500"
-            value={form.reference_song}
-            onChange={(e) => setForm({ ...form, reference_song: e.target.value })}
-            placeholder="Mockingbird - Eminem"
-          />
-        </FormField>
         <div className="grid gap-4 md:grid-cols-2">
           <FormField label="Plateforme">
-            <input
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 placeholder:text-slate-500"
+            <select
+              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100"
               value={form.platform}
-              onChange={(e) => setForm({ ...form, platform: e.target.value })}
-            />
+              onChange={(e) =>
+                setForm({ ...form, platform: e.target.value as SongFormState['platform'] })
+              }
+            >
+              <option value="tiktok">TikTok</option>
+              <option value="instagram">Instagram</option>
+            </select>
           </FormField>
           <FormField label="Provider">
             <select
@@ -136,6 +130,14 @@ export default function SongPage() {
           </FormField>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
+          <FormField label="Modèle">
+            <input
+              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 placeholder:text-slate-500"
+              value={form.model}
+              onChange={(e) => setForm({ ...form, model: e.target.value })}
+              placeholder="Optionnel"
+            />
+          </FormField>
           <FormField label="Température">
             <input
               type="number"
@@ -145,15 +147,15 @@ export default function SongPage() {
               onChange={(e) => setForm({ ...form, temperature: e.target.value })}
             />
           </FormField>
-          <label className="flex items-center gap-2 text-sm text-slate-300">
-            <input
-              type="checkbox"
-              checked={form.hitl_enabled}
-              onChange={(e) => setForm({ ...form, hitl_enabled: e.target.checked })}
-            />
-            HITL activé
-          </label>
         </div>
+        <label className="flex items-center gap-2 text-sm text-slate-300">
+          <input
+            type="checkbox"
+            checked={form.hitl_enabled}
+            onChange={(e) => setForm({ ...form, hitl_enabled: e.target.checked })}
+          />
+          HITL activé
+        </label>
         <LoadingButton loading={loading}>Générer Song</LoadingButton>
       </form>
       {error ? <ErrorMessage message={error} /> : null}

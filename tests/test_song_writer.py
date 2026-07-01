@@ -29,13 +29,12 @@ def test_agent_loads_song_prompt(tmp_path: Path) -> None:
         comedy_bank={"response": "Hooks et punchlines"},
         story_scope="pitch_only",
         song_style="parody",
-        reference_song="Mockingbird - Eminem",
     )
 
     assert result["agent"] == "song_writer"
     assert result["prompt_path"] == "agents/song_writer.md"
     assert result["story_scope"] == "pitch_only"
-    assert result["reference_song"] == "Mockingbird - Eminem"
+    assert result["title"] == "BookstAI Song"
     assert result["response"] == "Paroles générées"
 
 

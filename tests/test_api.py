@@ -74,7 +74,6 @@ def test_song_run_mock(tmp_path: Path, monkeypatch) -> None:
             "book_slug": "alchemised",
             "story_scope": "pitch_only",
             "song_style": "parody",
-            "reference_song": "Mockingbird - Eminem",
             "platform": "tiktok",
             "provider": "mock",
             "model": None,
@@ -90,7 +89,7 @@ def test_song_run_mock(tmp_path: Path, monkeypatch) -> None:
     assert body["provider"] == "mock"
     assert body["story_scope"] == "pitch_only"
     assert body["song_style"] == "parody"
-    assert body["reference_song"] == "Mockingbird - Eminem"
+    assert "reference_song" not in body
     assert body["hitl_session_path"] == "outputs/hitl/song/alchemised.json"
     assert "image_backend" not in body
     assert "image" not in body["result"]
@@ -109,7 +108,6 @@ def test_song_run_mock_full_spoilers(tmp_path: Path, monkeypatch) -> None:
             "book_slug": "alchemised",
             "story_scope": "full_spoilers",
             "song_style": "parody",
-            "reference_song": "Mockingbird - Eminem",
             "platform": "tiktok",
             "provider": "mock",
             "model": None,
@@ -121,6 +119,7 @@ def test_song_run_mock_full_spoilers(tmp_path: Path, monkeypatch) -> None:
     body = response.json()
     assert response.status_code == 200
     assert body["story_scope"] == "full_spoilers"
+    assert "reference_song" not in body
     assert body["hitl_session_path"] is None
     assert "image" not in body["result"]
 

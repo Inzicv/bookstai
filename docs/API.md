@@ -43,7 +43,6 @@ Il produit:
   "book_slug": "lesheritiersdorion",
   "story_scope": "pitch_only",
   "song_style": "parody",
-  "reference_song": "Mockingbird - Eminem",
   "platform": "tiktok",
   "provider": "mock",
   "model": null,
@@ -59,6 +58,8 @@ Il produit:
 - Le provider par défaut est `mock`.
 - Aucun appel OpenAI n'est effectué par défaut.
 - Le workflow Song ne génère pas d'image.
+- Les références de style viennent de la mémoire BookstAI, pas d'un champ utilisateur.
+- `platform` sert uniquement à l'agent Social Media.
 - La CLI reste disponible mais secondaire.
 
 ## Learning Apply

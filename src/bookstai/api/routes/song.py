@@ -35,7 +35,6 @@ def run_song(payload: SongRunRequest) -> dict[str, Any]:
                 book_slug=payload.book_slug,
                 story_scope=payload.story_scope,
                 song_style=payload.song_style,
-                reference_song=payload.reference_song,
                 platform=payload.platform,
             )
             if payload.hitl_enabled
@@ -43,7 +42,6 @@ def run_song(payload: SongRunRequest) -> dict[str, Any]:
                 book_slug=payload.book_slug,
                 story_scope=payload.story_scope,
                 song_style=payload.song_style,
-                reference_song=payload.reference_song,
                 platform=payload.platform,
             )
         )
@@ -56,7 +54,6 @@ def run_song(payload: SongRunRequest) -> dict[str, Any]:
             "book_slug": payload.book_slug,
             "story_scope": payload.story_scope,
             "song_style": payload.song_style,
-            "reference_song": payload.reference_song,
             "platform": payload.platform,
             "provider": payload.provider,
             "model": payload.model,
