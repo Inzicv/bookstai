@@ -22,8 +22,8 @@ def _prepare_workspace(tmp_path: Path) -> None:
     _write_prompt(prompt_root, "review_writer.md", "Review: {{comedy_bank}}")
     _write_prompt(prompt_root, "social_media.md", "Social: {{validated_content}}")
     _write_prompt(prompt_root, "song_writer.md", "Song: {{comedy_bank}}")
-    _write_prompt(prompt_root, "art_director.md", "Art: {{validated_content}}")
-    _write_prompt(prompt_root, "prompt_maker.md", "Image prompt: {{art_direction}}")
+    _write_prompt(prompt_root, "art_director.md", "Art: {{validated_song}}")
+    _write_prompt(prompt_root, "prompt_maker.md", "Image prompt: {{storyboard}}")
 
 
 def test_health_route(tmp_path: Path, monkeypatch) -> None:

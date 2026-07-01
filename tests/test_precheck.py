@@ -67,8 +67,8 @@ def test_agent_prompt_files_contain_expected_variables() -> None:
             "story_scope",
             "song_style",
         },
-        "art_director.md": {"book_context", "style_context", "validated_content"},
-        "prompt_maker.md": {"art_direction"},
+        "art_director.md": {"book_context", "style_context", "validated_song"},
+        "prompt_maker.md": {"storyboard"},
         "social_media.md": {"validated_content", "style_context", "platform"},
         "memory_manager.md": {"generated_content", "corrected_content"},
     }
@@ -83,8 +83,8 @@ def test_agent_prompt_files_contain_expected_variables() -> None:
             "story_scope",
             "song_style",
         },
-        "art_director.md": {"book_context", "style_context", "validated_content"},
-        "prompt_maker.md": {"art_direction"},
+        "art_director.md": {"book_context", "style_context", "validated_song"},
+        "prompt_maker.md": {"storyboard"},
         "social_media.md": {"validated_content", "style_context", "platform"},
         "memory_manager.md": {"generated_content", "corrected_content"},
     }

@@ -20,14 +20,14 @@ class ArtDirectorAgent:
         self,
         book_context: dict[str, Any],
         style_context: dict[str, Any],
-        song: dict[str, Any],
+        validated_song: str | dict[str, Any],
     ) -> dict[str, Any]:
         prompt = self.prompt_builder.build(
             prompt_path="agents/art_director.md",
             variables={
                 "book_context": book_context,
                 "style_context": style_context,
-                "validated_content": song,
+                "validated_song": validated_song,
             },
         )
         response = self.llm_client.generate(prompt)

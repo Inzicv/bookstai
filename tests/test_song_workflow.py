@@ -11,15 +11,15 @@ from bookstai.workflows.song import SongWorkflow
 
 def _write_prompt(prompt_root: Path, name: str, content: str) -> None:
     prompt_file = prompt_root / "agents" / name
-    prompt_file.parent.mkdir(parents=True)
+    prompt_file.parent.mkdir(parents=True, exist_ok=True)
     prompt_file.write_text(content, encoding="utf-8")
 
 
 def _prepare_prompts(prompt_root: Path) -> None:
     _write_prompt(prompt_root, "comedy_room.md", "Comedy: {{book_context}}")
     _write_prompt(prompt_root, "song_writer.md", "Song: {{comedy_bank}}")
-    _write_prompt(prompt_root, "art_director.md", "Art: {{validated_content}}")
-    _write_prompt(prompt_root, "prompt_maker.md", "Prompts: {{art_direction}}")
+    _write_prompt(prompt_root, "art_director.md", "Art: {{validated_song}}")
+    _write_prompt(prompt_root, "prompt_maker.md", "Prompts: {{storyboard}}")
     _write_prompt(prompt_root, "social_media.md", "Social: {{validated_content}}")
 
 
@@ -60,6 +60,10 @@ def test_song_workflow_runs_end_to_end(tmp_path: Path) -> None:
     assert "prompts" in result
     assert "social" in result
     assert "image" not in result
+    assert "image_prompt" not in result
+    assert "image_backend" not in result
+    assert "prompt_type" not in result
+    assert "reference_song" not in result
     assert result["song"]["story_scope"] == "pitch_only"
     assert result["social"]["platform"] == "instagram"
 
@@ -140,3 +144,5 @@ def test_song_workflow_run_with_hitl_returns_hitl_session(tmp_path: Path) -> Non
     assert result["hitl"]["steps"][2]["content"] == result["storyboard"]
     assert result["hitl"]["steps"][3]["content"] == result["prompts"]
     assert result["hitl"]["steps"][4]["content"] == result["social"]
+    assert "art_direction" not in result["hitl"]
+    assert "image_prompt" not in result["hitl"]

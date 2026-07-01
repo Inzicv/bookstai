@@ -96,12 +96,12 @@ class SongWorkflow:
             story_scope=story_scope,
             song_style=song_style,
         )
-        art_direction = self.art_director_agent.generate(
+        storyboard = self.art_director_agent.generate(
             book_context=context,
             style_context=style,
-            song=song,
+            validated_song=song.get("response", song),
         )
-        prompts = self.prompt_maker_agent.generate(art_direction=art_direction)
+        prompts = self.prompt_maker_agent.generate(validated_storyboard=storyboard)
         social = self.social_media_agent.generate(
             validated_content=song.get("response", ""),
             style_context=style,
@@ -117,7 +117,7 @@ class SongWorkflow:
             "style": style,
             "comedy": comedy,
             "song": song,
-            "storyboard": art_direction,
+            "storyboard": storyboard,
             "prompts": prompts,
             "social": social,
             "legacy": legacy_kwargs or {},

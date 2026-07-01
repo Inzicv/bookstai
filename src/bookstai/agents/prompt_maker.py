@@ -16,11 +16,11 @@ class PromptMakerAgent:
         self.prompt_builder = PromptBuilder(prompt_root=prompt_root)
         self.llm_client = llm_client
 
-    def generate(self, art_direction: dict[str, Any]) -> dict[str, Any]:
+    def generate(self, validated_storyboard: dict[str, Any] | str) -> dict[str, Any]:
         prompt = self.prompt_builder.build(
             prompt_path="agents/prompt_maker.md",
             variables={
-                "art_direction": art_direction,
+                "storyboard": validated_storyboard,
             },
         )
         response = self.llm_client.generate(prompt)

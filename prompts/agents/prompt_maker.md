@@ -4,9 +4,9 @@ BookstAI voice: clear, modern, and usable by the créatrice after validation wit
 
 Variables:
 
-{{art_direction}}
+{{storyboard}}
 
-Use `art_direction` as the source of truth.
+Use `storyboard` as the source of truth.
 Keep the prior `style_context` of the créatrice in mind when interpreting the art direction.
 If the artistic direction is thin, stay faithful to it without inventing contradictions.
 Keep everything human-checkable and Human In The Loop friendly.
