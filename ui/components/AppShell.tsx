@@ -15,10 +15,10 @@ const links = [
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   return (
-    <div className="min-h-screen">
-      <header className="sticky top-0 z-10 border-b border-black/5 bg-[#f5f1ea]/90 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-4 py-4 sm:px-6 lg:px-8">
-          <Link href="/" className="text-lg font-semibold text-zinc-950">
+    <div className="min-h-screen text-slate-100">
+      <header className="sticky top-0 z-10 border-b border-slate-800/90 bg-slate-950/85 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+          <Link href="/" className="text-lg font-semibold tracking-tight text-slate-50">
             BookstAI
           </Link>
           <nav className="flex flex-wrap gap-2 text-sm">
@@ -27,7 +27,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 key={href}
                 href={href}
                 className={`rounded-full px-3 py-1.5 transition ${
-                  pathname === href ? 'bg-zinc-950 text-white' : 'bg-white/70 text-zinc-700'
+                  pathname === href
+                    ? 'bg-violet-500/20 text-violet-200 ring-1 ring-inset ring-violet-400/30'
+                    : 'bg-slate-900/80 text-slate-300 hover:bg-slate-800 hover:text-slate-100'
                 }`}
               >
                 {label}
@@ -40,4 +42,3 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     </div>
   )
 }
-
