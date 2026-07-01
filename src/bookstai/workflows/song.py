@@ -60,11 +60,8 @@ class SongWorkflow:
             legacy_kwargs=legacy_kwargs,
         )
         session = HITLSession(workflow_name="song", item_slug=book_slug)
-        session.add_step(name="comedy", content=result["comedy"])
+        session.add_step(name="song_options", content=result["song_options"])
         session.add_step(name="song", content=result["song"])
-        session.add_step(name="storyboard", content=result["storyboard"])
-        session.add_step(name="prompts", content=result["prompts"])
-        session.add_step(name="social", content=result["social"])
         result["hitl"] = session.to_dict()
         return result
 
@@ -81,11 +78,11 @@ class SongWorkflow:
             spoiler_level=story_scope,
         )
         style = self.style_memory_agent.build()
-        comedy = self.comedy_room_agent.generate(book_context=context, style_context=style)
+        song_options = self.comedy_room_agent.generate(book_context=context, style_context=style)
         song = self.song_writer_agent.generate(
             book_context=context,
             style_context=style,
-            comedy_bank=comedy,
+            comedy_bank=song_options,
             story_scope=story_scope,
             song_style=song_style,
         )
@@ -102,7 +99,7 @@ class SongWorkflow:
             "song_style": song_style,
             "context": context,
             "style": style,
-            "song_options": comedy,
+            "song_options": song_options,
             "song": song,
             "storyboard": storyboard,
             "prompts": prompts,

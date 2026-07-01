@@ -16,7 +16,7 @@ export type HealthResponse = {
 export type ReviewRunResponse = ApiSuccess<{
   type: 'review'
   book_slug: string
-  provider: 'mock'
+  provider: 'mock' | 'openai'
   hitl_enabled: boolean
   result: Record<string, unknown>
   hitl_session_path: string | null
@@ -27,8 +27,7 @@ export type SongRunResponse = ApiSuccess<{
   book_slug: string
   story_scope: 'pitch_only' | 'full_spoilers'
   song_style: 'parody'
-  platform: 'tiktok' | 'instagram'
-  provider: 'mock'
+  provider: 'mock' | 'openai'
   model: string | null
   temperature: number
   hitl_enabled: boolean
@@ -144,7 +143,7 @@ export type SocialRunResponse = ApiSuccess<{
   type: 'social'
   book_slug: string
   provider: 'mock' | 'openai'
-  result: { instagram_caption: string; tiktok_caption: string }
+  result: Record<string, unknown>
 }>
 export const runSocial = (payload: unknown) =>
   request<SocialRunResponse>('/social/run', { method: 'POST', body: JSON.stringify(payload) })

@@ -58,18 +58,21 @@ export function HitlStepCard({
         </div>
         <div className="flex flex-wrap gap-2">
           <button
+            type="button"
             className="rounded-full bg-emerald-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-emerald-400"
             onClick={() => onApprove(comment)}
           >
-            Approuver
+            Valider
           </button>
           <button
+            type="button"
             className="rounded-full bg-amber-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-amber-400"
             onClick={() => onEdit(editedContent, comment)}
           >
             Modifier
           </button>
           <button
+            type="button"
             className="rounded-full bg-rose-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-rose-400"
             onClick={() => onReject(comment)}
           >
@@ -114,7 +117,7 @@ export function HitlStepCard({
           className="text-sm font-medium text-slate-300 transition hover:text-slate-100"
           onClick={() => setShowDebug((value) => !value)}
         >
-          {showDebug ? 'Masquer le debug JSON' : 'Afficher le debug JSON'}
+          {showDebug ? 'Masquer les details techniques' : 'Voir les details techniques'}
         </button>
         {showDebug ? (
           <div className="mt-4 grid gap-3 text-sm md:grid-cols-2">
@@ -132,7 +135,7 @@ export function HitlStepCard({
                     <JsonBlock value={value} />
                   </div>
                 ) : (
-                  <pre className="mt-2 whitespace-pre-wrap break-words text-xs leading-6 text-slate-200">
+                  <pre className="mt-2 max-h-96 overflow-auto whitespace-pre-wrap break-words text-xs leading-6 text-slate-200">
                     {formatSummary(value)}
                   </pre>
                 )}

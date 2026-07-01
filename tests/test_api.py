@@ -134,7 +134,6 @@ def test_review_run_mock_creates_hitl_session(tmp_path: Path, monkeypatch) -> No
         json={
             "book_slug": "alchemised",
             "user_opinion": "J'ai aimé.",
-            "platform": "tiktok",
             "provider": "mock",
             "model": None,
             "temperature": 0.7,
@@ -149,6 +148,7 @@ def test_review_run_mock_creates_hitl_session(tmp_path: Path, monkeypatch) -> No
     assert body["provider"] == "mock"
     assert body["hitl_enabled"] is True
     assert body["hitl_session_path"] == "outputs/hitl/review/alchemised.json"
+    assert [step["name"] for step in body["result"]["hitl"]["steps"]] == ["pitch_options", "review"]
 
 
 def test_review_run_defaults_to_mock_provider(tmp_path: Path, monkeypatch) -> None:
@@ -160,8 +160,7 @@ def test_review_run_defaults_to_mock_provider(tmp_path: Path, monkeypatch) -> No
         "/review/run",
         json={
             "book_slug": "alchemised",
-            "user_opinion": "J'ai aimÃ©.",
-            "platform": "tiktok",
+            "user_opinion": "J'ai aimé.",
             "model": None,
             "temperature": 0.7,
             "hitl_enabled": False,
@@ -183,8 +182,7 @@ def test_review_run_accepts_openai_provider_without_api_key(tmp_path: Path, monk
         "/review/run",
         json={
             "book_slug": "alchemised",
-            "user_opinion": "J'ai aimÃ©.",
-            "platform": "tiktok",
+            "user_opinion": "J'ai aimé.",
             "provider": "openai",
             "model": None,
             "temperature": 0.7,
@@ -214,8 +212,7 @@ def test_review_run_reports_missing_openai_dependency(tmp_path: Path, monkeypatc
         "/review/run",
         json={
             "book_slug": "alchemised",
-            "user_opinion": "J'ai aimÃ©.",
-            "platform": "tiktok",
+            "user_opinion": "J'ai aimé.",
             "provider": "openai",
             "model": None,
             "temperature": 0.7,
@@ -240,7 +237,6 @@ def test_song_run_mock(tmp_path: Path, monkeypatch) -> None:
             "book_slug": "alchemised",
             "story_scope": "pitch_only",
             "song_style": "parody",
-            "platform": "tiktok",
             "provider": "mock",
             "model": None,
             "temperature": 0.7,
@@ -261,6 +257,7 @@ def test_song_run_mock(tmp_path: Path, monkeypatch) -> None:
     assert "image" not in body["result"]
     assert "storyboard" in body["result"]
     assert "prompts" in body["result"]
+    assert [step["name"] for step in body["result"]["hitl"]["steps"]] == ["song_options", "song"]
 
 
 def test_song_run_defaults_to_mock_provider(tmp_path: Path, monkeypatch) -> None:
@@ -274,7 +271,6 @@ def test_song_run_defaults_to_mock_provider(tmp_path: Path, monkeypatch) -> None
             "book_slug": "alchemised",
             "story_scope": "pitch_only",
             "song_style": "parody",
-            "platform": "tiktok",
             "model": None,
             "temperature": 0.7,
             "hitl_enabled": False,
@@ -298,7 +294,6 @@ def test_song_run_accepts_openai_provider_without_api_key(tmp_path: Path, monkey
             "book_slug": "alchemised",
             "story_scope": "pitch_only",
             "song_style": "parody",
-            "platform": "tiktok",
             "provider": "openai",
             "model": None,
             "temperature": 0.7,
@@ -330,7 +325,6 @@ def test_song_run_reports_missing_openai_dependency(tmp_path: Path, monkeypatch)
             "book_slug": "alchemised",
             "story_scope": "pitch_only",
             "song_style": "parody",
-            "platform": "tiktok",
             "provider": "openai",
             "model": None,
             "temperature": 0.7,
@@ -355,7 +349,6 @@ def test_song_run_mock_full_spoilers(tmp_path: Path, monkeypatch) -> None:
             "book_slug": "alchemised",
             "story_scope": "full_spoilers",
             "song_style": "parody",
-            "platform": "tiktok",
             "provider": "mock",
             "model": None,
             "temperature": 0.7,
@@ -381,7 +374,6 @@ def test_hitl_session_can_be_created_read_and_approved(tmp_path: Path, monkeypat
         json={
             "book_slug": "alchemised",
             "user_opinion": "J'ai aimé.",
-            "platform": "tiktok",
             "provider": "mock",
             "hitl_enabled": True,
         },
@@ -396,7 +388,7 @@ def test_hitl_session_can_be_created_read_and_approved(tmp_path: Path, monkeypat
         json={
             "type": "review",
             "book_slug": "alchemised",
-            "step_id": "comedy",
+            "step_id": "pitch_options",
             "comment": "OK",
         },
     )

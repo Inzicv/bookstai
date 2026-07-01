@@ -20,7 +20,6 @@ def _prepare_prompts(prompt_root: Path) -> None:
     _write_prompt(prompt_root, "song_writer.md", "Song: {{comedy_bank}}")
     _write_prompt(prompt_root, "art_director.md", "Art: {{validated_song}}")
     _write_prompt(prompt_root, "prompt_maker.md", "Prompts: {{storyboard}}")
-    _write_prompt(prompt_root, "social_media.md", "Social: {{validated_content}}")
 
 
 def _prepare_memory(memory_root: Path) -> None:
@@ -45,7 +44,6 @@ def test_song_workflow_runs_end_to_end(tmp_path: Path) -> None:
         book_slug="alchemised",
         story_scope="pitch_only",
         song_style="parody",
-        platform="instagram",
     )
 
     assert result["workflow"] == "song"
@@ -54,18 +52,17 @@ def test_song_workflow_runs_end_to_end(tmp_path: Path) -> None:
     assert result["song_style"] == "parody"
     assert "context" in result
     assert "style" in result
-    assert "comedy" in result
+    assert "song_options" in result
     assert "song" in result
     assert "storyboard" in result
     assert "prompts" in result
-    assert "social" in result
+    assert "social" not in result
     assert "image" not in result
     assert "image_prompt" not in result
     assert "image_backend" not in result
     assert "prompt_type" not in result
     assert "reference_song" not in result
     assert result["song"]["story_scope"] == "pitch_only"
-    assert result["social"]["platform"] == "instagram"
 
 
 def test_song_workflow_propagates_missing_book_error(tmp_path: Path) -> None:
@@ -83,7 +80,6 @@ def test_song_workflow_propagates_missing_book_error(tmp_path: Path) -> None:
             book_slug="alchemised",
             story_scope="pitch_only",
             song_style="parody",
-            platform="instagram",
         )
 
 
@@ -104,7 +100,6 @@ def test_song_workflow_propagates_missing_prompt_error(tmp_path: Path) -> None:
             book_slug="alchemised",
             story_scope="pitch_only",
             song_style="parody",
-            platform="instagram",
         )
 
 
@@ -124,25 +119,13 @@ def test_song_workflow_run_with_hitl_returns_hitl_session(tmp_path: Path) -> Non
         book_slug="alchemised",
         story_scope="full_spoilers",
         song_style="parody",
-        platform="instagram",
     )
 
     assert result["workflow"] == "song"
     assert "hitl" in result
     assert result["hitl"]["workflow_name"] == "song"
     assert result["hitl"]["item_slug"] == "alchemised"
-    assert [step["name"] for step in result["hitl"]["steps"]] == [
-        "comedy",
-        "song",
-        "storyboard",
-        "prompts",
-        "social",
-    ]
+    assert [step["name"] for step in result["hitl"]["steps"]] == ["song_options", "song"]
     assert all(step["status"] == "pending" for step in result["hitl"]["steps"])
-    assert result["hitl"]["steps"][0]["content"] == result["comedy"]
+    assert result["hitl"]["steps"][0]["content"] == result["song_options"]
     assert result["hitl"]["steps"][1]["content"] == result["song"]
-    assert result["hitl"]["steps"][2]["content"] == result["storyboard"]
-    assert result["hitl"]["steps"][3]["content"] == result["prompts"]
-    assert result["hitl"]["steps"][4]["content"] == result["social"]
-    assert "art_direction" not in result["hitl"]
-    assert "image_prompt" not in result["hitl"]
