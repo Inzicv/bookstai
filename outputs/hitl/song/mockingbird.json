@@ -1,0 +1,147 @@
+{
+  "workflow_name": "song",
+  "item_slug": "mockingbird",
+  "steps": [
+    {
+      "name": "comedy",
+      "status": "approved",
+      "content": {
+        "agent": "comedy_room",
+        "prompt_path": "agents/comedy_room.md",
+        "response": "Mock response"
+      },
+      "edited_content": null,
+      "validated_content": {
+        "agent": "comedy_room",
+        "prompt_path": "agents/comedy_room.md",
+        "response": "Mock response"
+      },
+      "comment": "",
+      "metadata": {}
+    },
+    {
+      "name": "song",
+      "status": "approved",
+      "content": {
+        "agent": "song_writer",
+        "prompt_path": "agents/song_writer.md",
+        "title": "BookstAI Song",
+        "concept": "Parodie musicale du livre",
+        "story_scope": "pitch_only",
+        "spoiler_mode": "spoiler_free",
+        "song_style": "parody",
+        "lyrics": "Mock response",
+        "structure_notes": "Couplet-refrain adaptables pour validation humaine.",
+        "response": "Mock response"
+      },
+      "edited_content": "je modifie",
+      "validated_content": {
+        "agent": "song_writer",
+        "prompt_path": "agents/song_writer.md",
+        "title": "BookstAI Song",
+        "concept": "Parodie musicale du livre",
+        "story_scope": "pitch_only",
+        "spoiler_mode": "spoiler_free",
+        "song_style": "parody",
+        "lyrics": "Mock response",
+        "structure_notes": "Couplet-refrain adaptables pour validation humaine.",
+        "response": "Mock response"
+      },
+      "comment": "",
+      "metadata": {}
+    },
+    {
+      "name": "storyboard",
+      "status": "rejected",
+      "content": {
+        "agent": "art_director",
+        "prompt_path": "agents/art_director.md",
+        "storyboard": [
+          {
+            "shot_number": 1,
+            "lyrics_reference": "Ouverture",
+            "visual_intention": "Installer l'univers du livre en version parodique.",
+            "entry_image_idea": "Plan large sur le décor principal.",
+            "exit_image_idea": "Le décor se transforme pour la scène suivante.",
+            "characters": [
+              "Personnage principal"
+            ],
+            "background": "Décor principal",
+            "movement": "Panoramique lent",
+            "transition": "cut",
+            "difficulty": "simple"
+          }
+        ],
+        "response": "Mock response"
+      },
+      "edited_content": null,
+      "validated_content": null,
+      "comment": "",
+      "metadata": {}
+    },
+    {
+      "name": "prompts",
+      "status": "approved",
+      "content": {
+        "agent": "prompt_maker",
+        "prompt_path": "agents/prompt_maker.md",
+        "character_prompts": [
+          {
+            "name": "Personnage principal",
+            "prompt": "Portrait du personnage principal"
+          }
+        ],
+        "background_prompts": [
+          {
+            "name": "Décor principal",
+            "prompt": "Décor principal du livre"
+          }
+        ],
+        "prop_prompts": [],
+        "style_notes": "Prompts compatibles storyboard.",
+        "response": "Mock response"
+      },
+      "edited_content": null,
+      "validated_content": {
+        "agent": "prompt_maker",
+        "prompt_path": "agents/prompt_maker.md",
+        "character_prompts": [
+          {
+            "name": "Personnage principal",
+            "prompt": "Portrait du personnage principal"
+          }
+        ],
+        "background_prompts": [
+          {
+            "name": "Décor principal",
+            "prompt": "Décor principal du livre"
+          }
+        ],
+        "prop_prompts": [],
+        "style_notes": "Prompts compatibles storyboard.",
+        "response": "Mock response"
+      },
+      "comment": "",
+      "metadata": {}
+    },
+    {
+      "name": "social",
+      "status": "approved",
+      "content": {
+        "agent": "social_media",
+        "prompt_path": "agents/social_media.md",
+        "platform": "tiktok",
+        "response": "Mock response"
+      },
+      "edited_content": "#modification",
+      "validated_content": {
+        "agent": "social_media",
+        "prompt_path": "agents/social_media.md",
+        "platform": "tiktok",
+        "response": "Mock response"
+      },
+      "comment": "",
+      "metadata": {}
+    }
+  ]
+}
