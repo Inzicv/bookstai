@@ -1,0 +1,59 @@
+{
+  "workflow_name": "review",
+  "item_slug": "alchemised",
+  "steps": [
+    {
+      "name": "comedy",
+      "status": "pending",
+      "content": {
+        "agent": "comedy_room",
+        "prompt_path": "agents/comedy_room.md",
+        "response": "Mock response"
+      },
+      "edited_content": null,
+      "validated_content": {
+        "agent": "comedy_room",
+        "prompt_path": "agents/comedy_room.md",
+        "response": "Mock response"
+      },
+      "comment": null,
+      "metadata": {}
+    },
+    {
+      "name": "review",
+      "status": "pending",
+      "content": {
+        "agent": "review_writer",
+        "prompt_path": "agents/review_writer.md",
+        "response": "Mock response"
+      },
+      "edited_content": null,
+      "validated_content": {
+        "agent": "review_writer",
+        "prompt_path": "agents/review_writer.md",
+        "response": "Mock response"
+      },
+      "comment": null,
+      "metadata": {}
+    },
+    {
+      "name": "social",
+      "status": "pending",
+      "content": {
+        "agent": "social_media",
+        "prompt_path": "agents/social_media.md",
+        "platform": "tiktok",
+        "response": "Mock response"
+      },
+      "edited_content": null,
+      "validated_content": {
+        "agent": "social_media",
+        "prompt_path": "agents/social_media.md",
+        "platform": "tiktok",
+        "response": "Mock response"
+      },
+      "comment": null,
+      "metadata": {}
+    }
+  ]
+}
