@@ -18,18 +18,18 @@ type Provider = 'mock' | 'openai'
 type OpenAIModel = 'gpt-5.5' | 'gpt-5.4' | 'gpt-5.4-mini' | 'gpt-5.4-nano'
 
 const OPENAI_MODEL_OPTIONS: Array<{ value: OpenAIModel; label: string }> = [
-  { value: 'gpt-5.5', label: 'GPT-5.5 â€” meilleur choix qualitÃ© / raisonnement' },
-  { value: 'gpt-5.4', label: 'GPT-5.4 â€” bon Ã©quilibre qualitÃ© / coÃ»t' },
-  { value: 'gpt-5.4-mini', label: 'GPT-5.4 mini â€” plus rapide et moins cher' },
-  { value: 'gpt-5.4-nano', label: 'GPT-5.4 nano â€” Ã©conomique pour tests simples' },
+  { value: 'gpt-5.5', label: 'GPT-5.5 — meilleur choix qualité / raisonnement' },
+  { value: 'gpt-5.4', label: 'GPT-5.4 — bon équilibre qualité / coût' },
+  { value: 'gpt-5.4-mini', label: 'GPT-5.4 mini — plus rapide et moins cher' },
+  { value: 'gpt-5.4-nano', label: 'GPT-5.4 nano — économique pour tests simples' },
 ]
 
 function getFriendlyErrorMessage(code: string, message: string) {
   if (code === 'MISSING_API_KEY') {
-    return 'ClÃ© OpenAI manquante cÃ´tÃ© backend. Configure OPENAI_API_KEY puis relance lâ€™API.'
+    return 'Clé OpenAI manquante côté backend. Configure OPENAI_API_KEY puis relance l’API.'
   }
   if (code === 'OPENAI_DEPENDENCY_MISSING') {
-    return 'La dÃ©pendance OpenAI nâ€™est pas installÃ©e cÃ´tÃ© backend. Installe lâ€™extra openai du projet.'
+    return 'La dépendance OpenAI n’est pas installée côté backend. Installe l’extra openai du projet.'
   }
   if (code === 'INVALID_PROVIDER') {
     return 'Provider invalide. Choisis mock ou openai.'
@@ -96,7 +96,7 @@ export default function ReviewPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-semibold text-slate-100">Review</h1>
+        <h1 className="text-3xl font-semibold text-slate-100">Review</h1>
       <form
         className="panel grid gap-4 rounded-3xl p-6"
         onSubmit={async (event) => {
@@ -132,21 +132,21 @@ export default function ReviewPage() {
               value={form.provider}
               onChange={(e) => setForm({ ...form, provider: e.target.value as Provider })}
             >
-              <option value="mock">Mock â€” test local sans coÃ»t</option>
-              <option value="openai">OpenAI â€” gÃ©nÃ©ration texte rÃ©elle</option>
+              <option value="mock">Mock — test local sans coût</option>
+              <option value="openai">OpenAI — génération texte réelle</option>
             </select>
             <p className="text-xs text-slate-400">
-              La clÃ© OpenAI est lue cÃ´tÃ© backend depuis{' '}
+              La clé OpenAI est lue côté backend depuis{' '}
               <code className="rounded bg-slate-800 px-1.5 py-0.5 text-slate-100">
                 OPENAI_API_KEY
               </code>
-              . Elle ne doit jamais Ãªtre saisie ici.
+              . Elle ne doit jamais être saisie ici.
             </p>
           </FormField>
         </div>
         {form.provider === 'openai' ? (
           <div className="grid gap-4 md:grid-cols-2">
-            <FormField label="ModÃ¨le OpenAI">
+            <FormField label="Modèle OpenAI">
               <select
                 className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100"
                 value={form.model ?? 'gpt-5.4-mini'}
@@ -159,10 +159,10 @@ export default function ReviewPage() {
                 ))}
               </select>
               <p className="text-xs text-slate-400">
-                Pour commencer, utilise GPT-5.4 mini : bon compromis entre qualitÃ©, vitesse et coÃ»t.
+                Pour commencer, utilise GPT-5.4 mini : bon compromis entre qualité, vitesse et coût.
               </p>
             </FormField>
-            <FormField label="TempÃ©rature">
+            <FormField label="Température">
               <input
                 type="number"
                 step="0.1"
@@ -174,7 +174,7 @@ export default function ReviewPage() {
           </div>
         ) : (
           <div className="rounded-2xl border border-slate-800 bg-slate-950/60 px-4 py-3 text-sm text-slate-300">
-            Le provider mock nâ€™utilise pas de vrai modÃ¨le.
+            Le provider mock n’utilise pas de vrai modèle.
           </div>
         )}
         <label className="flex items-center gap-2 text-sm text-slate-300">
@@ -183,9 +183,9 @@ export default function ReviewPage() {
             checked={form.hitl_enabled}
             onChange={(e) => setForm({ ...form, hitl_enabled: e.target.checked })}
           />
-          HITL activÃ©
+          HITL activé
         </label>
-        <LoadingButton loading={loading}>GÃ©nÃ©rer Review</LoadingButton>
+        <LoadingButton loading={loading}>Générer Review</LoadingButton>
       </form>
 
       {error ? <ErrorMessage message={error} /> : null}
@@ -199,7 +199,7 @@ export default function ReviewPage() {
             </p>
           </div>
           <div className="panel rounded-3xl p-6">
-            <h2 className="text-lg font-semibold text-slate-50">Pitchs proposÃ©s</h2>
+            <h2 className="text-lg font-semibold text-slate-50">Pitchs proposés</h2>
             <div className="mt-4">
               <HitlStepCard
                 step={pitchStep}
@@ -236,7 +236,7 @@ export default function ReviewPage() {
           </div>
 
           <div className="panel rounded-3xl p-6">
-            <h2 className="text-lg font-semibold text-slate-50">Avis reformulÃ©</h2>
+            <h2 className="text-lg font-semibold text-slate-50">Avis reformulé</h2>
             <div className="mt-4">
               <HitlStepCard
                 step={reviewStep}

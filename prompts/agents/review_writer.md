@@ -17,6 +17,10 @@ Utilise `style_context` pour le ton et les interdits.
 Utilise `comedy_bank` pour nourrir la review finale, pas pour expliquer l'humour.
 Respecte `user_opinion` sans le contredire.
 
+Pour une review spoiler free, `Présentation sans spoil` est la source principale.
+`Personnages` et `Tropes` peuvent aider pour le ton ou quelques references, mais sans spoiler.
+N’utilise pas `Résumé complet`, `Timeline` ou `Scènes importantes` si cela peut reveler des elements majeurs.
+
 Ta mission:
 
 1. reformuler l'avis personnel de facon serieuse, claire et naturelle;

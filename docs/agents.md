@@ -1,444 +1,234 @@
-# Agents
-
-| Agent                    | Rôle                                                                                                                       |
-| ------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
-| **Context Builder**      | Charge la fiche livre Markdown et prépare le bon contexte selon le workflow : review, chanson, miniature, storyboard, etc. |
-| **Style Memory Agent**   | Récupère ton style, ton humour, tes expressions et tes anciens contenus.                                                   |
-| **Comedy Room Agent**    | Génère hooks, punchlines, analogies, vannes, références pop culture.                                                       |
-| **Review Writer Agent**  | Assemble une review humoristique avec la structure Hook → Pitch → Avis personnel, déjà définie dans ton workflow.          |
-| **Song Writer Agent**    | Écrit les chansons parodiques, en version spoiler free ou version complète.                                                |
-| **Art Director Agent**   | Définit l’ambiance visuelle, les symboles, la composition, le style image/vidéo.                                           |
-| **Prompt Maker Agent**   | Transforme la direction artistique en prompts exploitables pour images, miniatures, vidéos, storyboard.                    |
-| **Social Media Agent**   | Produit captions, hashtags, hooks courts, textes écran, CTA.                                                               |
-| **Memory Manager Agent** | Analyse tes corrections et propose des mises à jour de mémoire, sans jamais modifier sans validation.                      |
-| **Image Gen Agent**      | Exécuter la génération d’images à partir des prompts validés.                                                              |
-
-
 # Agents BookstAI
 
----
+## Format des fiches livre
 
-# 1. Context Builder Agent
+Les fiches livre sont créées manuellement par l’utilisatrice en Markdown. BookstAI ne les génère pas dans ce ticket.
 
-## Mission
+Format cible:
 
-Le Context Builder est le point d'entrée de tous les workflows BookstAI.
+```markdown
+# Personnages (nom prénom + description physique)
+# Tropes
+# Présentation sans spoil
+# Résumé complet
+# Timeline
+# Citations
+# Scènes importantes
+```
 
-Son rôle est de préparer le contexte de travail à partir de la fiche livre.
+Règles d’usage:
 
-Il ne crée jamais de contenu.
+- `Présentation sans spoil` est la source principale de tous les contenus spoiler free.
+- `Personnages` et `Tropes` peuvent enrichir tous les agents si besoin.
+- `Résumé complet`, `Timeline` et `Scènes importantes` sont réservés aux contenus complets, détaillés ou avec spoilers.
+- `Citations` s’utilise avec prudence, surtout en spoiler free.
+- aucune génération automatique de fiche livre n’est ajoutée ici.
 
----
+## Rôles
 
-## Responsabilités
-
-* Charger la fiche livre.
-* Identifier le workflow demandé.
-* Charger uniquement les sections nécessaires.
-* Gérer les différents profils de contexte.
-* Gérer le niveau de spoilers.
-* Fournir un contexte clair aux autres agents.
-
----
-
-## Entrées
-
-### Obligatoires
-
-* `memory/books/<livre>.md`
-* Workflow demandé
-
-### Paramètres
-
-* Profil de contexte
-* Niveau de spoiler
-* Sections souhaitées
-
----
-
-## Sorties
-
-Un contexte structuré contenant uniquement les informations utiles.
+| Agent | Rôle |
+| --- | --- |
+| Context Builder | Charge la fiche livre Markdown et prépare le contexte selon le workflow et le niveau de spoiler. |
+| Style Memory Agent | Récupère le style personnel, les expressions et les anciens contenus. |
+| Comedy Room Agent | Génère des pitchs drôles exploitables, sans analyse ni spoiler majeur. |
+| Review Writer Agent | Reformule l’avis utilisateur et produit une review finale orale, sans spoilers. |
+| Song Writer Agent | Écrit des propositions de paroles en quatrains, en spoiler free ou en version complète selon la portée demandée. |
+| Art Director Agent | Définit l’ambiance visuelle, les symboles, la composition et le style image/vidéo. |
+| Prompt Maker Agent | Transforme la direction artistique en prompts exploitables pour images, miniatures, vidéos et storyboard. |
+| Social Media Agent | Produit captions, hashtags, hooks courts, textes écran et CTA. |
+| Memory Manager Agent | Analyse les corrections et propose des mises à jour de mémoire, sans jamais modifier sans validation. |
+| Image Gen Agent | Exécute la génération d’images à partir des prompts validés. |
 
 ---
 
-## Utilise
+## 1. Context Builder Agent
 
-* `memory/books/<livre>.md`
+### Mission
+
+Le Context Builder prépare le contexte de travail à partir de la fiche livre.
+
+### Responsabilités
+
+- Charger la fiche livre.
+- Identifier le workflow demandé.
+- Charger uniquement les sections nécessaires.
+- Gérer le niveau de spoilers.
+- Fournir un contexte clair aux autres agents.
+
+### Sections utiles
+
+- `Personnages`
+- `Tropes`
+- `Présentation sans spoil`
+- `Résumé complet`
+- `Timeline`
+- `Citations`
+- `Scènes importantes`
+
+### Ne fait jamais
+
+- Écrire du contenu
+- Résumer un livre
+- Inventer des informations
+- Modifier la mémoire
 
 ---
 
-## Ne fait jamais
+## 2. Style Memory Agent
 
-* Écrire du contenu
-* Résumer un livre
-* Inventer des informations
-* Modifier la mémoire
-
----
-
-# 2. Style Memory Agent
-
-## Mission
+### Mission
 
 Injecter le style personnel de Céline dans tous les contenus générés.
 
----
+### Responsabilités
 
-## Responsabilités
+- Charger les anciennes reviews.
+- Charger les anciennes chansons.
+- Charger les références humoristiques.
+- Charger les expressions récurrentes.
+- Charger les règles de style.
+- Fournir un contexte stylistique unique.
 
-* Charger les anciennes reviews.
-* Charger les anciennes chansons.
-* Charger les références humoristiques.
-* Charger les expressions récurrentes.
-* Charger les règles de style.
-* Fournir un contexte stylistique unique.
+### Ne fait jamais
 
----
-
-## Entrées
-
-* Contexte du livre
-* Workflow demandé
+- Écrire le contenu final
+- Modifier la mémoire
 
 ---
 
-## Sorties
+## 3. Comedy Room Agent
 
-Un contexte stylistique.
+### Mission
 
----
+Produire des pitchs drôles exploitables.
 
-## Utilise
+### Responsabilités
 
-* `memory/reviews/`
-* `memory/songs/`
-* `memory/humor/`
+- Générer 2 ou 3 pitchs sans spoil majeur.
+- Garder un ton oral, sarcastique et naturel.
+- Produire une sortie directement réutilisable dans Review.
+- S’appuyer d’abord sur `Présentation sans spoil` pour les contenus spoiler free.
+- Compléter au besoin avec `Personnages` et `Tropes`.
 
----
+### Ne fait jamais
 
-## Ne fait jamais
-
-* Écrire le contenu final
-* Modifier la mémoire
-
----
-
-# 3. Comedy Room Agent
-
-## Mission
-
-Produire les idées humoristiques.
+- Analyser l’humour
+- Lister des mécaniques comiques
+- Écrire le script final
+- Utiliser `Résumé complet`, `Timeline` ou `Scènes importantes` pour une sortie spoiler free
 
 ---
 
-## Responsabilités
+## 4. Review Writer Agent
 
-* Générer des hooks.
-* Générer des punchlines.
-* Trouver des analogies.
-* Trouver des références pop culture.
-* Proposer des réactions exagérées.
-* Générer plusieurs variantes.
+### Mission
 
----
+Rédiger une review orale claire et fidèle au retour de l’utilisatrice.
 
-## Entrées
+### Responsabilités
 
-* Contexte du livre
-* Style Memory
+- Reprendre la fiche livre, surtout `Présentation sans spoil` comme source principale.
+- Reformuler l’avis personnel de façon claire et sérieuse.
+- Produire une review finale fluide et orale.
+- Ne jamais proposer de review avec spoilers dans ce workflow.
+- Utiliser `Personnages` et `Tropes` seulement pour nourrir le ton ou les références.
 
----
+### Ne fait jamais
 
-## Sorties
-
-Une banque d'idées humoristiques.
+- Générer des images
+- Modifier la mémoire
 
 ---
 
-## Utilise
+## 5. Song Writer Agent
 
-* `memory/humor/`
-* `memory/reviews/`
+### Mission
 
----
+Écrire des propositions de paroles en quatrains.
 
-## Ne fait jamais
+### Responsabilités
 
-* Écrire le script final.
+- Adapter le livre à la chanson choisie.
+- Respecter le rythme.
+- En spoiler free, s’appuyer d’abord sur `Présentation sans spoil`.
+- En version complète, utiliser `Résumé complet`, `Timeline` et `Scènes importantes` si nécessaire.
+- Utiliser `Personnages` et `Tropes` comme appui transversal.
+- Produire 2 ou 3 propositions exploitables.
 
----
+### Ne fait jamais
 
-# 4. Review Writer Agent
-
-## Mission
-
-Rédiger une review humoristique fidèle au style de Céline.
-
----
-
-## Responsabilités
-
-* Assembler le Hook.
-* Écrire le Pitch humoristique.
-* Reformuler l'avis personnel.
-* Produire une version finale fluide.
+- Générer les images
+- Créer la miniature
 
 ---
 
-## Entrées
+## 6. Art Director Agent
 
-* Context Builder
-* Style Memory
-* Comedy Room
-* Avis utilisateur
+### Mission
 
----
+Imaginer la direction artistique.
 
-## Sorties
+### Ne fait jamais
 
-Le script final.
+- Générer les prompts
+- Générer les images
 
 ---
 
-## Ne fait jamais
+## 7. Prompt Maker Agent
 
-* Générer des images.
-* Modifier la mémoire.
-
----
-
-# 5. Song Writer Agent
-
-## Mission
-
-Écrire les chansons parodiques.
-
----
-
-## Responsabilités
-
-* Adapter le livre à la chanson choisie.
-* Respecter le rythme.
-* Produire une version spoiler free.
-* Produire une version complète.
-* Ajouter les indications utiles à Suno.
-
----
-
-## Entrées
-
-* Context Builder
-* Style Memory
-* Comedy Room
-
----
-
-## Sorties
-
-Les paroles finales.
-
----
-
-## Ne fait jamais
-
-* Générer les images.
-* Créer la miniature.
-
----
-
-# 6. Art Director Agent
-
-## Mission
-
-Imaginer toute la direction artistique.
-
----
-
-## Responsabilités
-
-* Choisir le style graphique.
-* Définir l'ambiance.
-* Définir la palette.
-* Déterminer les objets symboliques.
-* Déterminer la composition.
-* Déterminer les scènes importantes.
-
----
-
-## Entrées
-
-* Context Builder
-* Style Memory
-
----
-
-## Sorties
-
-Une direction artistique complète.
-
----
-
-## Ne fait jamais
-
-* Générer les prompts.
-* Générer les images.
-
----
-
-# 7. Prompt Maker Agent
-
-## Mission
+### Mission
 
 Transformer les décisions artistiques en prompts exploitables.
 
----
+### Ne fait jamais
 
-## Responsabilités
-
-* Générer les prompts personnages.
-* Générer les prompts scènes.
-* Générer les prompts miniatures.
-* Générer les prompts vidéo.
-* Adapter les prompts au modèle utilisé.
+- Générer les images
+- Modifier la direction artistique
 
 ---
 
-## Entrées
+## 8. Image Gen Agent
 
-* Art Director
+### Mission
 
----
+Exécuter la génération d’images.
 
-## Sorties
+### Ne fait jamais
 
-Une collection de prompts prêts à être utilisés.
-
----
-
-## Ne fait jamais
-
-* Générer les images.
-* Modifier la direction artistique.
+- Modifier les prompts
+- Choisir le style graphique
+- Corriger la direction artistique
 
 ---
 
-# 8. Image Gen Agent
+## 9. Social Media Agent
 
-## Mission
-
-Exécuter la génération d'images.
-
----
-
-## Responsabilités
-
-* Recevoir les prompts validés.
-* Appeler le modèle de génération.
-* Générer les personnages.
-* Générer les scènes.
-* Générer les miniatures.
-* Vérifier que toutes les images ont été produites.
-* Retourner les images générées.
-
----
-
-## Entrées
-
-* Prompts validés.
-* Paramètres de génération.
-
----
-
-## Sorties
-
-Les images générées.
-
----
-
-## Ne fait jamais
-
-* Modifier les prompts.
-* Choisir le style graphique.
-* Corriger la direction artistique.
-
----
-
-# 9. Social Media Agent
-
-## Mission
+### Mission
 
 Préparer les contenus destinés aux réseaux sociaux.
 
----
+### Entrées
 
-## Responsabilités
+- Review
+- Chanson
+- Style Memory
 
-* Rédiger les descriptions.
-* Générer les hashtags.
-* Générer les CTA.
-* Générer les hooks de publication.
-* Adapter le contenu selon la plateforme.
+### Ne fait jamais
 
----
-
-## Entrées
-
-* Review
-* Chanson
-* Style Memory
+- Écrire une review
+- Écrire une chanson
 
 ---
 
-## Sorties
+## 10. Memory Manager Agent
 
-Le contenu prêt à publier.
-
----
-
-## Ne fait jamais
-
-* Écrire une review.
-* Écrire une chanson.
-
----
-
-# 10. Memory Manager Agent
-
-## Mission
+### Mission
 
 Faire évoluer la mémoire de BookstAI.
 
----
+### Ne fait jamais
 
-## Responsabilités
-
-* Comparer les versions avant/après correction.
-* Identifier les modifications récurrentes.
-* Détecter les nouveaux tics d'écriture.
-* Proposer des mises à jour.
-* Attendre une validation humaine avant toute modification.
-
----
-
-## Entrées
-
-* Contenu généré
-* Contenu corrigé
-
----
-
-## Sorties
-
-Une proposition de mise à jour de la mémoire.
-
----
-
-## Ne fait jamais
-
-* Modifier directement les fichiers mémoire.
-* Modifier les contenus déjà validés.
-* Écrire des contenus créatifs.
-
-```
-```
+- Modifier directement les fichiers mémoire
+- Modifier les contenus déjà validés
+- Écrire des contenus créatifs

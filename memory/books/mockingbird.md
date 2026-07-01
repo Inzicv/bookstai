@@ -1,31 +1,23 @@
 # Mockingbird
 
-### 1. Personnages (Nom, Prénom & Description physique)
+### Personnages
 [NOMURA Hazel] (alias Katherine/Kat)
-
-Espèce : Humaine.
 
 Physique : Petite (1m60), courbes graciles, d'origine franco-japonaise avec des traits occidentaux et asiatiques mélangés, un nez droit, une bouche pleine rose sombre et des yeux bruns en amande. Ses cheveux sont noirs à l'origine (avec des mèches multicolores) puis teints en blonde avec des racines brunes. Elle possède des tatouages partout où la peau est visible (notamment sur les jambes, un lotus sur l'avant-bras recouvrant une cicatrice, et l'inscription mockingbird avec un oiseau sur le sternum/ventre). Termine par un trait de caractère saillant : Insolente et provocatrice, mais profondément marquée par un instinct de survie et une culpabilité étouffante.
 
 [MOREAU Adler]
 
-Espèce : Humain.
-
 Physique : Immense (plus d'un mètre quatre-vingts), taillé à la serpe, traits sévères et nordiques aux lignes droites. Des muscles ciselés et hyper développés, des yeux clairs (verts/opalins) et des cheveux bruns en bataille aux reflets ambrés couleur whisky, parsemé de minuscules taches de rousseur sur les pommettes. Termine par un trait de caractère saillant : Austère, rigide et protecteur à l'extrême.
 
 [MAXENCE]
-
-Espèce : Humain.
 
 Physique : Un mètre quatre-vingts, une vraie gueule d'ange, des cheveux blonds couleur miel, des yeux bleus polaires et une petite fossette sur la joue. Look soigné et attitude arrogante. Termine par un trait de caractère saillant : Sociopathe et cruel.
 
 [ROSSI Adem]
 
-Espèce : Humain.
-
 Physique : Adolescent de 14 ans, longiligne, cheveux noirs en bordel (parfois plaqués en arrière par du gel), cils très noirs et bouche tombante. Termine par un trait de caractère saillant : Révolté et profondément blessé.
 
-### 2. Tropes Littéraires
+### Tropes Littéraires
 Fake Relationship : Hazel et Adler font semblant d'être en couple sous les prénoms de "Katherine et Adler" (ou Kat et Adibou) pour que la famille d'Adler lui lâche la grappe et pour qu'Hazel puisse se cacher.
 
 Enemies-to-Lovers / Grumpy x Sunshine (Gamine vs Ours) : Adler est un ancien chasseur alpin rigide, maniaque et taciturne qui déteste le bruit et Hazel, tandis qu'Hazel est extravertie, tatouée, insolente et adore le sucre et le chaos. Ils passent leur temps à s'envoyer des piques avant que la tension sexuelle n’explose.
@@ -34,7 +26,18 @@ Dark Past & Shared Secret : Les deux protagonistes partagent un passé commun tr
 
 Fleeing / Romantic Suspense : L'héroïne est en cavale pour échapper à un ex-petit ami criminel et psychopathe qui la traque.
 
-### 3. Résumé du Tome
+
+### Présentation sans spoil
+Hazel n’a jamais excellé dans l’art de rester en place. Fuir, elle sait faire : son passé, ses erreurs, et maintenant son ex, psychopathe, qu’elle a surpris en train de tuer un homme.
+Le problème ? Elle n’a plus aucun plan.
+Adler, lui, vit au millimètre près. Tout est classé, rangé, maîtrisé - y compris son cœur, verrouillé depuis longtemps. Ce qu’il veut, c’est que sa famille lui fiche la paix avec son célibat.
+Grâce à une amie en commun, ils se rencontrent et passent un marché : elle joue la petite amie parfaite jusqu’à Noël, il lui offre un toit.
+Quatre mois de cohabitation entre une tornade sans filtre et un maniaque du contrôle...
+Ce qui devait être une simple comédie devient dangereusement réel.
+Car Hazel a oublié qu’elle connaît déjà Adler. Lui se souvient de tout ; son visage et ce qu’elle lui a fait. Et il n’a jamais pardonné.
+Mais la haine, parfois, n’est qu’une autre façon d’aimer.
+
+### Résumé 
 Hazel mène une vie simple et sans attaches au Pays basque, travaillant comme serveuse dans un bar et vivant une relation purement physique avec le beau mais mystérieux Maxence. Sa réalité s'effondre le soir de l'anniversaire de sa meilleure amie Marie, lorsqu'elle surprend Maxence en train d’exécuter froidement un homme d'une balle dans la tête dans une ruelle derrière le bar. Prise de panique et réalisant qu'elle est le prochain témoin à éliminer, elle prend la fuite à moto et se réfugie chez Marie. Pour disparaître des radars de son ex, Marie lui propose de fuir en Normandie et de loger chez un ami, Adler, en se faisant passer pour sa petite amie afin de duper la famille ultra-envahissante de ce dernier.
 
 Adler Moreau, ancien chasseur alpin et éducateur spécialisé rigide et obsessionnel, accepte à contrecœur cet arrangement pour que sa meute de sœurs et de daronnes cesse de vouloir le caser. Cependant, dès l'arrivée d'Hazel, il réalise avec un choc immense qu'elle est le fantôme de son passé, la fille populaire qu'il a aimée en secret au collège, mais qui a orchestré son harcèlement scolaire et l'a brisé sous le surnom humiliant de "Nugget". Hazel, qui a changé de nom pour "Kat" et s'est teint les cheveux en blonde pour ne pas être repérée, ne le reconnaît pas. S'engage alors une cohabitation explosive et toxique, rythmée par les provocations d'Hazel et la haine viscérale d'Adler.
@@ -43,7 +46,7 @@ Pour survivre et blanchir son argent en cash, Hazel postule comme prof contractu
 
 Le point de rupture est atteint lorsque Hazel surprend les élèves en train d'agresser Naïma pour la jeter dans une poubelle. Elle appelle Adler à l'aide, et ce dernier, confronté à ses propres démons face à Naïma et à la délinquance d'Adem, pousse le jeune garçon dans ses retranchements, provoquant un Climax émotionnel violent au foyer. Le twist final éclate lorsque la confrontation force les masques à tomber : Hazel réalise la terrifiante vérité sur l'identité d’Adler, qui s'avère être "X", son correspondant secret du collège, mais aussi "Nugget", le garçon dont elle a détruit la vie. Accablée par la culpabilité et refusant d'imposer sa présence toxique plus longtemps, elle décide de fuir une nouvelle fois.
 
-### 4. Citations Clés
+### Citations Clés
 « Maxence a buté un homme, avec la décontraction et le naturel que l’on concède aux vieilles habitudes. Maxence va me buter moi, si je ne fuis pas. Je le sais. » — Hazel, réalisant la dangerosité de son ex après avoir été le témoin direct du meurtre dans la ruelle.
 
 « Je la connaissais. Elle ne m’a pas reconnu. [...] Marie... Je ne te raconterai pas, et tu ne lui diras rien. S’il te plaît. » — Adler, avouant sa rencontre passée avec Hazel à Marie, tout en lui intimant de garder le secret.
@@ -52,7 +55,7 @@ Le point de rupture est atteint lorsque Hazel surprend les élèves en train d'a
 
 « Tu me détestes depuis des années. Tu me détestes quand je ris, quand je parle, quand je vis, toute de joie et de légèreté... et pourtant, le goût de tes lèvres, de ta langue, la finesse de ton corps contre le mien... me hantent. » — Adler, sombrant dans ses pensées contradictoires entre son désir charnel et sa rancœur tenace envers Hazel.
 
-### 5. Timeline des Événements
+### Timeline des Événements
 G-Code
 [PASSÉ (Collège Fontenelle)]
 ├── Hazel est la fille modèle, brillante et adulée de tous.
@@ -87,176 +90,3 @@ G-Code
 5. Le sauvetage de Naïma et l'aveu d’Adler : Hazel découvre cinq élèves de troisième sur le parking en train d'agresser Naïma pour l'enfermer dans une poubelle. Terrifiée par les similitudes avec son propre passé, elle appelle Adler. Pour libérer la parole de la jeune fille, Adler s'assoit par terre et lui confie les tortures qu'il a subies au collège. C'est le choc scénaristique absolu pour Hazel, qui réalise enfin l'identité de sa victime.
 
 ---
-
-# Learning Update
-
-_Source draft: outputs\learning\song\mockingbird-learning-draft.md_
-
-# Learning Draft - song / mockingbird
-
-## Contexte
-
-- **Workflow :** song
-- **Livre :** mockingbird
-
-## Candidates d'apprentissage
-
-### Étape : comedy
-
-- **Statut :** approved
-- **Commentaire :** 
-
-#### Contenu original
-
-```text
-{
-  "agent": "comedy_room",
-  "prompt_path": "agents/comedy_room.md",
-  "response": "Mock response"
-}
-```
-
-#### Contenu validé
-
-```text
-{
-  "agent": "comedy_room",
-  "prompt_path": "agents/comedy_room.md",
-  "response": "Mock response"
-}
-```
-
-### Étape : song
-
-- **Statut :** approved
-- **Commentaire :** 
-
-#### Contenu original
-
-```text
-{
-  "agent": "song_writer",
-  "prompt_path": "agents/song_writer.md",
-  "title": "BookstAI Song",
-  "concept": "Parodie musicale du livre",
-  "story_scope": "pitch_only",
-  "spoiler_mode": "spoiler_free",
-  "song_style": "parody",
-  "lyrics": "Mock response",
-  "structure_notes": "Couplet-refrain adaptables pour validation humaine.",
-  "response": "Mock response"
-}
-```
-
-#### Contenu validé
-
-```text
-{
-  "agent": "song_writer",
-  "prompt_path": "agents/song_writer.md",
-  "title": "BookstAI Song",
-  "concept": "Parodie musicale du livre",
-  "story_scope": "pitch_only",
-  "spoiler_mode": "spoiler_free",
-  "song_style": "parody",
-  "lyrics": "Mock response",
-  "structure_notes": "Couplet-refrain adaptables pour validation humaine.",
-  "response": "Mock response"
-}
-```
-
-### Étape : prompts
-
-- **Statut :** approved
-- **Commentaire :** 
-
-#### Contenu original
-
-```text
-{
-  "agent": "prompt_maker",
-  "prompt_path": "agents/prompt_maker.md",
-  "character_prompts": [
-    {
-      "name": "Personnage principal",
-      "prompt": "Portrait du personnage principal"
-    }
-  ],
-  "background_prompts": [
-    {
-      "name": "Décor principal",
-      "prompt": "Décor principal du livre"
-    }
-  ],
-  "prop_prompts": [],
-  "style_notes": "Prompts compatibles storyboard.",
-  "response": "Mock response"
-}
-```
-
-#### Contenu validé
-
-```text
-{
-  "agent": "prompt_maker",
-  "prompt_path": "agents/prompt_maker.md",
-  "character_prompts": [
-    {
-      "name": "Personnage principal",
-      "prompt": "Portrait du personnage principal"
-    }
-  ],
-  "background_prompts": [
-    {
-      "name": "Décor principal",
-      "prompt": "Décor principal du livre"
-    }
-  ],
-  "prop_prompts": [],
-  "style_notes": "Prompts compatibles storyboard.",
-  "response": "Mock response"
-}
-```
-
-### Étape : social
-
-- **Statut :** approved
-- **Commentaire :** 
-
-#### Contenu original
-
-```text
-{
-  "agent": "social_media",
-  "prompt_path": "agents/social_media.md",
-  "platform": "tiktok",
-  "response": "Mock response"
-}
-```
-
-#### Contenu validé
-
-```text
-{
-  "agent": "social_media",
-  "prompt_path": "agents/social_media.md",
-  "platform": "tiktok",
-  "response": "Mock response"
-}
-```
-
-## Étapes rejetées
-
-- storyboard
-
-## Étapes en attente
-
-- Aucune
-
-## Instruction
-
-Ce fichier est un brouillon.
-
-Il ne modifie pas encore la mémoire BookstAI.
-
-Relire, corriger puis appliquer explicitement si le contenu est pertinent.

@@ -1,6 +1,6 @@
 # Crescent City 
 
-### 1. Personnages (Nom, Prénom & Description physique)
+### Personnages (Nom, Prénom & Description physique)
 
 * **Quinlan Bryce**
 * **Espèce :** Demi-Fae, demi-humaine (Starborn / Née des Étoiles).
@@ -40,7 +40,7 @@
 
 ---
 
-### 2. Tropes Littéraires
+### Tropes Littéraires
 
 * **Urban Fantasy / Cyberpunk light :** Un univers moderne avec des téléphones, des boîtes de nuit, de la drogue de synthèse (*le Synth*), mélangé à de la magie ancestrale, des dieux et des créatures mythologiques.
 * **Murder Mystery / Enquête policière :** Un format "Whodunit" où le duo principal doit élucider des meurtres sanglants en série à travers les différents quartiers de la ville.
@@ -50,7 +50,15 @@
 
 ---
 
-### 3. Résumé du Tome 1
+### Présentation sans spoil
+
+Bryce, une jeune femme mi-fae, mi-humaine, a une vie parfaite : elle travaille la journée chez un marchand d’antiquités qui vend des artefacts magiques et fait la fête toute la nuit avec ses amis en savourant chaque plaisir qu’offre Lunathion – plus connue sous le nom de Crescent City. Mais un jour, un terrible meurtre va venir ébranler les fondations de la ville, de même que le monde de Bryce.
+Deux ans plus tard, son travail ressemble à une impasse et elle se plonge dans l’oubli en écumant les clubs les plus fameux. Mais lorsque le meurtrier frappe de nouveau, Bryce se retrouve entrainée dans l’enquête et doit faire équipe avec Hunt, un mystérieux ange déchu dont le passé noir hante chacun de ses pas. Ce dernier est l’assassin personnel des archanges et il doit protéger la jeune femme, même s’il lui porte peu d’intérêt.
+À la recherche de la vérité, Bryce et Hunt vont apprendre à se connaître et vont explorer les bas-fonds de la ville jusqu’aux niveaux les plus sombres de l’Anfer où des choses qui dormaient depuis des millénaires se réveillent…
+
+---
+
+### Résumé du Tome 1
 
 Bryce Quinlan, une jeune femme mi-humaine mi-fae, mène une vie festive et insouciante à Lunathion (Crescent City), rythmée par son travail chez la sorcière Jesiba Roga et ses soirées avec sa meilleure amie, la louve alpha Danika Fendyr. Tout bascule le soir où Danika et sa meute (la meute des Démons) sont sauvagement massacrées dans leur appartement par un démon. Bryce, arrivée trop tard, traque la créature, survit de justesse et sauve un ange, mais reste profondément traumatisée et brisée.
 
@@ -64,7 +72,7 @@ Michée massacre les alliés de Bryce dans la galerie, provoquant le sacrifice h
 
 ---
 
-### 4. Citations Clés
+### Citations Clés
 
 * > *« Par l'amour, tout est possible. »* — Le leitmotiv et la phrase fétiche partagée entre Danika et Bryce, qui devient la clé de la résolution finale.
 
@@ -81,7 +89,7 @@ Michée massacre les alliés de Bryce dans la galerie, provoquant le sacrifice h
 
 ---
 
-### 5. Timeline des Événements
+###  Timeline des Événements
 
 ```
 [IL Y A 2 ANS] 
@@ -110,7 +118,7 @@ Michée massacre les alliés de Bryce dans la galerie, provoquant le sacrifice h
 
 ---
 
-### 6. Scènes Importantes
+###  Scènes Importantes
 
 1. **Le choc du massacre (Chapitres du début) :** Le retour de Bryce dans son appartement où elle découvre les corps démembrés de sa meute de cœur. Cette scène gore et traumatisante pose les bases psychologiques de tout le roman et brise définitivement l'insouciance de Bryce.
 2. **L'attaque du Kristallos dans le quartier des Cinq Roses :** Bryce et Hunt traquent le démon et se font attaquer. Hunt perd sa magie à cause du venin. Ils font preuve d'une synchronisation parfaite pour abattre la bête, marquant le premier vrai rapprochement physique et la confiance mutuelle du duo.

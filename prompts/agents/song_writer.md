@@ -21,6 +21,10 @@ Utilise `comedy_bank` pour nourrir les paroles.
 Respecte `story_scope` strictement.
 N'invente pas de fait absent du contexte.
 
+Si `story_scope` vaut `pitch_only`, privilegie `Présentation sans spoil` comme source principale.
+Si `story_scope` vaut `full_spoilers`, tu peux utiliser `Résumé complet`, `Timeline` et `Scènes importantes`.
+Dans tous les cas, `Personnages` et `Tropes` peuvent enrichir les paroles sans changer les faits.
+
 La mission est de produire 2 ou 3 propositions de paroles, en quatrains, directement exploitables.
 Le ton doit etre sarcastique, imagé, dramatique, oral, chantable.
 Vise des vers de 12 pieds / 12 syllabes sans le dire.

@@ -1,6 +1,6 @@
 # Les Héritiers d'Orion
 
-### 1. Personnages (Nom, Prénom & Description physique)
+### Personnages (Nom, Prénom & Description physique)
 
 * **KORNELL Mads**
 
@@ -39,7 +39,7 @@
 
 ---
 
-### 2. Tropes Littéraires
+### Tropes Littéraires
 
 * **Enemies-to-Lovers :** Astrid et Mads se détestent au premier regard avant de tomber amoureux.
 * **Forbidden Romance :** Une esclave impure et le prince qui persécute son peuple.
@@ -53,7 +53,18 @@
 
 ---
 
-### 3. Résumé du Tome
+### Présentation sans spoil
+
+Mads Kornell est un prince froid et autoritaire, qui gouverne le royaume d’Uscaria avec droiture. Toutefois, une guerre civile fait rage et menace l’équilibre du pays. Ceux que l’on nomme « impurs », les ennemis de la nation, sont décidés à récupérer le trône.
+Pour assurer la défense d’Uscaria, Mads accepte de se fiancer à la princesse d’un puissant peuple de mercenaires. Il y a cependant une condition pour que cet accord fonctionne : le prince doit être un amant exemplaire lors de la Cérémonie de la Première Nuit. L’une des rares disciplines dont il ne maîtrise rien.
+Astrid, fille du peuple « impur », s’est laissé capturer par la Couronne. Entre l’esclavage et la mort, elle choisit de servir ceux qui ont massacré les siens et se lance un pari risqué : proposer au prince, cet homme qu’elle hait plus que tout, de lui enseigner l’art de la sexualité.
+Il croit tenir là une poupée malléable et obéissante.
+Elle pense contrôler la situation.
+Car en dépit du trouble certain que le monarque provoque en elle, Astrid compte bien remplir la mission qui lui a été confiée : assassiner Mads Kornell.
+
+---
+
+### Résumé complet
 
 Astrid, une « impure » aux yeux pourpres, est emprisonnée avec d'autres prisonniers avant d'être jugée par le prince Mads Kornell. Elle choisit l'esclavage plutôt que la mort dans le but secret de servir la véritable lignée destinée à reprendre le trône. Lors du procès, elle assiste impuissante à l'exécution du jeune Pekka, tué sous ses yeux par Mads. 
 
@@ -65,7 +76,7 @@ La guerre éclate finalement. Tandis qu'Amos assiège Uscaria, Mads et Astrid co
 
 ---
 
-### 4. Citations Clés
+### Citations Clés
 
 > *« Vous êtes un monstre. »* — Astrid, lorsqu'elle défie Mads durant le procès. 
 
@@ -77,7 +88,7 @@ La guerre éclate finalement. Tandis qu'Amos assiège Uscaria, Mads et Astrid co
 
 ---
 
-### 5. Timeline des Événements
+### Timeline des Événements
 
 ```text
 [PASSE]
@@ -114,7 +125,7 @@ La guerre éclate finalement. Tandis qu'Amos assiège Uscaria, Mads et Astrid co
 
 ---
 
-### 6. Scènes Importantes
+### Scènes Importantes
 
 **1. Le procès des impurs :** Mads propose à chaque prisonnier l'esclavage ou la mort. Astrid devient la propriété des Kornell et voit Pekka décapité sous ses yeux. C'est le traumatisme fondateur de leur histoire. 
 
