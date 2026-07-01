@@ -24,3 +24,4 @@ Python workflows
 - Client API branché sur `NEXT_PUBLIC_BOOKSTAI_API_URL`.
 - Confirmation explicite avant `POST /learning/apply`.
 - Aucun secret ou clé OpenAI côté frontend.
+- Interface simple, lisible et utilisable en local.

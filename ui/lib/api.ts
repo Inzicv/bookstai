@@ -1,7 +1,11 @@
-const API_URL = process.env.NEXT_PUBLIC_BOOKSTAI_API_URL ?? 'http://127.0.0.1:8000'
+const DEFAULT_API_URL = 'http://127.0.0.1:8000'
 
-type ApiError = { ok: false; error: { code: string; message: string } }
-type ApiSuccess<T> = T & { ok: true }
+export function getApiBaseUrl() {
+  return process.env.NEXT_PUBLIC_BOOKSTAI_API_URL ?? DEFAULT_API_URL
+}
+
+export type ApiFailure = { ok: false; error: { code: string; message: string } }
+export type ApiSuccess<T> = T & { ok: true }
 
 export type HealthResponse = {
   status: string
@@ -54,20 +58,31 @@ export type LearningApplyResponse = ApiSuccess<{
   applied: boolean
 }>
 
-async function request<T>(path: string, init?: RequestInit): Promise<T | ApiError> {
-  const response = await fetch(`${API_URL}${path}`, {
+async function parseResponse<T>(response: Response): Promise<T | ApiFailure> {
+  const data = (await response.json().catch(() => null)) as T | ApiFailure | null
+  if (!response.ok) {
+    if (data && typeof data === 'object' && 'ok' in data && data.ok === false) return data
+    return { ok: false, error: { code: 'HTTP_ERROR', message: `Request failed with status ${response.status}` } }
+  }
+  if (data && typeof data === 'object' && 'ok' in data && data.ok === false) return data
+  if (data === null) {
+    return { ok: false, error: { code: 'EMPTY_RESPONSE', message: 'API returned an empty response.' } }
+  }
+  return data as T
+}
+
+async function request<T>(path: string, init?: RequestInit): Promise<T | ApiFailure> {
+  const response = await fetch(`${getApiBaseUrl()}${path}`, {
     headers: { 'Content-Type': 'application/json' },
     ...init,
   })
-  const data = await response.json()
-  if (!response.ok || data?.ok === false) return data
-  return data
+  return parseResponse<T>(response)
 }
 
 export async function getHealth() {
-  const response = await fetch(`${API_URL}/health`)
+  const response = await fetch(`${getApiBaseUrl()}/health`)
   if (!response.ok) throw new Error('API indisponible')
-  return response.json() as Promise<HealthResponse>
+  return (await response.json()) as HealthResponse
 }
 
 export const runReview = (payload: unknown) =>

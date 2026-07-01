@@ -13,11 +13,10 @@ export default function HomePage() {
     <div className="space-y-8">
       <section className="space-y-4">
         <p className="text-sm uppercase tracking-[0.3em] text-zinc-500">Studio local</p>
-        <h1 className="text-4xl font-semibold tracking-tight text-zinc-950 sm:text-6xl">
-          BookstAI
-        </h1>
+        <h1 className="text-4xl font-semibold tracking-tight text-zinc-950 sm:text-6xl">BookstAI</h1>
         <p className="max-w-2xl text-base text-zinc-700 sm:text-lg">
-          Une interface web locale pour piloter Review, Song, HITL et Learning sans passer par la CLI.
+          Une application web locale pour piloter BookstAI dans le navigateur, avec FastAPI en
+          arrière-plan.
         </p>
       </section>
 
@@ -38,4 +37,3 @@ export default function HomePage() {
     </div>
   )
 }
-
