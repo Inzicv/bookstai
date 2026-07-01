@@ -12,7 +12,7 @@ license = { text = "MIT" }
 authors = [
     { name = "BookstAI Team" }
 ]
-keywords = ["ai", "books", "nlp", "langflow"]
+keywords = ["ai", "books", "content-generation", "fastapi", "local-first"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",

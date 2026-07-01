@@ -32,9 +32,6 @@ src/bookstai/image/backend.py
 src/bookstai/image/comfyui_backend.py
 src/bookstai/image/factory.py
 src/bookstai/image/mock_backend.py
-src/bookstai/langflow/__init__.py
-src/bookstai/langflow/review_component.py
-src/bookstai/langflow/song_component.py
 src/bookstai/llm/__init__.py
 src/bookstai/llm/client.py
 src/bookstai/llm/factory.py
@@ -61,10 +58,6 @@ tests/test_image_factory.py
 tests/test_image_gen.py
 tests/test_image_mock_backend.py
 tests/test_json_exporter.py
-tests/test_langflow_custom_component_file.py
-tests/test_langflow_review_component.py
-tests/test_langflow_song_component.py
-tests/test_langflow_song_custom_component_file.py
 tests/test_llm_factory.py
 tests/test_llm_mock.py
 tests/test_markdown_exporter.py

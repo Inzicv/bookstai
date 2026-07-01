@@ -1,6 +1,12 @@
 # BookstAI
 
-**BookstAI** is an AI-powered book analysis and content generation framework designed to help analyze books, generate summaries, create reviews, and produce visual designs.
+**BookstAI** is a local-first book analysis and content generation framework built around:
+
+Next.js UI
+↓
+FastAPI API
+↓
+Python workflows
 
 ## Features
 
@@ -136,7 +142,7 @@ Sprint 1 establishes the core foundation of BookstAI:
 - ✅ MemoryReader component for parsing Markdown files
 - ✅ Comprehensive test suite
 
-See [Sprint Documentation](docs/roadmap.md) for more details.
+See [Roadmap](docs/roadmap.md) for more details.
 
 ## Usage rapide
 

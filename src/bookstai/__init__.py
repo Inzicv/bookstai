@@ -43,8 +43,6 @@ from .history import HistoryEntry, HistoryStore
 from .logging import configure_logging
 from .workflows.review import ReviewWorkflow
 from .workflows.song import SongWorkflow
-from .langflow.review_component import run_review_workflow
-from .langflow.song_component import run_song_workflow
 from .precheck import REQUIRED_AGENT_PROMPTS, check_required_agent_prompts
 from .cli import main
 
@@ -78,8 +76,6 @@ __all__ = [
     "MockImageBackend",
     "ReviewWorkflow",
     "SongWorkflow",
-    "run_review_workflow",
-    "run_song_workflow",
     "REQUIRED_AGENT_PROMPTS",
     "check_required_agent_prompts",
     "MarkdownExporter",

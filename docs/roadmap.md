@@ -1,5 +1,13 @@
 # Roadmap
 
+## Architecture officielle
+
+Next.js UI
+↓
+FastAPI API
+↓
+Python workflows
+
 ## Epic 8.1
 
 - API FastAPI locale.

@@ -81,14 +81,6 @@ Avec `--hitl`, la CLI appelle `run_with_hitl(...)` et ajoute une session HITL da
 
 La CLI ne devient pas interactive dans cette étape.
 
-## HITL dans Langflow
-
-Langflow peut activer HITL via un champ booléen `hitl`.
-
-Ce champ ne bloque pas le workflow.
-
-Il ajoute seulement la session HITL au résultat pour permettre une validation ultérieure.
-
 ## Contenu validé HITL
 
 Chaque étape HITL conserve toujours le contenu original généré par l'IA.
