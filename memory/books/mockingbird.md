@@ -1,4 +1,6 @@
-1. Personnages (Nom, Prénom & Description physique)
+# Mockingbird
+
+### 1. Personnages (Nom, Prénom & Description physique)
 [NOMURA Hazel] (alias Katherine/Kat)
 
 Espèce : Humaine.
@@ -23,7 +25,7 @@ Espèce : Humain.
 
 Physique : Adolescent de 14 ans, longiligne, cheveux noirs en bordel (parfois plaqués en arrière par du gel), cils très noirs et bouche tombante. Termine par un trait de caractère saillant : Révolté et profondément blessé.
 
-2. Tropes Littéraires
+### 2. Tropes Littéraires
 Fake Relationship : Hazel et Adler font semblant d'être en couple sous les prénoms de "Katherine et Adler" (ou Kat et Adibou) pour que la famille d'Adler lui lâche la grappe et pour qu'Hazel puisse se cacher.
 
 Enemies-to-Lovers / Grumpy x Sunshine (Gamine vs Ours) : Adler est un ancien chasseur alpin rigide, maniaque et taciturne qui déteste le bruit et Hazel, tandis qu'Hazel est extravertie, tatouée, insolente et adore le sucre et le chaos. Ils passent leur temps à s'envoyer des piques avant que la tension sexuelle n’explose.
@@ -32,7 +34,7 @@ Dark Past & Shared Secret : Les deux protagonistes partagent un passé commun tr
 
 Fleeing / Romantic Suspense : L'héroïne est en cavale pour échapper à un ex-petit ami criminel et psychopathe qui la traque.
 
-3. Résumé du Tome
+### 3. Résumé du Tome
 Hazel mène une vie simple et sans attaches au Pays basque, travaillant comme serveuse dans un bar et vivant une relation purement physique avec le beau mais mystérieux Maxence. Sa réalité s'effondre le soir de l'anniversaire de sa meilleure amie Marie, lorsqu'elle surprend Maxence en train d’exécuter froidement un homme d'une balle dans la tête dans une ruelle derrière le bar. Prise de panique et réalisant qu'elle est le prochain témoin à éliminer, elle prend la fuite à moto et se réfugie chez Marie. Pour disparaître des radars de son ex, Marie lui propose de fuir en Normandie et de loger chez un ami, Adler, en se faisant passer pour sa petite amie afin de duper la famille ultra-envahissante de ce dernier.
 
 Adler Moreau, ancien chasseur alpin et éducateur spécialisé rigide et obsessionnel, accepte à contrecœur cet arrangement pour que sa meute de sœurs et de daronnes cesse de vouloir le caser. Cependant, dès l'arrivée d'Hazel, il réalise avec un choc immense qu'elle est le fantôme de son passé, la fille populaire qu'il a aimée en secret au collège, mais qui a orchestré son harcèlement scolaire et l'a brisé sous le surnom humiliant de "Nugget". Hazel, qui a changé de nom pour "Kat" et s'est teint les cheveux en blonde pour ne pas être repérée, ne le reconnaît pas. S'engage alors une cohabitation explosive et toxique, rythmée par les provocations d'Hazel et la haine viscérale d'Adler.
@@ -41,7 +43,7 @@ Pour survivre et blanchir son argent en cash, Hazel postule comme prof contractu
 
 Le point de rupture est atteint lorsque Hazel surprend les élèves en train d'agresser Naïma pour la jeter dans une poubelle. Elle appelle Adler à l'aide, et ce dernier, confronté à ses propres démons face à Naïma et à la délinquance d'Adem, pousse le jeune garçon dans ses retranchements, provoquant un Climax émotionnel violent au foyer. Le twist final éclate lorsque la confrontation force les masques à tomber : Hazel réalise la terrifiante vérité sur l'identité d’Adler, qui s'avère être "X", son correspondant secret du collège, mais aussi "Nugget", le garçon dont elle a détruit la vie. Accablée par la culpabilité et refusant d'imposer sa présence toxique plus longtemps, elle décide de fuir une nouvelle fois.
 
-4. Citations Clés
+### 4. Citations Clés
 « Maxence a buté un homme, avec la décontraction et le naturel que l’on concède aux vieilles habitudes. Maxence va me buter moi, si je ne fuis pas. Je le sais. » — Hazel, réalisant la dangerosité de son ex après avoir été le témoin direct du meurtre dans la ruelle.
 
 « Je la connaissais. Elle ne m’a pas reconnu. [...] Marie... Je ne te raconterai pas, et tu ne lui diras rien. S’il te plaît. » — Adler, avouant sa rencontre passée avec Hazel à Marie, tout en lui intimant de garder le secret.
@@ -50,7 +52,7 @@ Le point de rupture est atteint lorsque Hazel surprend les élèves en train d'a
 
 « Tu me détestes depuis des années. Tu me détestes quand je ris, quand je parle, quand je vis, toute de joie et de légèreté... et pourtant, le goût de tes lèvres, de ta langue, la finesse de ton corps contre le mien... me hantent. » — Adler, sombrant dans ses pensées contradictoires entre son désir charnel et sa rancœur tenace envers Hazel.
 
-5. Timeline des Événements
+### 5. Timeline des Événements
 G-Code
 [PASSÉ (Collège Fontenelle)]
 ├── Hazel est la fille modèle, brillante et adulée de tous.
