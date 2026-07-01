@@ -42,12 +42,8 @@ def test_markdown_exporter_writes_readable_song_export(tmp_path: Path) -> None:
         "book_slug": "alchemised",
         "comedy": {"response": "Idées drôles"},
         "song": {"response": "Chanson générée"},
-        "art_direction": {"response": "Direction artistique"},
-        "image_prompt": {"response": "Prompt image"},
-        "image": {
-            "backend": "mock",
-            "image_path": "outputs/mock/image.png",
-        },
+        "storyboard": {"response": "Storyboard"},
+        "prompts": {"response": "Prompts"},
         "social": {"response": "Caption générée"},
     }
 
@@ -63,13 +59,10 @@ def test_markdown_exporter_writes_readable_song_export(tmp_path: Path) -> None:
     assert "draft_needs_human_review" in content
     assert "## Song draft" in content
     assert "Chanson générée" in content
-    assert "## Art direction" in content
-    assert "Direction artistique" in content
-    assert "## Image prompt" in content
-    assert "Prompt image" in content
-    assert "## Image result" in content
-    assert "mock" in content
-    assert "outputs/mock/image.png" in content
+    assert "## Storyboard" in content
+    assert "Storyboard" in content
+    assert "## Prompts" in content
+    assert "Prompts" in content
     assert "## Social media draft" in content
     assert "Caption générée" in content
     assert "## Comedy room" in content

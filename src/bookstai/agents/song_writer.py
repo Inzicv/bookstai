@@ -9,9 +9,6 @@ from ..core.errors import InvalidSpoilerModeError
 from ..llm.client import LLMClient
 from ..prompts.builder import PromptBuilder
 
-SUPPORTED_SPOILER_MODES = {"spoiler_free", "full"}
-
-
 class SongWriterAgent:
     """Generate a first parody song draft from structured inputs."""
 
@@ -24,10 +21,16 @@ class SongWriterAgent:
         book_context: dict[str, Any],
         style_context: dict[str, Any],
         comedy_bank: dict[str, Any],
-        spoiler_mode: str,
-    ) -> dict[str, str]:
-        if spoiler_mode not in SUPPORTED_SPOILER_MODES:
-            raise InvalidSpoilerModeError("Invalid song spoiler mode.")
+        story_scope: str = "pitch_only",
+        song_style: str = "parody",
+        reference_song: str = "",
+        spoiler_mode: str | None = None,
+    ) -> dict[str, Any]:
+        effective_story_scope = story_scope
+        if spoiler_mode is not None:
+            effective_story_scope = "pitch_only" if spoiler_mode == "spoiler_free" else "full_spoilers"
+        if effective_story_scope not in {"pitch_only", "full_spoilers"}:
+            raise InvalidSpoilerModeError("Invalid song story scope.")
 
         prompt = self.prompt_builder.build(
             prompt_path="agents/song_writer.md",
@@ -35,7 +38,9 @@ class SongWriterAgent:
                 "book_context": book_context,
                 "style_context": style_context,
                 "comedy_bank": comedy_bank,
-                "spoiler_mode": spoiler_mode,
+                "story_scope": effective_story_scope,
+                "song_style": song_style,
+                "reference_song": reference_song,
             },
         )
         response = self.llm_client.generate(prompt)
@@ -43,6 +48,13 @@ class SongWriterAgent:
         return {
             "agent": "song_writer",
             "prompt_path": "agents/song_writer.md",
-            "spoiler_mode": spoiler_mode,
+            "title": reference_song or "BookstAI Song",
+            "concept": "Parodie musicale du livre",
+            "reference_song": reference_song,
+            "story_scope": effective_story_scope,
+            "spoiler_mode": "spoiler_free" if effective_story_scope == "pitch_only" else "full",
+            "song_style": song_style,
+            "lyrics": response,
+            "structure_notes": "Couplet-refrain adaptables pour validation humaine.",
             "response": response,
         }

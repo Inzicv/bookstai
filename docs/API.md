@@ -25,14 +25,40 @@ http://127.0.0.1:8000
 - `POST /learning/draft`
 - `POST /learning/apply`
 
-`prompt_type` correspond au type de prompt image.
-Valeurs supportées actuellement: `character`, `scene`, `thumbnail`, `video`.
+## Song
+
+Le workflow Song ne génère pas d'image.
+Il produit:
+
+- la chanson parodique;
+- le storyboard vidéo réalisable;
+- les prompts personnages;
+- les prompts backgrounds;
+- le texte social.
+
+`POST /song/run` attend:
+
+```json
+{
+  "book_slug": "lesheritiersdorion",
+  "story_scope": "pitch_only",
+  "song_style": "parody",
+  "reference_song": "Mockingbird - Eminem",
+  "platform": "tiktok",
+  "provider": "mock",
+  "model": null,
+  "temperature": 0.7,
+  "hitl_enabled": true
+}
+```
+
+`story_scope` peut valoir `pitch_only` ou `full_spoilers`.
 
 ## Principes
 
 - Le provider par défaut est `mock`.
 - Aucun appel OpenAI n'est effectué par défaut.
-- L'API orchestre les services existants sous `src/bookstai/`.
+- Le workflow Song ne génère pas d'image.
 - La CLI reste disponible mais secondaire.
 
 ## Learning Apply

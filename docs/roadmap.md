@@ -25,3 +25,17 @@ Python workflows
 - Confirmation explicite avant `POST /learning/apply`.
 - Aucun secret ou clé OpenAI côté frontend.
 - Interface simple, lisible et utilisable en local.
+
+## Epic 8.3
+
+- Workflow Song refondu autour de:
+  - Context Builder
+  - Comedy Room
+  - Song Writer
+  - HITL chanson
+  - Art Director
+  - HITL storyboard
+  - Prompt Maker
+  - Social Media
+- Le workflow Song ne génère pas d'image.
+- La sortie Song expose chanson, storyboard, prompts et social.

@@ -6,7 +6,6 @@ from pathlib import Path
 
 from bookstai.precheck import REQUIRED_AGENT_PROMPTS, check_required_agent_prompts
 from bookstai.llm.mock import MockLLMClient
-from bookstai.image.mock_backend import MockImageBackend
 from bookstai.workflows.review import ReviewWorkflow
 from bookstai.workflows.song import SongWorkflow
 
@@ -61,9 +60,16 @@ def test_agent_prompt_files_contain_expected_variables() -> None:
     expected_variables = {
         "comedy_room.md": {"book_context", "style_context"},
         "review_writer.md": {"book_context", "style_context", "comedy_bank", "user_opinion"},
-        "song_writer.md": {"book_context", "style_context", "comedy_bank", "spoiler_mode"},
+        "song_writer.md": {
+            "book_context",
+            "style_context",
+            "comedy_bank",
+            "story_scope",
+            "song_style",
+            "reference_song",
+        },
         "art_director.md": {"book_context", "style_context", "validated_content"},
-        "prompt_maker.md": {"art_direction", "prompt_type"},
+        "prompt_maker.md": {"art_direction"},
         "social_media.md": {"validated_content", "style_context", "platform"},
         "memory_manager.md": {"generated_content", "corrected_content"},
     }
@@ -71,9 +77,16 @@ def test_agent_prompt_files_contain_expected_variables() -> None:
     allowed_variables = {
         "comedy_room.md": {"book_context", "style_context"},
         "review_writer.md": {"book_context", "style_context", "comedy_bank", "user_opinion"},
-        "song_writer.md": {"book_context", "style_context", "comedy_bank", "spoiler_mode"},
+        "song_writer.md": {
+            "book_context",
+            "style_context",
+            "comedy_bank",
+            "story_scope",
+            "song_style",
+            "reference_song",
+        },
         "art_director.md": {"book_context", "style_context", "validated_content"},
-        "prompt_maker.md": {"art_direction", "prompt_type"},
+        "prompt_maker.md": {"art_direction"},
         "social_media.md": {"validated_content", "style_context", "platform"},
         "memory_manager.md": {"generated_content", "corrected_content"},
     }
@@ -153,13 +166,12 @@ def test_project_song_workflow_can_run_with_real_prompts_and_mock(tmp_path: Path
         memory_root=memory_root,
         prompt_root=prompt_root,
         llm_client=MockLLMClient(),
-        image_backend=MockImageBackend(image_path="outputs/mock/image.png"),
     )
 
     result = workflow.run(
         book_slug="example",
-        spoiler_mode="spoiler_free",
-        prompt_type="thumbnail",
+        story_scope="pitch_only",
+        song_style="parody",
         platform="tiktok",
     )
 
@@ -168,7 +180,7 @@ def test_project_song_workflow_can_run_with_real_prompts_and_mock(tmp_path: Path
     assert "style" in result
     assert "comedy" in result
     assert "song" in result
-    assert "art_direction" in result
-    assert "image_prompt" in result
-    assert "image" in result
+    assert "storyboard" in result
+    assert "prompts" in result
     assert "social" in result
+    assert "image" not in result

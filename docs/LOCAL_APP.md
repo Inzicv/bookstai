@@ -38,7 +38,7 @@ Le fichier `ui/.env.example` contient la même valeur par défaut.
 
 - mode local uniquement;
 - `mock` comme provider par défaut;
-- `mock` comme image backend par défaut;
+- le workflow Song ne génère pas d'image;
 - pas d'appel OpenAI par défaut;
 - aucune clé API côté frontend;
 - aucune écriture automatique dans `memory/`;

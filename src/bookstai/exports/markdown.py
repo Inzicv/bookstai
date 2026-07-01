@@ -63,15 +63,13 @@ class MarkdownExporter:
 
     def _build_song_content(self, workflow_name: str, item_slug: str, data: dict[str, Any]) -> str:
         song_response = self._get_response(data, "song")
-        art_direction_response = self._get_response(data, "art_direction")
-        image_prompt_response = self._get_response(data, "image_prompt")
+        storyboard_response = self._get_response(data, "storyboard")
+        prompts_response = self._get_response(data, "prompts")
         social_response = self._get_response(data, "social")
         comedy_response = self._get_response(data, "comedy")
-        image_backend = self._display_value(self._nested_value(data, "image", "backend"))
-        image_path = self._display_value(self._nested_value(data, "image", "image_path"))
         technical_data = self._technical_data(
             data,
-            ["workflow", "book_slug", "song", "art_direction", "image_prompt", "image", "social", "comedy"],
+            ["workflow", "book_slug", "song", "storyboard", "prompts", "social", "comedy"],
         )
 
         return (
@@ -82,13 +80,10 @@ class MarkdownExporter:
             "- Statut : draft_needs_human_review\n\n"
             "## Song draft\n\n"
             f"{song_response}\n\n"
-            "## Art direction\n\n"
-            f"{art_direction_response}\n\n"
-            "## Image prompt\n\n"
-            f"{image_prompt_response}\n\n"
-            "## Image result\n\n"
-            f"- Backend : {image_backend}\n"
-            f"- Image path : {image_path}\n\n"
+            "## Storyboard\n\n"
+            f"{storyboard_response}\n\n"
+            "## Prompts\n\n"
+            f"{prompts_response}\n\n"
             "## Social media draft\n\n"
             f"{social_response}\n\n"
             "## Comedy room\n\n"
@@ -126,11 +121,6 @@ class MarkdownExporter:
         if isinstance(section_data, dict):
             return section_data.get(key)
         return None
-
-    def _display_value(self, value: Any) -> str:
-        if value in (None, ""):
-            return "_Non généré_"
-        return str(value)
 
     def _technical_data(self, data: dict[str, Any], excluded_keys: list[str]) -> str:
         technical_data = {key: value for key, value in data.items() if key not in excluded_keys}

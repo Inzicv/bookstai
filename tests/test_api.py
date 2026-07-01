@@ -72,11 +72,13 @@ def test_song_run_mock(tmp_path: Path, monkeypatch) -> None:
         "/song/run",
         json={
             "book_slug": "alchemised",
-            "spoiler_mode": "spoiler_free",
-            "prompt_type": "video",
+            "story_scope": "pitch_only",
+            "song_style": "parody",
+            "reference_song": "Mockingbird - Eminem",
             "platform": "tiktok",
             "provider": "mock",
-            "image_backend": "mock",
+            "model": None,
+            "temperature": 0.7,
             "hitl_enabled": True,
         },
     )
@@ -86,8 +88,41 @@ def test_song_run_mock(tmp_path: Path, monkeypatch) -> None:
     assert body["ok"] is True, body
     assert body["type"] == "song"
     assert body["provider"] == "mock"
-    assert body["image_backend"] == "mock"
+    assert body["story_scope"] == "pitch_only"
+    assert body["song_style"] == "parody"
+    assert body["reference_song"] == "Mockingbird - Eminem"
     assert body["hitl_session_path"] == "outputs/hitl/song/alchemised.json"
+    assert "image_backend" not in body
+    assert "image" not in body["result"]
+    assert "storyboard" in body["result"]
+    assert "prompts" in body["result"]
+
+
+def test_song_run_mock_full_spoilers(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    _prepare_workspace(tmp_path)
+    client = TestClient(create_app())
+
+    response = client.post(
+        "/song/run",
+        json={
+            "book_slug": "alchemised",
+            "story_scope": "full_spoilers",
+            "song_style": "parody",
+            "reference_song": "Mockingbird - Eminem",
+            "platform": "tiktok",
+            "provider": "mock",
+            "model": None,
+            "temperature": 0.7,
+            "hitl_enabled": False,
+        },
+    )
+
+    body = response.json()
+    assert response.status_code == 200
+    assert body["story_scope"] == "full_spoilers"
+    assert body["hitl_session_path"] is None
+    assert "image" not in body["result"]
 
 
 def test_hitl_session_can_be_created_read_and_approved(tmp_path: Path, monkeypatch) -> None:

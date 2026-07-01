@@ -25,8 +25,13 @@ export type ReviewRunResponse = ApiSuccess<{
 export type SongRunResponse = ApiSuccess<{
   type: 'song'
   book_slug: string
+  story_scope: 'pitch_only' | 'full_spoilers'
+  song_style: 'parody'
+  reference_song: string
+  platform: string
   provider: 'mock'
-  image_backend: 'mock'
+  model: string | null
+  temperature: number
   hitl_enabled: boolean
   result: Record<string, unknown>
   hitl_session_path: string | null
