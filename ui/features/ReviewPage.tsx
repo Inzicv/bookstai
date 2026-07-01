@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { runReview } from '@/lib/api'
+import { listBooks, runReview } from '@/lib/api'
 import { ErrorMessage } from '@/components/ErrorMessage'
 import { LoadingButton } from '@/components/LoadingButton'
 import { ResultPanel } from '@/components/ResultPanel'
@@ -31,6 +31,7 @@ function getFriendlyErrorMessage(code: string, message: string) {
 }
 
 export default function ReviewPage() {
+  const [books, setBooks] = useState<Array<{ slug: string; title: string }>>([])
   const [form, setForm] = useState({
     book_slug: 'alchemised',
     user_opinion: '',
@@ -43,6 +44,12 @@ export default function ReviewPage() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    listBooks().then((response) => {
+      if (response.ok) setBooks(response.books)
+    })
+  }, [])
 
   useEffect(() => {
     if (form.provider === 'openai' && !form.model) {
@@ -75,13 +82,21 @@ export default function ReviewPage() {
           }
           setResult(response)
         }}
-      >
+        >
         <FormField label="book_slug">
           <input
             className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 placeholder:text-slate-500"
+            list="review-book-slugs"
             value={form.book_slug}
             onChange={(e) => setForm({ ...form, book_slug: e.target.value })}
           />
+          <datalist id="review-book-slugs">
+            {books.map((book) => (
+              <option key={book.slug} value={book.slug}>
+                {book.title}
+              </option>
+            ))}
+          </datalist>
         </FormField>
         <FormField label="user_opinion">
           <textarea

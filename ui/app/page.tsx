@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { ApiStatus } from '@/components/ApiStatus'
 
 const shortcuts = [
+  { href: '/books', label: 'Livres' },
   { href: '/review', label: 'Review' },
   { href: '/song', label: 'Song' },
   { href: '/hitl', label: 'HITL' },

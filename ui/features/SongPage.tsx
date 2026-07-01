@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { runSong } from '@/lib/api'
+import { listBooks, runSong } from '@/lib/api'
 import { ErrorMessage } from '@/components/ErrorMessage'
 import { LoadingButton } from '@/components/LoadingButton'
 import { JsonBlock } from '@/components/JsonBlock'
@@ -42,6 +42,7 @@ function getFriendlyErrorMessage(code: string, message: string) {
 }
 
 export default function SongPage() {
+  const [books, setBooks] = useState<Array<{ slug: string; title: string }>>([])
   const [form, setForm] = useState<SongFormState>({
     book_slug: 'alchemised',
     story_scope: 'pitch_only',
@@ -55,6 +56,12 @@ export default function SongPage() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    listBooks().then((response) => {
+      if (response.ok) setBooks(response.books)
+    })
+  }, [])
 
   useEffect(() => {
     if (form.provider === 'openai' && !form.model) {
@@ -105,13 +112,21 @@ export default function SongPage() {
           }
           setResult(response)
         }}
-      >
+        >
         <FormField label="Livre">
           <input
             className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 placeholder:text-slate-500"
+            list="song-book-slugs"
             value={form.book_slug}
             onChange={(e) => setForm({ ...form, book_slug: e.target.value })}
           />
+          <datalist id="song-book-slugs">
+            {books.map((book) => (
+              <option key={book.slug} value={book.slug}>
+                {book.title}
+              </option>
+            ))}
+          </datalist>
         </FormField>
         <div className="grid gap-4 md:grid-cols-2">
           <FormField label="Portée de l’histoire">

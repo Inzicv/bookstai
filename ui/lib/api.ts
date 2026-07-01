@@ -62,6 +62,30 @@ export type LearningApplyResponse = ApiSuccess<{
   applied: boolean
 }>
 
+export type BookListItem = {
+  slug: string
+  title: string
+  path: string
+}
+
+export type BookRecord = {
+  slug: string
+  title: string
+  content: string
+}
+
+export type BookListResponse = ApiSuccess<{
+  books: BookListItem[]
+}>
+
+export type BookReadResponse = ApiSuccess<{
+  book: BookRecord
+}>
+
+export type BookWriteResponse = ApiSuccess<{
+  book: BookListItem
+}>
+
 async function parseResponse<T>(response: Response): Promise<T | ApiFailure> {
   const data = (await response.json().catch(() => null)) as T | ApiFailure | null
   if (!response.ok) {
@@ -107,3 +131,12 @@ export const draftLearning = (payload: unknown) =>
   request<LearningDraftResponse>('/learning/draft', { method: 'POST', body: JSON.stringify(payload) })
 export const applyLearning = (payload: unknown) =>
   request<LearningApplyResponse>('/learning/apply', { method: 'POST', body: JSON.stringify(payload) })
+export const listBooks = () => request<BookListResponse>('/books')
+export const getBook = (slug: string) => request<BookReadResponse>(`/books/${encodeURIComponent(slug)}`)
+export const createBook = (payload: unknown) =>
+  request<BookWriteResponse>('/books', { method: 'POST', body: JSON.stringify(payload) })
+export const updateBook = (slug: string, payload: unknown) =>
+  request<BookWriteResponse>(`/books/${encodeURIComponent(slug)}`, {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  })

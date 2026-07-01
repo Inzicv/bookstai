@@ -36,6 +36,94 @@ def test_health_route(tmp_path: Path, monkeypatch) -> None:
     assert response.json() == {"status": "ok", "app": "BookstAI", "mode": "local"}
 
 
+def test_books_list_returns_empty_list_when_folder_is_empty(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    client = TestClient(create_app())
+
+    response = client.get("/books")
+
+    assert response.status_code == 200
+    assert response.json() == {"ok": True, "books": []}
+
+
+def test_books_create_read_update_and_duplicate_validation(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    client = TestClient(create_app())
+
+    create = client.post(
+        "/books",
+        json={
+            "title": "Les Héritiers d’Orion",
+            "slug": "les-heritiers-d-orion",
+            "content": "# Les Héritiers d’Orion\n\nContenu",
+        },
+    )
+    assert create.status_code == 200
+    assert create.json()["ok"] is True
+    assert (tmp_path / "memory" / "books" / "les-heritiers-d-orion.md").exists()
+
+    read = client.get("/books/les-heritiers-d-orion")
+    assert read.status_code == 200
+    assert read.json()["book"]["content"].startswith("# Les Héritiers d’Orion")
+
+    duplicate = client.post(
+        "/books",
+        json={
+            "title": "Les Héritiers d’Orion",
+            "slug": "les-heritiers-d-orion",
+            "content": "# Les Héritiers d’Orion\n\nContenu",
+        },
+    )
+    assert duplicate.status_code == 200
+    assert duplicate.json()["error"]["code"] == "BOOK_ALREADY_EXISTS"
+
+    update = client.put(
+        "/books/les-heritiers-d-orion",
+        json={
+            "title": "Les Héritiers d’Orion",
+            "content": "# Les Héritiers d’Orion\n\nContenu mis à jour",
+        },
+    )
+    assert update.status_code == 200
+    assert "mis à jour" in (tmp_path / "memory" / "books" / "les-heritiers-d-orion.md").read_text(
+        encoding="utf-8"
+    )
+
+
+def test_books_reject_invalid_slug_and_missing_file(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    client = TestClient(create_app())
+
+    invalid_create = client.post(
+        "/books",
+        json={
+            "title": "Secret",
+            "slug": "../secret",
+            "content": "# Secret",
+        },
+    )
+    assert invalid_create.status_code == 200
+    assert invalid_create.json()["error"]["code"] == "INVALID_BOOK_SLUG"
+
+    invalid_read = client.get("/books/book.md")
+    assert invalid_read.status_code == 200
+    assert invalid_read.json()["error"]["code"] == "INVALID_BOOK_SLUG"
+
+    missing = client.get("/books/missing-book")
+    assert missing.status_code == 200
+    assert missing.json()["error"]["code"] == "BOOK_NOT_FOUND"
+
+    invalid_update = client.put(
+        "/books/book.md",
+        json={
+            "title": "Secret",
+            "content": "# Secret",
+        },
+    )
+    assert invalid_update.status_code == 200
+    assert invalid_update.json()["error"]["code"] == "INVALID_BOOK_SLUG"
+
+
 def test_review_run_mock_creates_hitl_session(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.chdir(tmp_path)
     _prepare_workspace(tmp_path)
