@@ -10,7 +10,7 @@ from ...core.errors import UnsupportedProviderError
 from ...llm import create_llm_client
 from ...workflows.review import ReviewWorkflow
 from ..schemas.review import ReviewRunRequest
-from .shared import api_error, build_memory_root, build_prompt_root, save_hitl_session
+from .shared import api_error, build_memory_root, build_prompt_root, save_hitl_session, serialize_path
 
 router = APIRouter(prefix="/review", tags=["review"])
 
@@ -41,7 +41,7 @@ def run_review(payload: ReviewRunRequest) -> dict[str, Any]:
         )
         hitl_path = None
         if payload.hitl_enabled and "hitl" in result:
-            hitl_path = str(save_hitl_session(result["hitl"], "review", payload.book_slug))
+            hitl_path = serialize_path(save_hitl_session(result["hitl"], "review", payload.book_slug))
         return {
             "ok": True,
             "type": "review",

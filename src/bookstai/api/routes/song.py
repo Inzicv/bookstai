@@ -11,7 +11,7 @@ from ...image import create_image_backend
 from ...llm import create_llm_client
 from ...workflows.song import SongWorkflow
 from ..schemas.song import SongRunRequest
-from .shared import api_error, build_memory_root, build_prompt_root, save_hitl_session
+from .shared import api_error, build_memory_root, build_prompt_root, save_hitl_session, serialize_path
 
 router = APIRouter(prefix="/song", tags=["song"])
 
@@ -47,7 +47,7 @@ def run_song(payload: SongRunRequest) -> dict[str, Any]:
         )
         hitl_path = None
         if payload.hitl_enabled and "hitl" in result:
-            hitl_path = str(save_hitl_session(result["hitl"], "song", payload.book_slug))
+            hitl_path = serialize_path(save_hitl_session(result["hitl"], "song", payload.book_slug))
         return {
             "ok": True,
             "type": "song",

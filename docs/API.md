@@ -25,6 +25,9 @@ http://127.0.0.1:8000
 - `POST /learning/draft`
 - `POST /learning/apply`
 
+`prompt_type` correspond au type de prompt image.
+Valeurs supportées actuellement: `character`, `scene`, `thumbnail`, `video`.
+
 ## Principes
 
 - Le provider par défaut est `mock`.
@@ -36,4 +39,3 @@ http://127.0.0.1:8000
 
 `/learning/apply` refuse toute modification si `confirm` n'est pas `true`.
 La mémoire `memory/` ne peut être modifiée que par cette route et avec confirmation explicite.
-

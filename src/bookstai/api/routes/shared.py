@@ -25,6 +25,12 @@ def api_error(code: str, message: str) -> dict[str, Any]:
     return {"ok": False, "error": {"code": code, "message": message}}
 
 
+def serialize_path(path: Path | str | None) -> str | None:
+    if path is None:
+        return None
+    return Path(path).as_posix()
+
+
 def hitl_storage() -> HITLSessionStorage:
     return HITLSessionStorage(root=build_output_root() / "hitl")
 
@@ -51,5 +57,5 @@ def load_hitl_session(workflow_type: str, book_slug: str, as_session: bool = Fal
     except HITLSessionStorageError as exc:
         return api_error("SESSION_NOT_FOUND", str(exc))
     if as_session:
-        return {"ok": True, "session": session, "path": path}
-    return {"ok": True, "session": session.to_dict(), "path": str(path)}
+        return {"ok": True, "session": session, "path": serialize_path(path)}
+    return {"ok": True, "session": session.to_dict(), "path": serialize_path(path)}

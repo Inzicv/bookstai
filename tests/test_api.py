@@ -56,7 +56,7 @@ def test_review_run_mock_creates_hitl_session(tmp_path: Path, monkeypatch) -> No
 
     body = response.json()
     assert response.status_code == 200
-    assert body["ok"] is True
+    assert body["ok"] is True, body
     assert body["type"] == "review"
     assert body["provider"] == "mock"
     assert body["hitl_enabled"] is True
@@ -73,7 +73,7 @@ def test_song_run_mock(tmp_path: Path, monkeypatch) -> None:
         json={
             "book_slug": "alchemised",
             "spoiler_mode": "spoiler_free",
-            "prompt_type": "parody",
+            "prompt_type": "video",
             "platform": "tiktok",
             "provider": "mock",
             "image_backend": "mock",
@@ -83,7 +83,7 @@ def test_song_run_mock(tmp_path: Path, monkeypatch) -> None:
 
     body = response.json()
     assert response.status_code == 200
-    assert body["ok"] is True
+    assert body["ok"] is True, body
     assert body["type"] == "song"
     assert body["provider"] == "mock"
     assert body["image_backend"] == "mock"
@@ -139,4 +139,3 @@ def test_learning_apply_refuses_without_confirm(tmp_path: Path, monkeypatch) -> 
     assert response.status_code == 200
     assert body["ok"] is False
     assert body["error"]["code"] == "CONFIRMATION_REQUIRED"
-

@@ -10,7 +10,7 @@ from fastapi import APIRouter
 from ...core.errors import LearningApplyError
 from ...learning import LearningDraftApplier, LearningDraftWriter, LearningExtractor
 from ..schemas.learning import LearningApplyRequest, LearningDraftRequest, LearningExtractRequest
-from .shared import api_error, load_hitl_session
+from .shared import api_error, load_hitl_session, serialize_path
 
 router = APIRouter(prefix="/learning", tags=["learning"])
 
@@ -21,7 +21,7 @@ def extract(payload: LearningExtractRequest) -> dict[str, Any]:
     if "error" in loaded:
         return loaded
     extraction = LearningExtractor().extract(loaded["session"])
-    return {"ok": True, "extraction": extraction.to_dict()}
+    return {"ok": True, "extraction": extraction.to_dict(), "path": serialize_path(loaded["path"])}
 
 
 @router.post("/draft")
@@ -31,7 +31,7 @@ def draft(payload: LearningDraftRequest) -> dict[str, Any]:
         return loaded
     extraction = LearningExtractor().extract(loaded["session"])
     path = LearningDraftWriter().write(extraction)
-    return {"ok": True, "draft_path": str(path), "markdown": path.read_text(encoding="utf-8")}
+    return {"ok": True, "draft_path": serialize_path(path), "markdown": path.read_text(encoding="utf-8")}
 
 
 @router.post("/apply")
@@ -46,9 +46,9 @@ def apply(payload: LearningApplyRequest) -> dict[str, Any]:
         result = LearningDraftApplier().apply(payload.draft_path, memory_file)
         return {
             "ok": True,
-            "draft_path": str(result.draft_path),
-            "memory_path": str(result.memory_path),
-            "backup_path": str(result.backup_path) if result.backup_path else None,
+            "draft_path": serialize_path(result.draft_path),
+            "memory_path": serialize_path(result.memory_path),
+            "backup_path": serialize_path(result.backup_path),
             "applied": result.applied,
         }
     except LearningApplyError as exc:

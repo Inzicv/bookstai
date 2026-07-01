@@ -8,7 +8,7 @@ from fastapi import APIRouter
 
 from ...core.errors import HITLStepNotFoundError
 from ..schemas.hitl import HITLActionRequest, HITLEditRequest
-from .shared import api_error, load_hitl_session, save_loaded_hitl_session
+from .shared import api_error, load_hitl_session, save_loaded_hitl_session, serialize_path
 
 router = APIRouter(prefix="/hitl", tags=["hitl"])
 
@@ -62,7 +62,7 @@ def _apply_action(
         else:
             return api_error("WORKFLOW_ERROR", f"Unknown HITL action: {action}")
         path = save_loaded_hitl_session(hitl_session)
-        return {"ok": True, "session": hitl_session.to_dict(), "path": str(path)}
+        return {"ok": True, "session": hitl_session.to_dict(), "path": serialize_path(path)}
     except HITLStepNotFoundError as exc:
         return api_error("STEP_NOT_FOUND", str(exc))
     except Exception as exc:
