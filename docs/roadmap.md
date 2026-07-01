@@ -9,3 +9,10 @@
 - Tests mock sans appel OpenAI.
 - Documentation locale mise à jour.
 
+## Epic 8.2
+
+- UI Next.js locale dans `ui/`.
+- Accueil, Review, Song, HITL, Learning, Settings.
+- Client API branché sur `NEXT_PUBLIC_BOOKSTAI_API_URL`.
+- Confirmation explicite avant `POST /learning/apply`.
+- Aucun secret ou clé OpenAI côté frontend.
