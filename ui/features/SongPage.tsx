@@ -1,11 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { listBooks, runSong } from '@/lib/api'
+import { runSong } from '@/lib/api'
 import { ErrorMessage } from '@/components/ErrorMessage'
 import { LoadingButton } from '@/components/LoadingButton'
-import { JsonBlock } from '@/components/JsonBlock'
 import { FormField } from '@/components/FormField'
+import { BookSelect } from '@/components/BookSelect'
 
 type SongFormState = {
   book_slug: string
@@ -42,12 +42,10 @@ function getFriendlyErrorMessage(code: string, message: string) {
 }
 
 export default function SongPage() {
-  const [books, setBooks] = useState<Array<{ slug: string; title: string }>>([])
   const [form, setForm] = useState<SongFormState>({
     book_slug: 'alchemised',
     story_scope: 'pitch_only',
     song_style: 'parody',
-    platform: 'tiktok',
     provider: 'mock' as Provider,
     model: null,
     temperature: '0.7',
@@ -56,12 +54,6 @@ export default function SongPage() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    listBooks().then((response) => {
-      if (response.ok) setBooks(response.books)
-    })
-  }, [])
 
   useEffect(() => {
     if (form.provider === 'openai' && !form.model) {
@@ -73,17 +65,6 @@ export default function SongPage() {
   }, [form.model, form.provider])
 
   const workflow = result?.result
-
-  const sections = [
-    ['Contexte utilisé', workflow?.context],
-    ['Comedy room', workflow?.comedy],
-    ['Chanson', workflow?.song],
-    ['Storyboard', workflow?.storyboard],
-    ['Prompts personnages', workflow?.prompts?.character_prompts],
-    ['Prompts backgrounds', workflow?.prompts?.background_prompts],
-    ['Prompts objets', workflow?.prompts?.prop_prompts],
-    ['Social', workflow?.social],
-  ] as const
 
   return (
     <div className="space-y-6">
@@ -99,7 +80,6 @@ export default function SongPage() {
             book_slug: form.book_slug,
             story_scope: form.story_scope,
             song_style: form.song_style,
-            platform: form.platform,
             provider: form.provider,
             model: form.provider === 'openai' ? form.model : null,
             temperature: Number(form.temperature),
@@ -113,21 +93,7 @@ export default function SongPage() {
           setResult(response)
         }}
         >
-        <FormField label="Livre">
-          <input
-            className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 placeholder:text-slate-500"
-            list="song-book-slugs"
-            value={form.book_slug}
-            onChange={(e) => setForm({ ...form, book_slug: e.target.value })}
-          />
-          <datalist id="song-book-slugs">
-            {books.map((book) => (
-              <option key={book.slug} value={book.slug}>
-                {book.title}
-              </option>
-            ))}
-          </datalist>
-        </FormField>
+        <BookSelect value={form.book_slug} onChange={(book_slug) => setForm({ ...form, book_slug })} />
         <div className="grid gap-4 md:grid-cols-2">
           <FormField label="Portée de l’histoire">
             <select
@@ -154,18 +120,6 @@ export default function SongPage() {
           </FormField>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
-          <FormField label="Plateforme">
-            <select
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100"
-              value={form.platform}
-              onChange={(e) =>
-                setForm({ ...form, platform: e.target.value as SongFormState['platform'] })
-              }
-            >
-              <option value="tiktok">TikTok</option>
-              <option value="instagram">Instagram</option>
-            </select>
-          </FormField>
           <FormField label="Provider texte">
             <select
               className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100"
@@ -229,37 +183,12 @@ export default function SongPage() {
       </form>
       {error ? <ErrorMessage message={error} /> : null}
       {result ? (
-        <section className="space-y-4">
-          <div className="grid gap-4 lg:grid-cols-2">
-            {sections.map(([label, value]) => (
-              <div key={label} className="panel rounded-3xl p-5">
-                <div className="text-xs uppercase tracking-[0.18em] text-slate-400">{label}</div>
-                <div className="mt-3">
-                  <JsonBlock value={value ?? {}} />
-                </div>
-              </div>
-            ))}
-          </div>
-          {result?.hitl ? (
-            <div className="panel rounded-3xl p-5">
-              <div className="text-xs uppercase tracking-[0.18em] text-slate-400">Session HITL</div>
-              <div className="mt-3">
-                <JsonBlock value={result.hitl} />
-              </div>
-            </div>
-          ) : null}
-          {result?.hitl_session_path ? (
-            <div className="panel rounded-3xl p-5 text-slate-300">
-              Session HITL: <span className="text-slate-100">{result.hitl_session_path}</span>
-            </div>
-          ) : null}
-          <details className="panel rounded-3xl p-5">
-            <summary className="cursor-pointer text-sm font-medium text-slate-200">
-              Debug JSON complet
-            </summary>
-            <div className="mt-4">
-              <JsonBlock value={result} />
-            </div>
+        <section className="panel space-y-4 rounded-3xl p-6">
+          <h2 className="text-lg font-semibold text-slate-50">Propositions de chanson</h2>
+          <div className="whitespace-pre-wrap text-slate-200">{workflow?.song?.response ?? workflow?.song_final ?? ''}</div>
+          <details className="rounded-2xl border border-slate-800 bg-slate-950 p-4">
+            <summary className="cursor-pointer text-sm text-slate-300">Voir les détails techniques</summary>
+            <pre className="mt-3 overflow-auto text-xs text-slate-300">{JSON.stringify(result, null, 2)}</pre>
           </details>
         </section>
       ) : null}

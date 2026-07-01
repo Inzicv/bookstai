@@ -11,7 +11,6 @@ class SongRunRequest(BaseModel):
     book_slug: str
     story_scope: Literal["pitch_only", "full_spoilers"] = "pitch_only"
     song_style: Literal["parody"] = "parody"
-    platform: Literal["tiktok", "instagram"] = "tiktok"
     provider: Literal["mock", "openai"] = "mock"
     model: str | None = None
     temperature: float = 0.7
@@ -24,7 +23,6 @@ class SongRunResponse(BaseModel):
     book_slug: str
     story_scope: Literal["pitch_only", "full_spoilers"]
     song_style: Literal["parody"]
-    platform: Literal["tiktok", "instagram"]
     provider: Literal["mock", "openai"]
     model: str | None = None
     temperature: float

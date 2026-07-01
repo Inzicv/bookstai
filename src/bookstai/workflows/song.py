@@ -9,7 +9,6 @@ from ..agents.art_director import ArtDirectorAgent
 from ..agents.comedy_room import ComedyRoomAgent
 from ..agents.context_builder import ContextBuilder
 from ..agents.prompt_maker import PromptMakerAgent
-from ..agents.social_media import SocialMediaAgent
 from ..agents.song_writer import SongWriterAgent
 from ..agents.style_memory import StyleMemoryAgent
 from ..hitl import HITLSession
@@ -32,21 +31,18 @@ class SongWorkflow:
         self.song_writer_agent = SongWriterAgent(prompt_root=prompt_root, llm_client=llm_client)
         self.art_director_agent = ArtDirectorAgent(prompt_root=prompt_root, llm_client=llm_client)
         self.prompt_maker_agent = PromptMakerAgent(prompt_root=prompt_root, llm_client=llm_client)
-        self.social_media_agent = SocialMediaAgent(prompt_root=prompt_root, llm_client=llm_client)
 
     def run(
         self,
         book_slug: str,
         story_scope: str = "pitch_only",
         song_style: str = "parody",
-        platform: str = "tiktok",
         **legacy_kwargs: Any,
     ) -> dict[str, Any]:
         return self._run_steps(
             book_slug=book_slug,
             story_scope=story_scope,
             song_style=song_style,
-            platform=platform,
             legacy_kwargs=legacy_kwargs,
         )
 
@@ -55,14 +51,12 @@ class SongWorkflow:
         book_slug: str,
         story_scope: str = "pitch_only",
         song_style: str = "parody",
-        platform: str = "tiktok",
         **legacy_kwargs: Any,
     ) -> dict[str, Any]:
         result = self._run_steps(
             book_slug=book_slug,
             story_scope=story_scope,
             song_style=song_style,
-            platform=platform,
             legacy_kwargs=legacy_kwargs,
         )
         session = HITLSession(workflow_name="song", item_slug=book_slug)
@@ -79,7 +73,6 @@ class SongWorkflow:
         book_slug: str,
         story_scope: str,
         song_style: str,
-        platform: str,
         legacy_kwargs: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         context = self.context_builder.build(
@@ -102,12 +95,6 @@ class SongWorkflow:
             validated_song=song.get("response", song),
         )
         prompts = self.prompt_maker_agent.generate(validated_storyboard=storyboard)
-        social = self.social_media_agent.generate(
-            validated_content=song.get("response", ""),
-            style_context=style,
-            platform=platform,
-        )
-
         return {
             "workflow": "song",
             "book_slug": book_slug,
@@ -115,10 +102,10 @@ class SongWorkflow:
             "song_style": song_style,
             "context": context,
             "style": style,
-            "comedy": comedy,
+            "song_options": comedy,
             "song": song,
             "storyboard": storyboard,
             "prompts": prompts,
-            "social": social,
+            "song_final": song.get("response", ""),
             "legacy": legacy_kwargs or {},
         }

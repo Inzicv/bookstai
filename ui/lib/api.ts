@@ -140,3 +140,11 @@ export const updateBook = (slug: string, payload: unknown) =>
     method: 'PUT',
     body: JSON.stringify(payload),
   })
+export type SocialRunResponse = ApiSuccess<{
+  type: 'social'
+  book_slug: string
+  provider: 'mock' | 'openai'
+  result: { instagram_caption: string; tiktok_caption: string }
+}>
+export const runSocial = (payload: unknown) =>
+  request<SocialRunResponse>('/social/run', { method: 'POST', body: JSON.stringify(payload) })

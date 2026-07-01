@@ -1,11 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { listBooks, runReview } from '@/lib/api'
+import { runReview } from '@/lib/api'
 import { ErrorMessage } from '@/components/ErrorMessage'
 import { LoadingButton } from '@/components/LoadingButton'
-import { ResultPanel } from '@/components/ResultPanel'
 import { FormField } from '@/components/FormField'
+import { BookSelect } from '@/components/BookSelect'
 
 type Provider = 'mock' | 'openai'
 type OpenAIModel = 'gpt-5.5' | 'gpt-5.4' | 'gpt-5.4-mini' | 'gpt-5.4-nano'
@@ -31,11 +31,9 @@ function getFriendlyErrorMessage(code: string, message: string) {
 }
 
 export default function ReviewPage() {
-  const [books, setBooks] = useState<Array<{ slug: string; title: string }>>([])
   const [form, setForm] = useState({
     book_slug: 'alchemised',
     user_opinion: '',
-    platform: 'tiktok',
     provider: 'mock' as Provider,
     model: null as OpenAIModel | null,
     temperature: '0.7',
@@ -44,12 +42,6 @@ export default function ReviewPage() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    listBooks().then((response) => {
-      if (response.ok) setBooks(response.books)
-    })
-  }, [])
 
   useEffect(() => {
     if (form.provider === 'openai' && !form.model) {
@@ -83,21 +75,7 @@ export default function ReviewPage() {
           setResult(response)
         }}
         >
-        <FormField label="book_slug">
-          <input
-            className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 placeholder:text-slate-500"
-            list="review-book-slugs"
-            value={form.book_slug}
-            onChange={(e) => setForm({ ...form, book_slug: e.target.value })}
-          />
-          <datalist id="review-book-slugs">
-            {books.map((book) => (
-              <option key={book.slug} value={book.slug}>
-                {book.title}
-              </option>
-            ))}
-          </datalist>
-        </FormField>
+        <BookSelect value={form.book_slug} onChange={(book_slug) => setForm({ ...form, book_slug })} />
         <FormField label="user_opinion">
           <textarea
             className="min-h-32 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 placeholder:text-slate-500"
@@ -106,13 +84,6 @@ export default function ReviewPage() {
           />
         </FormField>
         <div className="grid gap-4 md:grid-cols-2">
-          <FormField label="platform">
-            <input
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 placeholder:text-slate-500"
-              value={form.platform}
-              onChange={(e) => setForm({ ...form, platform: e.target.value })}
-            />
-          </FormField>
           <FormField label="Provider texte">
             <select
               className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100"
@@ -175,7 +146,18 @@ export default function ReviewPage() {
         <LoadingButton loading={loading}>Générer Review</LoadingButton>
       </form>
       {error ? <ErrorMessage message={error} /> : null}
-      {result ? <ResultPanel title="Résultat Review" data={result} /> : null}
+      {result ? (
+        <section className="panel space-y-4 rounded-3xl p-6">
+          <h2 className="text-lg font-semibold text-slate-50">Pitchs proposés</h2>
+          <div className="text-slate-200">{result?.result?.pitch_options?.response ?? result?.result?.pitch_options ?? ''}</div>
+          <h2 className="text-lg font-semibold text-slate-50">Avis reformulé</h2>
+          <div className="text-slate-200">{result?.result?.review_final ?? result?.result?.review?.response ?? ''}</div>
+          <details className="rounded-2xl border border-slate-800 bg-slate-950 p-4">
+            <summary className="cursor-pointer text-sm text-slate-300">Voir les détails techniques</summary>
+            <pre className="mt-3 overflow-auto text-xs text-slate-300">{JSON.stringify(result, null, 2)}</pre>
+          </details>
+        </section>
+      ) : null}
     </div>
   )
 }

@@ -32,19 +32,7 @@ def run_review(payload: ReviewRunRequest) -> dict[str, Any]:
             prompt_root=build_prompt_root(),
             llm_client=create_llm_client(provider=payload.provider, model=payload.model or "gpt-4o-mini", temperature=payload.temperature),
         )
-        result = (
-            workflow.run_with_hitl(
-                book_slug=payload.book_slug,
-                user_opinion=payload.user_opinion,
-                platform=payload.platform,
-            )
-            if payload.hitl_enabled
-            else workflow.run(
-                book_slug=payload.book_slug,
-                user_opinion=payload.user_opinion,
-                platform=payload.platform,
-            )
-        )
+        result = workflow.run_with_hitl(payload.book_slug, payload.user_opinion) if payload.hitl_enabled else workflow.run(payload.book_slug, payload.user_opinion)
         hitl_path = None
         if payload.hitl_enabled and "hitl" in result:
             hitl_path = serialize_path(save_hitl_session(result["hitl"], "review", payload.book_slug))

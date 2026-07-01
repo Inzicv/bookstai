@@ -36,21 +36,7 @@ def run_song(payload: SongRunRequest) -> dict[str, Any]:
                 temperature=payload.temperature,
             ),
         )
-        result = (
-            workflow.run_with_hitl(
-                book_slug=payload.book_slug,
-                story_scope=payload.story_scope,
-                song_style=payload.song_style,
-                platform=payload.platform,
-            )
-            if payload.hitl_enabled
-            else workflow.run(
-                book_slug=payload.book_slug,
-                story_scope=payload.story_scope,
-                song_style=payload.song_style,
-                platform=payload.platform,
-            )
-        )
+        result = workflow.run_with_hitl(payload.book_slug, payload.story_scope, payload.song_style) if payload.hitl_enabled else workflow.run(payload.book_slug, payload.story_scope, payload.song_style)
         hitl_path = None
         if payload.hitl_enabled and "hitl" in result:
             hitl_path = serialize_path(save_hitl_session(result["hitl"], "song", payload.book_slug))
@@ -60,7 +46,6 @@ def run_song(payload: SongRunRequest) -> dict[str, Any]:
             "book_slug": payload.book_slug,
             "story_scope": payload.story_scope,
             "song_style": payload.song_style,
-            "platform": payload.platform,
             "provider": payload.provider,
             "model": payload.model,
             "temperature": payload.temperature,

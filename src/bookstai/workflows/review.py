@@ -9,7 +9,6 @@ from ..agents.comedy_room import ComedyRoomAgent
 from ..agents.context_builder import ContextBuilder
 from ..hitl import HITLSession
 from ..agents.review_writer import ReviewWriterAgent
-from ..agents.social_media import SocialMediaAgent
 from ..agents.style_memory import StyleMemoryAgent
 from ..llm.client import LLMClient
 
@@ -33,33 +32,24 @@ class ReviewWorkflow:
             prompt_root=prompt_root,
             llm_client=llm_client,
         )
-        self.social_media_agent = SocialMediaAgent(
-            prompt_root=prompt_root,
-            llm_client=llm_client,
-        )
-
     def run(
         self,
         book_slug: str,
         user_opinion: str,
-        platform: str,
     ) -> dict[str, Any]:
         return self._run_steps(
             book_slug=book_slug,
             user_opinion=user_opinion,
-            platform=platform,
         )
 
     def run_with_hitl(
         self,
         book_slug: str,
         user_opinion: str,
-        platform: str,
     ) -> dict[str, Any]:
         result = self._run_steps(
             book_slug=book_slug,
             user_opinion=user_opinion,
-            platform=platform,
         )
         session = HITLSession(
             workflow_name="review",
@@ -67,7 +57,6 @@ class ReviewWorkflow:
         )
         session.add_step(name="comedy", content=result["comedy"])
         session.add_step(name="review", content=result["review"])
-        session.add_step(name="social", content=result["social"])
         result["hitl"] = session.to_dict()
         return result
 
@@ -75,7 +64,6 @@ class ReviewWorkflow:
         self,
         book_slug: str,
         user_opinion: str,
-        platform: str,
     ) -> dict[str, Any]:
         context = self.context_builder.build(
             book_slug=book_slug,
@@ -93,11 +81,6 @@ class ReviewWorkflow:
             comedy_bank=comedy,
             user_opinion=user_opinion,
         )
-        social = self.social_media_agent.generate(
-            validated_content=review["response"],
-            style_context=style,
-            platform=platform,
-        )
 
         return {
             "workflow": "review",
@@ -106,5 +89,6 @@ class ReviewWorkflow:
             "style": style,
             "comedy": comedy,
             "review": review,
-            "social": social,
+            "pitch_options": comedy,
+            "review_final": review["response"],
         }

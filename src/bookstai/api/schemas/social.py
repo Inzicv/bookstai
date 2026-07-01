@@ -1,26 +1,24 @@
-"""Review API schemas."""
+"""Social API schemas."""
 
 from __future__ import annotations
 
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
-class ReviewRunRequest(BaseModel):
+class SocialRunRequest(BaseModel):
     book_slug: str
-    user_opinion: str
+    source_type: Literal["review", "song", "free_text"] = "review"
+    source_content: str | None = None
     provider: Literal["mock", "openai"] = "mock"
     model: str | None = None
     temperature: float = 0.7
-    hitl_enabled: bool = True
 
 
-class ReviewRunResponse(BaseModel):
+class SocialRunResponse(BaseModel):
     ok: bool
-    type: Literal["review"]
+    type: Literal["social"]
     book_slug: str
     provider: Literal["mock", "openai"]
-    hitl_enabled: bool
     result: dict[str, Any]
-    hitl_session_path: str | None = None
