@@ -7,12 +7,27 @@ import { LoadingButton } from '@/components/LoadingButton'
 import { ResultPanel } from '@/components/ResultPanel'
 import { FormField } from '@/components/FormField'
 
+type Provider = 'mock' | 'openai'
+
+function getFriendlyErrorMessage(code: string, message: string) {
+  if (code === 'MISSING_API_KEY') {
+    return 'Clé OpenAI manquante côté backend. Configure OPENAI_API_KEY puis relance l’API.'
+  }
+  if (code === 'OPENAI_DEPENDENCY_MISSING') {
+    return 'La dépendance OpenAI n’est pas installée côté backend. Installe l’extra openai du projet.'
+  }
+  if (code === 'INVALID_PROVIDER') {
+    return 'Provider invalide. Choisis mock ou openai.'
+  }
+  return message
+}
+
 export default function ReviewPage() {
   const [form, setForm] = useState({
     book_slug: 'alchemised',
     user_opinion: '',
     platform: 'tiktok',
-    provider: 'mock',
+    provider: 'mock' as Provider,
     model: '',
     temperature: '0.7',
     hitl_enabled: true,
@@ -38,7 +53,7 @@ export default function ReviewPage() {
           })
           setLoading(false)
           if (!response.ok) {
-            setError(response.error.message)
+            setError(getFriendlyErrorMessage(response.error.code, response.error.message))
             return
           }
           setResult(response)
@@ -54,10 +69,18 @@ export default function ReviewPage() {
           <FormField label="platform">
             <input className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 placeholder:text-slate-500" value={form.platform} onChange={(e) => setForm({ ...form, platform: e.target.value })} />
           </FormField>
-          <FormField label="provider">
-            <select className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100" value={form.provider} onChange={(e) => setForm({ ...form, provider: e.target.value })}>
-              <option value="mock">mock</option>
+          <FormField label="Provider texte">
+            <select
+              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100"
+              value={form.provider}
+              onChange={(e) => setForm({ ...form, provider: e.target.value as Provider })}
+            >
+              <option value="mock">Mock — test local sans coût</option>
+              <option value="openai">OpenAI — génération texte réelle</option>
             </select>
+            <p className="text-xs text-slate-400">
+              La clé OpenAI est lue côté backend depuis <code className="rounded bg-slate-800 px-1.5 py-0.5 text-slate-100">OPENAI_API_KEY</code>. Elle ne doit jamais être saisie ici.
+            </p>
           </FormField>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
