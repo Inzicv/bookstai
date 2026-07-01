@@ -30,8 +30,10 @@ http://127.0.0.1:8000
 Le workflow Song ne génère pas d'image.
 Il produit:
 
+- le contexte;
+- la comedy room;
 - la chanson parodique;
-- le storyboard vidéo réalisable;
+- le storyboard;
 - les prompts personnages;
 - les prompts backgrounds;
 - le texte social.
@@ -52,6 +54,12 @@ Il produit:
 ```
 
 `story_scope` peut valoir `pitch_only` ou `full_spoilers`.
+`song_style` vaut actuellement `parody`.
+`platform` vaut `tiktok` ou `instagram`.
+`provider` vaut `mock`.
+`model` est optionnel.
+`temperature` est un réglage de créativité.
+`hitl_enabled` active la session HITL Song.
 
 ## Principes
 

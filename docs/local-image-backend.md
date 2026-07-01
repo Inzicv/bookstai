@@ -148,9 +148,9 @@ Permettre de choisir :
 
 Permettre d’utiliser ComfyUI depuis la CLI.
 
-### Epic 4.6 — Brancher le backend image dans Langflow
+### Epic 4.6 — Préparer le module image séparé
 
-Permettre d’utiliser ComfyUI depuis les composants Langflow.
+Permettre d’utiliser ComfyUI depuis un futur module image séparé.
 
 ## Principe BookstAI
 
@@ -170,7 +170,7 @@ Dans cette première version :
 
 - il n’est pas branché automatiquement ;
 - il n’est pas utilisé par la CLI ;
-- il n’est pas utilisé par Langflow ;
+- il n’est pas utilisé par le workflow Song ;
 - il ne nécessite pas de serveur ComfyUI pendant les tests ;
 - les appels HTTP sont isolés et mockables ;
 - le payload ComfyUI reste minimal et pourra évoluer.
@@ -219,14 +219,15 @@ Backends supportés actuellement :
 
 Le backend mock reste le comportement recommandé pour les tests.
 
-Le backend comfyui prépare l’utilisation locale de ComfyUI, mais il n’est pas encore branché automatiquement dans la CLI ni dans Langflow.
+Le backend comfyui prépare l’utilisation locale de ComfyUI, mais il n’est pas encore branché automatiquement dans la CLI ni dans le workflow Song.
 
 La factory ne génère aucune image directement.
 
 Elle construit seulement un backend compatible `ImageBackend`.
-## Langflow Song
+## Song et module image
 
-Le backend image local peut maintenant être sélectionné depuis le composant Langflow Song.
+Le workflow Song ne sélectionne pas de backend image.
+Le module image séparé utilisera plus tard les prompts validés par Song.
 
 Le backend par défaut reste `mock`.
 
@@ -237,7 +238,7 @@ Cette intégration ne lance pas ComfyUI automatiquement.
 Elle ne génère une image réelle que si :
 
 - ComfyUI est lancé localement ;
-- `image_backend` vaut `comfyui` ;
+- le backend image cible vaut `comfyui` ;
 - un workflow ComfyUI compatible est fourni ;
 - le flow Song est exécuté.
 

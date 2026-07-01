@@ -15,13 +15,13 @@ python -m bookstai.cli review --book lesheritiersdorion --opinion "J'ai aimé" -
 ## Song mock
 
 ```powershell
-python -m bookstai.cli song --book lesheritiersdorion --spoiler-mode spoiler_free --prompt-type thumbnail --platform tiktok --image-backend mock
+python -m bookstai.cli song --book lesheritiersdorion --story-scope pitch_only --song-style parody --platform tiktok --provider mock
 ```
 
 ## Song avec HITL
 
 ```powershell
-python -m bookstai.cli song --book lesheritiersdorion --spoiler-mode spoiler_free --prompt-type thumbnail --platform tiktok --image-backend mock --hitl --export json
+python -m bookstai.cli song --book lesheritiersdorion --story-scope pitch_only --song-style parody --platform tiktok --provider mock --hitl --export json
 ```
 
 ## HITL show

@@ -2,40 +2,88 @@
 
 ## Architecture officielle
 
-Next.js UI
+Next.js UI locale
 ↓
-FastAPI API
+FastAPI locale
 ↓
-Python workflows
+Workflows Python BookstAI
 
-## Epic 8.1
+## État actuel
 
-- API FastAPI locale.
-- Routes Review, Song, HITL et Learning.
-- Provider par défaut `mock`.
-- Learning Apply avec confirmation explicite.
-- Tests mock sans appel OpenAI.
-- Documentation locale mise à jour.
+- Provider `mock` par défaut.
+- Workflow Review fonctionnel.
+- Workflow Song refondu sans génération d'image.
+- HITL fonctionnel dans l'UI.
+- Learning Loop existante.
+- Exports Markdown existants.
+- Dark mode UI par défaut.
+- Langflow supprimé.
+- OpenAI non branché comme provider réel dans l'usage UI.
+- ComfyUI préparé mais pas encore intégré comme module image complet.
 
-## Epic 8.2
+## Étape 1 — Stabilisation V1 mock locale
 
-- UI Next.js locale dans `ui/`.
-- Accueil, Review, Song, HITL, Learning, Settings.
-- Client API branché sur `NEXT_PUBLIC_BOOKSTAI_API_URL`.
-- Confirmation explicite avant `POST /learning/apply`.
-- Aucun secret ou clé OpenAI côté frontend.
-- Interface simple, lisible et utilisable en local.
+Objectif: BookstAI V1 locale complète en `mock`.
 
-## Epic 8.3
+À couvrir:
 
-- Workflow Song refondu autour de:
-  - Context Builder
-  - Comedy Room
-  - Song Writer
-  - HITL chanson
-  - Art Director
-  - HITL storyboard
-  - Prompt Maker
-  - Social Media
-- Le workflow Song ne génère pas d'image.
-- La sortie Song expose chanson, storyboard, prompts et social.
+- Review UI/API.
+- Song UI/API.
+- HITL Review/Song.
+- Learning UI/API.
+- exports Markdown.
+- documentation.
+- tests backend.
+- build UI.
+
+## Étape 2 — OpenAI texte réel
+
+Objectif: `provider = mock | openai`.
+
+Contraintes:
+
+- texte uniquement;
+- clé API côté backend uniquement;
+- `mock` par défaut;
+- aucun appel OpenAI automatique;
+- erreurs propres dans l'UI.
+
+## Étape 3 — Module Image local ComfyUI
+
+Objectif: créer un module image séparé.
+
+Important:
+
+- Song ne génère pas d'image directement.
+- Song produit seulement:
+  - storyboard
+  - character prompts
+  - background prompts
+
+Le module Image utilisera ces prompts validés plus tard.
+
+## Étape 4 — Provider texte local
+
+Objectif futur: `provider = local`.
+
+Backends possibles:
+
+- Ollama;
+- LM Studio;
+- llama.cpp server;
+- API locale compatible OpenAI.
+
+## Étape 5 — Apprentissage avancé
+
+Progression correcte:
+
+HITL
+↓
+Learning Loop
+↓
+Mémoire structurée
+↓
+Dataset propre
+↓
+Fine-tuning éventuel
+

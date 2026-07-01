@@ -1,24 +1,10 @@
 # Workflows BookstAI
 
----
+## Review
 
-# Review humoristique
+Objectif: produire une review humoristique fidèle au style de référence.
 
-## Objectif
-
-Produire une review humoristique fidèle au style de Céline.
-
-## Structure
-
-```text
-Hook
-↓
-Pitch humoristique
-↓
-Avis personnel
-```
-
-## Workflow
+Workflow:
 
 ```text
 Livre
@@ -28,51 +14,33 @@ Context Builder Agent
 Style Memory Agent
 ↓
 Comedy Room Agent
-    ↓
-    Génère :
-    - Hook
-    - Pitch humoristique complet
-    - Références pop culture
-    - Idées de memes
-↓
-Validation humaine
-↓
-Avis personnel de Céline
 ↓
 Review Writer Agent
-    ↓
-    Assemble :
-    - Hook
-    - Pitch humoristique
-    - Avis personnel
-↓
-Review finale
 ↓
 Validation humaine
 ↓
 Social Media Agent
-↓
-Description
-Hashtags
-CTA
-↓
-Memory Manager Agent
 ```
 
----
+Sortie:
 
-# Chanson parodique
+- context
+- style
+- comedy
+- review
+- social
 
-## Objectif
+Session HITL:
 
-Créer une chanson parodique inspirée d'un livre.
+- comedy
+- review
+- social
 
-## Paramètres
+## Song
 
-* Spoiler free
-* Histoire complète
+Objectif: produire une chanson parodique narrative sans génération d'image.
 
-## Workflow
+Workflow:
 
 ```text
 Livre
@@ -87,48 +55,41 @@ Song Writer Agent
 ↓
 Validation humaine
 ↓
-Suno
-↓
 Art Director Agent
-    ↓
-    Définit :
-    - style graphique
-    - ambiance
-    - personnages à illustrer
-    - scènes importantes
 ↓
 Validation humaine
 ↓
 Prompt Maker Agent
-    ↓
-    Génère :
-    - prompts personnages
-    - prompts scènes
-↓
-Validation humaine
-↓
-Image Gen Agent
-↓
-Images générées
 ↓
 Social Media Agent
-↓
-Description
-Hashtags
-CTA
-↓
-Memory Manager Agent
 ```
 
----
+Sortie:
 
-# Comedy Room
+- context
+- style
+- comedy
+- song
+- storyboard
+- prompts
+- social
 
-## Objectif
+Session HITL:
 
-Créer une banque d'humour réutilisable.
+- comedy
+- song
+- storyboard
+- prompts
+- social
 
-## Workflow
+Song ne génère pas d'image.
+Les prompts produits servent à un futur module image séparé.
+
+## Comedy Room
+
+Objectif: créer une banque d'humour réutilisable.
+
+Workflow:
 
 ```text
 Livre
@@ -140,24 +101,13 @@ Style Memory Agent
 Comedy Room Agent
 ↓
 Validation humaine
-↓
-Hooks
-Punchlines
-Analogies
-Comparaisons
-Références pop culture
-Idées de memes
 ```
 
----
+## Social Media
 
-# Social Media
+Objectif: préparer les contenus destinés aux réseaux sociaux.
 
-## Objectif
-
-Préparer les contenus destinés aux réseaux sociaux.
-
-## Workflow
+Workflow:
 
 ```text
 Contenu validé
@@ -167,6 +117,5 @@ Style Memory Agent
 Social Media Agent
 ↓
 Validation humaine
-↓
-Publication
 ```
+

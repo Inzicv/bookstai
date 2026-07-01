@@ -43,11 +43,11 @@ Options image:
 Exemple offline par défaut:
 
 ```bash
-bookstai song --book alchemised --spoiler-mode spoiler_free --prompt-type scene --platform instagram
+bookstai song --book alchemised --story-scope pitch_only --song-style parody --platform instagram
 ```
 
 Exemple explicite avec ComfyUI:
 
 ```bash
-bookstai song --book alchemised --spoiler-mode spoiler_free --prompt-type scene --platform instagram --image-backend comfyui --comfyui-url http://127.0.0.1:8188 --comfyui-workflow-path workflows/comfyui/bookstai.json --image-output-dir outputs/images
+bookstai song --book alchemised --story-scope pitch_only --song-style parody --platform instagram
 ```
