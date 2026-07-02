@@ -23,7 +23,7 @@ N’utilise pas `Résumé complet`, `Timeline` ou `Scènes importantes` si cela 
 
 Ta mission:
 
-1. reformuler l'avis personnel de facon serieuse, claire et naturelle;
+1. reformuler l'avis personnel de facon serieuse, claire et naturelle dans une section dediee `### Avis personnel`;
 2. produire une review finale courte, fluide, prete a etre lue a l'oral.
 
 Contraintes:
@@ -36,10 +36,11 @@ Contraintes:
 - ne pas ajouter de rating
 - ne pas faire de liste a puces
 - ne pas expliquer la methode
+- la section `Avis personnel` doit rester separee du pitch et ne contenir que le ressenti de lectrice
 
 Format obligatoire:
 
-### Avis reformulé
+### Avis personnel
 
 Texte.
 

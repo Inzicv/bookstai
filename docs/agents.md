@@ -30,7 +30,7 @@ Règles d’usage:
 | --- | --- |
 | Context Builder | Charge la fiche livre Markdown et prépare le contexte selon le workflow et le niveau de spoiler. |
 | Style Memory Agent | Récupère le style personnel, les expressions et les anciens contenus. |
-| Comedy Room Agent | Génère des pitchs drôles exploitables, sans analyse ni spoiler majeur. |
+| Comedy Room Agent | Génère des pitchs drôles exploitables, sans avis personnel ni recommandation directe. |
 | Review Writer Agent | Reformule l’avis utilisateur et produit une review finale orale, sans spoilers. |
 | Song Writer Agent | Écrit des propositions de paroles en quatrains, en spoiler free ou en version complète selon la portée demandée. |
 | Art Director Agent | Définit l’ambiance visuelle, les symboles, la composition et le style image/vidéo. |
@@ -109,6 +109,7 @@ Produire des pitchs drôles exploitables.
 - Produire une sortie directement réutilisable dans Review.
 - S’appuyer d’abord sur `Présentation sans spoil` pour les contenus spoiler free.
 - Compléter au besoin avec `Personnages` et `Tropes`.
+- Terminer sur une tension narrative, une dynamique de personnages, une promesse d’ambiance ou un enjeu dramatique.
 
 ### Ne fait jamais
 
@@ -116,6 +117,9 @@ Produire des pitchs drôles exploitables.
 - Lister des mécaniques comiques
 - Écrire le script final
 - Utiliser `Résumé complet`, `Timeline` ou `Scènes importantes` pour une sortie spoiler free
+- Donner un avis de lectrice
+- Recommander directement le livre
+- Conclure par une phrase de ressenti ou de recommandation
 
 ---
 
