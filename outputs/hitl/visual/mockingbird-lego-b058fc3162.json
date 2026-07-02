@@ -1,0 +1,76 @@
+{
+  "workflow_name": "visual",
+  "item_slug": "mockingbird-lego-b058fc3162",
+  "steps": [
+    {
+      "name": "storyboard_scene_001",
+      "status": "approved",
+      "content": {
+        "scene_id": "scene_001",
+        "scene_number": 1,
+        "song_part": "Couplet 1",
+        "lyrics_excerpt": "Ouverture du morceau.",
+        "visual_intention": "Introduire le monde et le ton.",
+        "characters": [
+          "Personnage principal"
+        ],
+        "background": "Décor principal",
+        "key_props": [
+          "Objet symbolique"
+        ],
+        "camera": "Plan large",
+        "movement": "Travelling lent",
+        "transition": "cut",
+        "style_notes": "Respecter le style validé.",
+        "status": "pending"
+      },
+      "edited_content": null,
+      "validated_content": {
+        "scene_id": "scene_001",
+        "scene_number": 1,
+        "song_part": "Couplet 1",
+        "lyrics_excerpt": "Ouverture du morceau.",
+        "visual_intention": "Introduire le monde et le ton.",
+        "characters": [
+          "Personnage principal"
+        ],
+        "background": "Décor principal",
+        "key_props": [
+          "Objet symbolique"
+        ],
+        "camera": "Plan large",
+        "movement": "Travelling lent",
+        "transition": "cut",
+        "style_notes": "Respecter le style validé.",
+        "status": "pending"
+      },
+      "comment": "",
+      "metadata": {}
+    },
+    {
+      "name": "storyboard_scene_002",
+      "status": "rejected",
+      "content": {
+        "scene_id": "scene_002",
+        "scene_number": 2,
+        "song_part": "Refrain",
+        "lyrics_excerpt": "Montée émotionnelle.",
+        "visual_intention": "Accentuer le rythme et l'énergie.",
+        "characters": [
+          "Personnage principal"
+        ],
+        "background": "Lieu secondaire",
+        "key_props": [],
+        "camera": "Plan rapproché",
+        "movement": "Panoramique",
+        "transition": "cut",
+        "style_notes": "Conserver la cohérence visuelle.",
+        "status": "pending"
+      },
+      "edited_content": "{\n  \"scene_id\": \"scene_002\",\n  \"scene_number\": 2,\n  \"song_part\": \"Refrain\",\n  \"lyrics_excerpt\": \"Montée émotionnelle.\",\n  \"visual_intention\": \"Accentuer le rythme et l'énergie.\",\n  \"characters\": [\n    \"Personnage principal\"\n  ],\n  \"background\": \"Lieu secondaire\",\n  \"key_props\": [],\n  \"camera\": \"Plan rapproché\",\n  \"movement\": \"Panoramique\",\n  \"transition\": \"cut\",\n  \"style_notes\": \"Conserver la cohérence visuelle.\",\n  \"status\": \"pending\"\n}",
+      "validated_content": null,
+      "comment": "",
+      "metadata": {}
+    }
+  ]
+}

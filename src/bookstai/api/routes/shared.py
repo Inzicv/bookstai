@@ -45,7 +45,7 @@ def save_hitl_session(session_data: dict[str, Any], workflow_type: str, book_slu
 
 
 def save_loaded_hitl_session(session: HITLSession) -> Path:
-    return hitl_storage().save(session)
+    return save_hitl_session(session.to_dict(), session.workflow_name, session.item_slug)
 
 
 def load_hitl_session(workflow_type: str, book_slug: str, as_session: bool = False) -> dict[str, Any]:

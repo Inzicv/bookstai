@@ -18,7 +18,15 @@ from ..schemas.image import (
     ImageRunRequest,
     ImageStoryboardRequest,
 )
-from .shared import api_error, build_memory_root, build_output_root, build_prompt_root, save_hitl_session, serialize_path
+from .shared import (
+    api_error,
+    build_memory_root,
+    build_output_root,
+    build_prompt_root,
+    load_hitl_session,
+    save_hitl_session,
+    serialize_path,
+)
 
 router = APIRouter(prefix="/image", tags=["image"])
 
@@ -31,7 +39,10 @@ def list_styles() -> dict[str, Any]:
 
 @router.post("/storyboard")
 def storyboard(payload: ImageStoryboardRequest) -> dict[str, Any]:
-    return _run_storyboard(payload)
+    result = _run_storyboard(payload)
+    if result.get("hitl"):
+        _merge_and_save_hitl_session("visual", result["item_slug"], result["hitl"])
+    return result
 
 
 @router.post("/prompts/characters")
@@ -43,6 +54,8 @@ def character_prompts(payload: ImageCharacterPromptsRequest) -> dict[str, Any]:
         visual_style_id=payload.visual_style_id,
         storyboard=payload.storyboard,
     )
+    if result.get("hitl"):
+        _merge_and_save_hitl_session("visual", payload.item_slug, result["hitl"])
     return {"ok": True, **result}
 
 
@@ -56,6 +69,8 @@ def background_prompts(payload: ImageBackgroundPromptsRequest) -> dict[str, Any]
         storyboard=payload.storyboard,
         character_prompts=payload.character_prompts,
     )
+    if result.get("hitl"):
+        _merge_and_save_hitl_session("visual", payload.item_slug, result["hitl"])
     return {"ok": True, **result}
 
 
@@ -138,6 +153,31 @@ def _run_storyboard(payload: ImageStoryboardRequest) -> dict[str, Any]:
         brief=payload.brief,
     )
     return {"ok": True, **result}
+
+
+def _merge_and_save_hitl_session(workflow_type: str, item_slug: str, session_data: dict[str, Any]) -> None:
+    existing = load_hitl_session(workflow_type, item_slug, as_session=True)
+    if "session" in existing:
+        session = existing["session"]
+        for step_data in session_data.get("steps", []):
+            session.add_step(
+                name=step_data["name"],
+                content=step_data["content"],
+                metadata=step_data.get("metadata") or {},
+            )
+            if step_data.get("status") == "approved":
+                session.approve_step(step_data["name"], comment=step_data.get("comment"))
+            elif step_data.get("status") == "rejected":
+                session.reject_step(step_data["name"], comment=step_data.get("comment"))
+            elif step_data.get("status") == "edited":
+                session.edit_step(
+                    step_data["name"],
+                    edited_content=step_data.get("edited_content"),
+                    comment=step_data.get("comment"),
+                )
+        save_hitl_session(session.to_dict(), workflow_type, item_slug)
+        return
+    save_hitl_session(session_data, workflow_type, item_slug)
 
 
 def _build_workflow(provider: str, model: str | None, temperature: float) -> ImageWorkflow:

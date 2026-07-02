@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 import json
-import re
-import unicodedata
 from pathlib import Path
 from typing import Any
 
@@ -54,7 +52,7 @@ class HITLSessionStorage:
             raise HITLSessionStorageError("HITL session data is invalid.") from exc
 
     def _path_for(self, workflow_name: str, item_slug: str) -> Path:
-        return self.root / self._slugify(workflow_name) / f"{self._slugify(item_slug)}.json"
+        return self.root / workflow_name / f"{item_slug}.json"
 
     def _validate_payload(self, data: Any) -> None:
         if not isinstance(data, dict):
@@ -74,9 +72,3 @@ class HITLSessionStorage:
             for key in ("name", "status", "content"):
                 if key not in step:
                     raise HITLSessionStorageError("HITL session data is invalid.")
-
-    def _slugify(self, value: str) -> str:
-        normalized = unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode("ascii")
-        normalized = normalized.lower()
-        normalized = re.sub(r"[^a-z0-9]+", "", normalized)
-        return normalized or "session"
