@@ -36,6 +36,7 @@ class ImageRunRequest(BaseModel):
 class ImageRunResponse(BaseModel):
     ok: bool
     type: Literal["visual"]
+    item_slug: str
     visual_style_id: str
     provider: Literal["mock", "openai"]
     model: str | None = None

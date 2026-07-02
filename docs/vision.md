@@ -18,7 +18,7 @@ Je donne une fiche lecture a BookstAI
 Je choisis :
 Review
 Chanson
-Miniature
+Image
 Storyboard
 ↓
 L'IA produit une première proposition.

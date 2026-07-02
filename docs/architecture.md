@@ -55,11 +55,8 @@ Les étapes créatives à valider sont:
 
 Les étapes créatives à valider sont:
 
-- `comedy`
 - `song`
-- `storyboard`
-- `prompts`
-- `social`
+- `song_options`
 
 Song ne génère pas d'image.
 

@@ -30,24 +30,12 @@ Options LLM:
 - `--model` avec `gpt-4o-mini` par défaut
 - `--temperature` avec `0.7` par défaut
 
-Options image:
-
-- `--image-backend` avec `mock` par défaut
-- `--image-path` avec `outputs/mock/image.png` par défaut
-- `--comfyui-url` avec `http://127.0.0.1:8188` par défaut
-- `--comfyui-workflow-path` avec `None` par défaut
-- `--image-output-dir` avec `outputs/images` par défaut
-- `--image-timeout` avec `60.0` par défaut
-- `--image-poll-interval` avec `1.0` par défaut
-
 Exemple offline par défaut:
 
 ```bash
 bookstai song --book alchemised --story-scope pitch_only --song-style parody --platform instagram
 ```
 
-Exemple explicite avec ComfyUI:
+## Workflow `image`
 
-```bash
-bookstai song --book alchemised --story-scope pitch_only --song-style parody --platform instagram
-```
+Le workflow Image est exposé via l’UI et l’API séparées. Il repart des paroles d’une chanson déjà validée et d’un style visuel choisi depuis `memory/visual_style/Prompts_visuels/`.

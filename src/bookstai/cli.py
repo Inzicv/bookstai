@@ -10,7 +10,6 @@ from typing import Sequence
 
 from .core.config import load_settings
 from .core.errors import BookstAIError
-from .image import create_image_backend
 from .exports import ExportService
 from .hitl import HITLSessionStorage
 from .history import HistoryEntry, HistoryStore
@@ -54,13 +53,6 @@ def build_parser() -> argparse.ArgumentParser:
     song_parser.add_argument("--provider", default="mock")
     song_parser.add_argument("--model", default="gpt-4o-mini")
     song_parser.add_argument("--temperature", type=float, default=0.7)
-    song_parser.add_argument("--image-backend", default="mock")
-    song_parser.add_argument("--image-path", default="outputs/mock/image.png")
-    song_parser.add_argument("--comfyui-url", default="http://127.0.0.1:8188")
-    song_parser.add_argument("--comfyui-workflow-path")
-    song_parser.add_argument("--image-output-dir", default="outputs/images")
-    song_parser.add_argument("--image-timeout", type=float, default=60.0)
-    song_parser.add_argument("--image-poll-interval", type=float, default=1.0)
     song_parser.add_argument("--hitl", action="store_true")
     song_parser.add_argument("--verbose", action="store_true")
     song_parser.add_argument("--no-history", action="store_true")
@@ -201,20 +193,10 @@ def main(argv: Sequence[str] | None = None) -> int:
                     platform=args.platform,
                 )
         else:
-            image_backend = create_image_backend(
-                backend=args.image_backend,
-                image_path=args.image_path,
-                comfyui_url=args.comfyui_url,
-                workflow_path=args.comfyui_workflow_path,
-                output_dir=args.image_output_dir,
-                timeout=args.image_timeout,
-                poll_interval=args.image_poll_interval,
-            )
             workflow = SongWorkflow(
                 memory_root=memory_root,
                 prompt_root=prompt_root,
                 llm_client=llm_client,
-                image_backend=image_backend,
             )
             if args.hitl:
                 result = workflow.run_with_hitl(
@@ -250,11 +232,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                     item_slug=args.book,
                     hitl_enabled=args.hitl,
                     provider=args.provider,
-                    image_backend=getattr(args, "image_backend", None),
                     artifacts={
                         "exports": {k: str(v) for k, v in (exported_paths or {}).items()},
                         "has_hitl": "hitl" in result,
-                        "image": result.get("image"),
                     },
                 )
             )
@@ -270,7 +250,6 @@ def main(argv: Sequence[str] | None = None) -> int:
                     item_slug=getattr(args, "book", None),
                     hitl_enabled=getattr(args, "hitl", False),
                     provider=getattr(args, "provider", None),
-                    image_backend=getattr(args, "image_backend", None),
                     error=str(exc),
                 )
             )

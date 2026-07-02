@@ -5,10 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from ..agents.art_director import ArtDirectorAgent
 from ..agents.comedy_room import ComedyRoomAgent
 from ..agents.context_builder import ContextBuilder
-from ..agents.prompt_maker import PromptMakerAgent
 from ..agents.song_writer import SongWriterAgent
 from ..agents.style_memory import StyleMemoryAgent
 from ..hitl import HITLSession
@@ -29,8 +27,6 @@ class SongWorkflow:
         self.style_memory_agent = StyleMemoryAgent(memory_root=memory_root)
         self.comedy_room_agent = ComedyRoomAgent(prompt_root=prompt_root, llm_client=llm_client)
         self.song_writer_agent = SongWriterAgent(prompt_root=prompt_root, llm_client=llm_client)
-        self.art_director_agent = ArtDirectorAgent(prompt_root=prompt_root, llm_client=llm_client)
-        self.prompt_maker_agent = PromptMakerAgent(prompt_root=prompt_root, llm_client=llm_client)
 
     def run(
         self,
@@ -86,12 +82,6 @@ class SongWorkflow:
             story_scope=story_scope,
             song_style=song_style,
         )
-        storyboard = self.art_director_agent.generate(
-            book_context=context,
-            style_context=style,
-            validated_song=song.get("response", song),
-        )
-        prompts = self.prompt_maker_agent.generate(validated_storyboard=storyboard)
         return {
             "workflow": "song",
             "book_slug": book_slug,
@@ -101,8 +91,6 @@ class SongWorkflow:
             "style": style,
             "song_options": song_options,
             "song": song,
-            "storyboard": storyboard,
-            "prompts": prompts,
             "song_final": song.get("response", ""),
             "legacy": legacy_kwargs or {},
         }

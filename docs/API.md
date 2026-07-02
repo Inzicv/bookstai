@@ -35,10 +35,7 @@ Il produit:
 - le contexte;
 - la comedy room;
 - la chanson parodique;
-- le storyboard;
-- les prompts personnages;
-- les prompts backgrounds;
-- le texte social.
+- les variantes de paroles validables.
 
 `POST /song/run` attend:
 
@@ -62,6 +59,7 @@ Il produit:
 `model` est optionnel.
 `temperature` est un réglage de créativité.
 `hitl_enabled` active la session HITL Song.
+Le HITL Song utilise uniquement les étapes `song_options` et `song`.
 
 ## Image
 
@@ -96,6 +94,7 @@ Il produit:
 `brief` est optionnel.
 `provider` vaut `mock` ou `openai`.
 `export_formats` est optionnel et peut contenir `markdown` et/ou `json`.
+La réponse contient aussi un `item_slug` calculé à partir des paroles et du style pour éviter les collisions HITL.
 Le HITL Image utilise les étapes `style_selection`, `storyboard` et `prompts`.
 
 ## Principes

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 from pathlib import Path
 from typing import Any
 
@@ -58,7 +59,7 @@ class ImageWorkflow:
             brief=brief,
             legacy_kwargs=legacy_kwargs,
         )
-        session = HITLSession(workflow_name="visual", item_slug=visual_style_id)
+        session = HITLSession(workflow_name="visual", item_slug=result["item_slug"])
         session.add_step(name="style_selection", content=result["style_selection"])
         session.add_step(name="storyboard", content=result["storyboard"])
         session.add_step(name="prompts", content=result["prompts"])
@@ -75,6 +76,7 @@ class ImageWorkflow:
         legacy_kwargs: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         visual_style = self.visual_style_reader.read_style(visual_style_id)
+        item_slug = self._build_item_slug(visual_style_id, lyrics, platform, format)
         style_context = {
             "visual_style": visual_style,
             "brief": brief or "",
@@ -84,6 +86,7 @@ class ImageWorkflow:
         image_context = {
             "workflow": "visual",
             "lyrics": lyrics,
+            "item_slug": item_slug,
             "brief": brief or "",
             "platform": platform,
             "format": format,
@@ -108,6 +111,7 @@ class ImageWorkflow:
         return {
             "workflow": "visual",
             "lyrics": lyrics,
+            "item_slug": item_slug,
             "visual_style_id": visual_style["id"],
             "visual_style": visual_style,
             "style_selection": style_selection,
@@ -118,3 +122,7 @@ class ImageWorkflow:
             "format": format,
             "legacy": legacy_kwargs or {},
         }
+
+    def _build_item_slug(self, visual_style_id: str, lyrics: str, platform: str, format: str) -> str:
+        digest = hashlib.sha1(f"{visual_style_id}|{platform}|{format}|{lyrics}".encode("utf-8")).hexdigest()
+        return f"{visual_style_id}-{digest[:10]}"

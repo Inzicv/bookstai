@@ -65,14 +65,8 @@ class MarkdownExporter:
 
     def _build_song_content(self, workflow_name: str, item_slug: str, data: dict[str, Any]) -> str:
         song_response = self._get_response(data, "song")
-        storyboard_response = self._get_response(data, "storyboard")
-        prompts_response = self._get_response(data, "prompts")
-        social_response = self._get_response(data, "social")
-        comedy_response = self._get_response(data, "comedy")
-        technical_data = self._technical_data(
-            data,
-            ["workflow", "book_slug", "song", "storyboard", "prompts", "social", "comedy"],
-        )
+        song_options_response = self._get_response(data, "song_options")
+        technical_data = self._technical_data(data, ["workflow", "book_slug", "song", "song_options"])
 
         return (
             "# BookstAI — Song Export\n\n"
@@ -82,14 +76,8 @@ class MarkdownExporter:
             "- Statut : draft_needs_human_review\n\n"
             "## Song draft\n\n"
             f"{song_response}\n\n"
-            "## Storyboard\n\n"
-            f"{storyboard_response}\n\n"
-            "## Prompts\n\n"
-            f"{prompts_response}\n\n"
-            "## Social media draft\n\n"
-            f"{social_response}\n\n"
-            "## Comedy room\n\n"
-            f"{comedy_response}\n\n"
+            "## Song options\n\n"
+            f"{song_options_response}\n\n"
             "## Validation humaine\n\n"
             "Ce contenu est un brouillon généré par BookstAI.\n"
             "La créatrice doit le relire, corriger et valider avant publication.\n\n"

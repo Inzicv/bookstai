@@ -59,9 +59,8 @@ Important:
 
 - Song ne génère pas d'image directement.
 - Song produit seulement:
-  - storyboard
-  - character prompts
-  - background prompts
+  - comedy room
+  - paroles validables
 
 Le workflow Image réutilise les paroles validées, le style visuel issu de `memory/visual_style/Prompts_visuels/`, puis produit storyboard et prompts validables avant tout backend image.
 

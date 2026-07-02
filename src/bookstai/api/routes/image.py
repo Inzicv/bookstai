@@ -66,7 +66,7 @@ def run_image(payload: ImageRunRequest) -> dict[str, Any]:
         hitl_path = None
         if payload.hitl_enabled and "hitl" in result:
             hitl_path = serialize_path(
-                save_hitl_session(result["hitl"], "visual", payload.visual_style_id)
+                save_hitl_session(result["hitl"], "visual", result["item_slug"])
             )
         export_paths: dict[str, str] | None = None
         if payload.export_formats:
@@ -74,7 +74,7 @@ def run_image(payload: ImageRunRequest) -> dict[str, Any]:
                 key: str(value)
                 for key, value in ExportService(output_root=build_output_root()).export(
                     workflow_name="visual",
-                    item_slug=payload.visual_style_id,
+                    item_slug=result["item_slug"],
                     data=result,
                     formats=payload.export_formats,
                 ).items()
@@ -82,6 +82,7 @@ def run_image(payload: ImageRunRequest) -> dict[str, Any]:
         return {
             "ok": True,
             "type": "visual",
+            "item_slug": result["item_slug"],
             "visual_style_id": payload.visual_style_id,
             "provider": payload.provider,
             "model": payload.model,

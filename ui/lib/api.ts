@@ -49,6 +49,7 @@ export type ImageStylesResponse = ApiSuccess<{
 
 export type ImageRunResponse = ApiSuccess<{
   type: 'visual'
+  item_slug: string
   visual_style_id: string
   provider: 'mock' | 'openai'
   model: string | null

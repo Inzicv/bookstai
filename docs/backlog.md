@@ -8,7 +8,7 @@
 - UI Next.js locale.
 - Dark mode par défaut dans l'UI.
 - Workflow Review fonctionnel en `mock`.
-- Workflow Song refondu sans génération d'image.
+- Workflow Song recentré sur les paroles et la comedy room.
 - HITL fonctionnel dans l'UI.
 - Tests backend passés en local.
 
@@ -17,7 +17,6 @@
 - Langflow.
 - `reference_song` dans le workflow Song.
 - `prompt_type` dans Song.
-- `thumbnail` dans Song.
 - `video` dans Song.
 - Génération d'image directement dans Song.
 
@@ -43,4 +42,3 @@
 - Amélioration de Learning Loop.
 - Dataset d'exemples validés.
 - Fine-tuning éventuel.
-

@@ -34,10 +34,9 @@ Règles d’usage:
 | Review Writer Agent | Reformule l’avis utilisateur dans une section `Avis personnel` puis produit une review finale orale, sans spoilers. |
 | Song Writer Agent | Écrit des propositions de paroles en quatrains, en spoiler free ou en version complète selon la portée demandée. |
 | Art Director Agent | Définit l’ambiance visuelle, les symboles, la composition et le style image/vidéo. |
-| Prompt Maker Agent | Transforme la direction artistique en prompts exploitables pour images, miniatures, vidéos et storyboard. |
+| Prompt Maker Agent | Transforme la direction artistique en prompts exploitables pour le workflow visuel et le storyboard. |
 | Social Media Agent | Produit captions, hashtags, hooks courts, textes écran et CTA. |
 | Memory Manager Agent | Analyse les corrections et propose des mises à jour de mémoire, sans jamais modifier sans validation. |
-| Image Gen Agent | Exécute la génération d’images à partir des prompts validés. |
 
 ---
 
@@ -162,7 +161,6 @@ Rédiger une review orale claire et fidèle au retour de l’utilisatrice.
 ### Ne fait jamais
 
 - Générer les images
-- Créer la miniature
 
 ---
 
@@ -175,7 +173,7 @@ Imaginer la direction artistique.
 ### Ne fait jamais
 
 - Générer les prompts
-- Générer les images
+- Produire le rendu final
 
 ---
 
@@ -187,26 +185,11 @@ Transformer les décisions artistiques en prompts exploitables.
 
 ### Ne fait jamais
 
-- Générer les images
 - Modifier la direction artistique
 
 ---
 
-## 8. Image Gen Agent
-
-### Mission
-
-Exécuter la génération d’images.
-
-### Ne fait jamais
-
-- Modifier les prompts
-- Choisir le style graphique
-- Corriger la direction artistique
-
----
-
-## 9. Social Media Agent
+## 8. Social Media Agent
 
 ### Mission
 
@@ -225,7 +208,7 @@ Préparer les contenus destinés aux réseaux sociaux.
 
 ---
 
-## 10. Memory Manager Agent
+## 9. Memory Manager Agent
 
 ### Mission
 

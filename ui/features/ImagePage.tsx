@@ -107,7 +107,7 @@ export default function ImagePage() {
 
   async function refreshHitlSession() {
     if (!result?.result?.hitl) return
-    const session = await getHitlSession('visual', form.visual_style_id)
+    const session = await getHitlSession('visual', result.item_slug ?? form.visual_style_id)
     if (session.ok) {
       setResult((current: any) =>
         current
@@ -346,7 +346,7 @@ export default function ImagePage() {
                 onApprove={async (comment) => {
                   await approveHitlStep({
                     type: 'visual',
-                    book_slug: form.visual_style_id,
+                    book_slug: result.item_slug ?? form.visual_style_id,
                     step_id: styleStep.name,
                     comment,
                   })
@@ -355,7 +355,7 @@ export default function ImagePage() {
                 onReject={async (comment) => {
                   await rejectHitlStep({
                     type: 'visual',
-                    book_slug: form.visual_style_id,
+                    book_slug: result.item_slug ?? form.visual_style_id,
                     step_id: styleStep.name,
                     comment,
                   })
@@ -364,7 +364,7 @@ export default function ImagePage() {
                 onEdit={async (editedContent, comment) => {
                   await editHitlStep({
                     type: 'visual',
-                    book_slug: form.visual_style_id,
+                    book_slug: result.item_slug ?? form.visual_style_id,
                     step_id: styleStep.name,
                     edited_content: editedContent,
                     comment,
@@ -383,7 +383,7 @@ export default function ImagePage() {
                 onApprove={async (comment) => {
                   await approveHitlStep({
                     type: 'visual',
-                    book_slug: form.visual_style_id,
+                    book_slug: result.item_slug ?? form.visual_style_id,
                     step_id: storyboardStep.name,
                     comment,
                   })
@@ -392,7 +392,7 @@ export default function ImagePage() {
                 onReject={async (comment) => {
                   await rejectHitlStep({
                     type: 'visual',
-                    book_slug: form.visual_style_id,
+                    book_slug: result.item_slug ?? form.visual_style_id,
                     step_id: storyboardStep.name,
                     comment,
                   })
@@ -401,7 +401,7 @@ export default function ImagePage() {
                 onEdit={async (editedContent, comment) => {
                   await editHitlStep({
                     type: 'visual',
-                    book_slug: form.visual_style_id,
+                    book_slug: result.item_slug ?? form.visual_style_id,
                     step_id: storyboardStep.name,
                     edited_content: editedContent,
                     comment,
