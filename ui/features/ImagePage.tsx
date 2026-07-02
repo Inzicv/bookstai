@@ -75,15 +75,43 @@ export default function ImagePage() {
     const session = await getHitlSession('visual', itemSlug)
     if (session.ok) {
       const steps = session.session.steps ?? []
-      setStage((current: any) => (current ? { ...current, hitl: session.session } : current))
-      setCharacterStage((current: any) => (current ? { ...current, hitl: session.session, character_prompts: steps.map((step) => step.content) } : current))
-      setBackgroundStage((current: any) => (current ? { ...current, hitl: session.session, background_prompts: steps.map((step) => step.content) } : current))
+      const sceneStatusById = new Map(
+        steps
+          .filter((step: any) => typeof step.name === 'string' && step.name.startsWith('storyboard_'))
+          .map((step: any) => [step.name.replace(/^storyboard_/, ''), step.status]),
+      )
+      setStage((current: any) =>
+        current
+          ? {
+              ...current,
+              hitl: session.session,
+              result: current.result
+                ? {
+                    ...current.result,
+                    storyboard: {
+                      ...current.result.storyboard,
+                      scenes: (current.result.storyboard?.scenes ?? []).map((scene: any) => ({
+                        ...scene,
+                        status: sceneStatusById.get(scene.scene_id) ?? scene.status,
+                      })),
+                    },
+                  }
+                : current.result,
+            }
+          : current,
+      )
     }
   }
 
   async function updateScene(stepId: string, action: 'approve' | 'reject' | 'edit', payload: any, comment?: string) {
     if (!stage?.item_slug) return
-    const body = { type: 'visual', book_slug: stage.item_slug, step_id: stepId, comment, ...(action === 'edit' ? { edited_content: payload } : {}) }
+    const body = {
+      type: 'visual',
+      book_slug: stage.item_slug,
+      step_id: `storyboard_${stepId}`,
+      comment,
+      ...(action === 'edit' ? { edited_content: payload } : {}),
+    }
     const response =
       action === 'approve' ? await approveHitlStep(body) : action === 'reject' ? await rejectHitlStep(body) : await editHitlStep(body)
     if (!response.ok) {
