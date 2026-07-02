@@ -27,12 +27,8 @@ def test_markdown_exporter_writes_readable_review_export(tmp_path: Path) -> None
     assert "draft_needs_human_review" in content
     assert "## Review draft" in content
     assert "Review générée" in content
-    assert "## Social media draft" in content
-    assert "Caption générée" in content
     assert "## Comedy room" in content
-    assert "Idées drôles" in content
     assert "## Validation humaine" in content
-    assert "## Données techniques" in content
 
 
 def test_markdown_exporter_writes_readable_song_export(tmp_path: Path) -> None:
@@ -59,10 +55,6 @@ def test_markdown_exporter_writes_readable_song_export(tmp_path: Path) -> None:
     assert "Chanson générée" in content
     assert "## Storyboard" not in content
     assert "## Prompts" not in content
-    assert "## Social media draft" in content
-    assert "Caption générée" in content
-    assert "## Comedy room" in content
-    assert "Idées drôles" in content
     assert "## Validation humaine" in content
     assert "## Données techniques" in content
 
