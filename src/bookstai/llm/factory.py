@@ -25,7 +25,7 @@ def create_llm_client(
             raise ImportError(
                 "The 'openai' package is required to create an OpenAILLMClient."
             )
-        return OpenAILLMClient(model=model, temperature=temperature)
+        return OpenAILLMClient(model=model)
     if provider in {"anthropic", "ollama"}:
         raise UnsupportedProviderError(f"Provider '{provider}' is not supported yet.")
     raise UnsupportedProviderError(f"Provider '{provider}' is not supported yet.")

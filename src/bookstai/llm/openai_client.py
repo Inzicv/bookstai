@@ -16,10 +16,8 @@ class OpenAILLMClient:
         self,
         api_key: str | None = None,
         model: str = "gpt-4o-mini",
-        temperature: float = 0.7,
     ) -> None:
         self.model = model
-        self.temperature = temperature
         resolved_api_key = api_key or os.getenv("OPENAI_API_KEY")
         if not resolved_api_key:
             raise MissingAPIKeyError(
@@ -42,7 +40,6 @@ class OpenAILLMClient:
         response = self._client.responses.create(
             model=self.model,
             input=prompt,
-            temperature=self.temperature,
         )
 
         output_text = getattr(response, "output_text", None)
