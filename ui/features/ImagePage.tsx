@@ -2,35 +2,104 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import {
-  approveHitlStep,
-  editHitlStep,
+  approveImageStoryboard,
   generateImageBackgroundPrompts,
   generateImageBatch,
   generateImageCharacterPrompts,
   generateImageStoryboard,
-  getHitlSession,
   listBooks,
   listImageStyles,
-  rejectHitlStep,
   type BookListItem,
   type ImageStyleItem,
 } from '@/lib/api'
 import { ErrorMessage } from '@/components/ErrorMessage'
 import { LoadingButton } from '@/components/LoadingButton'
 import { FormField } from '@/components/FormField'
-import { ImageStoryboardSceneCard } from '@/components/ImageStoryboardSceneCard'
 
 type Provider = 'mock' | 'openai'
 type ImageFormat = '4:5' | '1:1' | '16:9' | '9:16'
+type SceneStatus = 'pending' | 'approved' | 'rejected' | 'edited'
+
+type Scene = {
+  scene_id: string
+  scene_number: number
+  song_part: string
+  lyrics_excerpt: string
+  visual_intention: string
+  characters: string[]
+  background: string
+  key_props: string[]
+  camera: string
+  movement: string
+  transition: string
+  style_notes: string
+  status: SceneStatus
+  comment?: string
+}
 
 function getFriendlyErrorMessage(code: string, message: string) {
-  if (code === 'MISSING_API_KEY') return 'Clé OpenAI manquante côté backend.'
-  if (code === 'OPENAI_DEPENDENCY_MISSING') return 'La dépendance OpenAI n’est pas installée côté backend.'
-  if (code === 'INVALID_PROVIDER') return 'Provider invalide. Choisis mock ou openai.'
-  if (code === 'STYLE_NOT_FOUND') return 'Style visuel introuvable.'
-  if (code === 'PROMPTS_NOT_FULLY_APPROVED') return 'Les prompts doivent être entièrement approuvés avant le batch.'
-  if (code === 'GENERATION_NOT_CONFIRMED') return 'La génération doit être confirmée avant le batch.'
+  if (code === 'STORYBOARD_EMPTY') return 'Le storyboard doit contenir au moins une scène.'
+  if (code === 'STORYBOARD_NOT_FULLY_APPROVED') return 'Toutes les scènes doivent être validées ou modifiées.'
+  if (code === 'STORYBOARD_SAVE_FAILED') return 'Impossible de sauvegarder le storyboard validé.'
   return message
+}
+
+function ImageStoryboardSceneCard({
+  scene,
+  onApprove,
+  onReject,
+  onEdit,
+}: {
+  scene: Scene
+  onApprove: () => void
+  onReject: (comment: string) => void
+  onEdit: (edited: string, comment: string) => void
+}) {
+  const [comment, setComment] = useState(scene.comment ?? '')
+  const [edited, setEdited] = useState(JSON.stringify(scene, null, 2))
+
+  return (
+    <div className="panel rounded-3xl p-6">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h3 className="text-lg font-semibold text-slate-100">
+            Scène {scene.scene_number} · {scene.scene_id}
+          </h3>
+          <p className="text-sm text-slate-400">Statut: {scene.status}</p>
+        </div>
+        <div className="flex gap-2">
+          <button type="button" className="rounded-full bg-emerald-500 px-4 py-2 text-sm text-slate-950" onClick={onApprove}>
+            Valider
+          </button>
+          <button type="button" className="rounded-full bg-amber-500 px-4 py-2 text-sm text-slate-950" onClick={() => onEdit(edited, comment)}>
+            Modifier
+          </button>
+          <button type="button" className="rounded-full bg-rose-500 px-4 py-2 text-sm text-white" onClick={() => onReject(comment)}>
+            Rejeter
+          </button>
+        </div>
+      </div>
+      <div className="mt-4 grid gap-4 md:grid-cols-2">
+        <pre className="whitespace-pre-wrap rounded-2xl border border-slate-700 bg-slate-950 p-4 text-sm text-slate-100">
+          {JSON.stringify(scene, null, 2)}
+        </pre>
+        <div className="space-y-3">
+          <input
+            className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            placeholder="Commentaire"
+          />
+          <textarea
+            className="min-h-40 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-xs text-slate-100"
+            value={edited}
+            onChange={(e) => setEdited(e.target.value)}
+            placeholder="Version modifiée"
+          />
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export default function ImagePage() {
@@ -48,112 +117,134 @@ export default function ImagePage() {
     hitl_enabled: true,
   })
   const [loading, setLoading] = useState(false)
-  const [stage, setStage] = useState<any>(null)
-  const [characterStage, setCharacterStage] = useState<any>(null)
-  const [backgroundStage, setBackgroundStage] = useState<any>(null)
-  const [batchStage, setBatchStage] = useState<any>(null)
+  const [storyboardScenes, setStoryboardScenes] = useState<Scene[]>([])
+  const [storyboardApproved, setStoryboardApproved] = useState(false)
+  const [characterPrompts, setCharacterPrompts] = useState<any[]>([])
+  const [backgroundPrompts, setBackgroundPrompts] = useState<any[]>([])
+  const [batchResult, setBatchResult] = useState<any>(null)
+  const [storyboardMeta, setStoryboardMeta] = useState<{ item_slug: string; book_slug: string; visual_style_id: string } | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    listBooks().then((response) => response.ok && setBooks(response.books))
-    listImageStyles().then((response) => response.ok && setStyles(response.styles))
+    listBooks().then((r) => r.ok && setBooks(r.books))
+    listImageStyles().then((r) => r.ok && setStyles(r.styles))
   }, [])
 
+  const allStoryboardScenesReady =
+    storyboardScenes.length > 0 && storyboardScenes.every((scene) => scene.status === 'approved' || scene.status === 'edited')
+  const allCharacterPromptsApproved = characterPrompts.length > 0 && characterPrompts.every((prompt) => prompt.status === 'approved')
+  const allBackgroundPromptsApproved = backgroundPrompts.length > 0 && backgroundPrompts.every((prompt) => prompt.status === 'approved')
   const currentStyle = useMemo(() => styles.find((style) => style.id === form.visual_style_id) ?? null, [form.visual_style_id, styles])
-  const workflow = stage?.result ?? stage
-  const storyboardScenes = workflow?.storyboard?.scenes ?? stage?.storyboard?.scenes ?? []
-  const characterPrompts = characterStage?.character_prompts ?? []
-  const backgroundPrompts = backgroundStage?.background_prompts ?? []
-  const allStoryboardScenesApproved =
-    storyboardScenes.length > 0 && storyboardScenes.every((scene: any) => scene.status === 'approved')
-  const allCharacterPromptsApproved =
-    characterPrompts.length > 0 && characterPrompts.every((prompt: any) => prompt.status === 'approved')
-  const allBackgroundPromptsApproved =
-    backgroundPrompts.length > 0 && backgroundPrompts.every((prompt: any) => prompt.status === 'approved')
 
-  async function refreshHitlSession(itemSlug: string) {
-    const session = await getHitlSession('visual', itemSlug)
-    if (session.ok) {
-      const steps = session.session.steps ?? []
-      const sceneStatusById = new Map(
-        steps
-          .filter((step: any) => typeof step.name === 'string' && step.name.startsWith('storyboard_'))
-          .map((step: any) => [step.name.replace(/^storyboard_/, ''), step.status]),
-      )
-      setStage((current: any) =>
-        current
-          ? {
-              ...current,
-              hitl: session.session,
-              result: current.result
-                ? {
-                    ...current.result,
-                    storyboard: {
-                      ...current.result.storyboard,
-                      scenes: (current.result.storyboard?.scenes ?? []).map((scene: any) => ({
-                        ...scene,
-                        status: sceneStatusById.get(scene.scene_id) ?? scene.status,
-                      })),
-                    },
-                  }
-                : current.result,
-            }
-          : current,
-      )
-    }
-  }
-
-  async function updateScene(stepId: string, action: 'approve' | 'reject' | 'edit', payload: any, comment?: string) {
-    if (!stage?.item_slug) return
-    const body = {
-      type: 'visual',
-      book_slug: stage.item_slug,
-      step_id: `storyboard_${stepId}`,
-      comment,
-      ...(action === 'edit' ? { edited_content: payload } : {}),
-    }
-    const response =
-      action === 'approve' ? await approveHitlStep(body) : action === 'reject' ? await rejectHitlStep(body) : await editHitlStep(body)
+  async function generateStoryboard() {
+    setLoading(true)
+    setError(null)
+    const response = await generateImageStoryboard({
+      book_slug: form.book_slug,
+      lyrics: form.lyrics,
+      visual_style_id: form.visual_style_id,
+      format: form.format,
+      brief: form.brief,
+      provider: form.provider,
+      model: form.provider === 'openai' ? form.model : null,
+      temperature: Number(form.temperature),
+      hitl_enabled: form.hitl_enabled,
+      export_formats: [],
+    })
+    setLoading(false)
     if (!response.ok) {
-      setError('HITL_UPDATE_FAILED')
+      setError(getFriendlyErrorMessage(response.error.code, response.error.message))
       return
     }
-    await refreshHitlSession(stage.item_slug)
+    setStoryboardApproved(false)
+    setCharacterPrompts([])
+    setBackgroundPrompts([])
+    setBatchResult(null)
+    setStoryboardMeta({
+      item_slug: response.item_slug,
+      book_slug: response.book_slug,
+      visual_style_id: response.visual_style_id,
+    })
+    setStoryboardScenes((response.storyboard?.scenes ?? []).map((scene: any) => ({ ...scene, status: 'pending' })))
+  }
+
+  async function approveStoryboard() {
+    if (!storyboardMeta) return
+    const response = await approveImageStoryboard({
+      item_slug: storyboardMeta.item_slug,
+      book_slug: storyboardMeta.book_slug,
+      visual_style_id: storyboardMeta.visual_style_id,
+      storyboard: { scenes: storyboardScenes },
+    })
+    if (!response.ok) {
+      setError(getFriendlyErrorMessage(response.error.code, response.error.message))
+      return
+    }
+    setStoryboardApproved(true)
+  }
+
+  async function generateCharacterPrompts() {
+    if (!storyboardMeta) return
+    const response = await generateImageCharacterPrompts({
+      item_slug: storyboardMeta.item_slug,
+      book_slug: storyboardMeta.book_slug,
+      visual_style_id: storyboardMeta.visual_style_id,
+      storyboard: { scenes: storyboardScenes },
+      provider: form.provider,
+      model: form.provider === 'openai' ? form.model : null,
+      temperature: Number(form.temperature),
+      hitl_enabled: form.hitl_enabled,
+      export_formats: [],
+    })
+    if (response.ok) setCharacterPrompts(response.character_prompts)
+  }
+
+  async function generateBackgroundPrompts() {
+    if (!storyboardMeta) return
+    const response = await generateImageBackgroundPrompts({
+      item_slug: storyboardMeta.item_slug,
+      book_slug: storyboardMeta.book_slug,
+      visual_style_id: storyboardMeta.visual_style_id,
+      storyboard: { scenes: storyboardScenes },
+      character_prompts: characterPrompts,
+      provider: form.provider,
+      model: form.provider === 'openai' ? form.model : null,
+      temperature: Number(form.temperature),
+      hitl_enabled: form.hitl_enabled,
+      export_formats: [],
+    })
+    if (response.ok) setBackgroundPrompts(response.background_prompts)
+  }
+
+  async function generateBatch() {
+    if (!storyboardMeta) return
+    const response = await generateImageBatch({
+      item_slug: storyboardMeta.item_slug,
+      storyboard: { scenes: storyboardScenes },
+      character_prompts: characterPrompts,
+      background_prompts: backgroundPrompts,
+      backend: 'mock',
+      confirm_generation: true,
+    })
+    if (response.ok) setBatchResult(response)
+  }
+
+  function updateScene(sceneId: string, next: Partial<Scene>) {
+    setStoryboardScenes((current) => current.map((scene) => (scene.scene_id === sceneId ? { ...scene, ...next } : scene)))
   }
 
   return (
     <div className="space-y-6">
       <div className="space-y-2">
         <h1 className="text-3xl font-semibold text-slate-100">Image</h1>
-        <p className="max-w-3xl text-sm text-slate-400">
-          Workflow storyboard puis prompts, basé sur la fiche de lecture et les paroles validées.
-        </p>
+        <p className="max-w-3xl text-sm text-slate-400">Workflow storyboard puis prompts, avec validation locale des scènes et validation globale du storyboard.</p>
       </div>
 
       <form
         className="panel grid gap-4 rounded-3xl p-6"
         onSubmit={async (event) => {
           event.preventDefault()
-          setLoading(true)
-          setError(null)
-          const response = await generateImageStoryboard({
-            book_slug: form.book_slug,
-            lyrics: form.lyrics,
-            visual_style_id: form.visual_style_id,
-            format: form.format,
-            brief: form.brief,
-            provider: form.provider,
-            model: form.provider === 'openai' ? form.model : null,
-            temperature: Number(form.temperature),
-            hitl_enabled: form.hitl_enabled,
-            export_formats: [],
-          })
-          setLoading(false)
-          if (!response.ok) return setError(getFriendlyErrorMessage(response.error.code, response.error.message))
-          setStage(response)
-          setCharacterStage(null)
-          setBackgroundStage(null)
-          setBatchStage(null)
+          await generateStoryboard()
         }}
       >
         <div className="grid gap-4 md:grid-cols-2">
@@ -167,7 +258,6 @@ export default function ImagePage() {
             <textarea className="min-h-40 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100" value={form.lyrics} onChange={(e) => setForm({ ...form, lyrics: e.target.value })} />
           </FormField>
         </div>
-
         <div className="grid gap-4 md:grid-cols-2">
           <FormField label="Style visuel">
             <select className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100" value={form.visual_style_id} onChange={(e) => setForm({ ...form, visual_style_id: e.target.value })}>
@@ -177,20 +267,20 @@ export default function ImagePage() {
           </FormField>
           <FormField label="Format cible">
             <select className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100" value={form.format} onChange={(e) => setForm({ ...form, format: e.target.value as ImageFormat })}>
-              <option value="4:5">4:5</option><option value="1:1">1:1</option><option value="9:16">9:16</option><option value="16:9">16:9</option>
+              <option value="4:5">4:5</option>
+              <option value="1:1">1:1</option>
+              <option value="9:16">9:16</option>
+              <option value="16:9">16:9</option>
             </select>
           </FormField>
         </div>
-
         <FormField label="Brief complémentaire">
           <textarea className="min-h-24 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100" value={form.brief} onChange={(e) => setForm({ ...form, brief: e.target.value })} />
         </FormField>
-
         <LoadingButton loading={loading}>Générer le storyboard</LoadingButton>
       </form>
 
       {error ? <ErrorMessage message={error} /> : null}
-
       {currentStyle ? (
         <section className="panel rounded-3xl p-6">
           <h2 className="text-lg font-semibold text-slate-50">Instructions du style sélectionné</h2>
@@ -198,96 +288,70 @@ export default function ImagePage() {
         </section>
       ) : null}
 
-      {workflow?.storyboard?.scenes ? (
+      {storyboardScenes.length > 0 ? (
         <section className="space-y-4">
-          <h2 className="text-lg font-semibold text-slate-50">Storyboard</h2>
-          <div className="grid gap-4">
-            {workflow.storyboard.scenes.map((scene: any) => (
-              <ImageStoryboardSceneCard
-                key={scene.scene_id}
-                scene={scene}
-                onApprove={(comment: string) => updateScene(scene.scene_id, 'approve', null, comment)}
-                onReject={(comment: string) => updateScene(scene.scene_id, 'reject', null, comment)}
-                onEdit={(edited: any, comment: string) => updateScene(scene.scene_id, 'edit', edited, comment)}
-              />
-            ))}
+          <div className="flex flex-wrap gap-2">
+            <span className="rounded-full bg-slate-800 px-3 py-1 text-sm text-slate-100">1. Storyboard généré</span>
+            <span className="rounded-full bg-slate-800 px-3 py-1 text-sm text-slate-100">2. Scènes validées</span>
+            <span className="rounded-full bg-slate-800 px-3 py-1 text-sm text-slate-100">3. Storyboard OK</span>
+            <span className="rounded-full bg-slate-800 px-3 py-1 text-sm text-slate-100">4. Prompts personnages</span>
           </div>
+          {storyboardScenes.map((scene) => (
+            <ImageStoryboardSceneCard
+              key={scene.scene_id}
+              scene={scene}
+              onApprove={() => updateScene(scene.scene_id, { status: 'approved' })}
+              onReject={(comment) => updateScene(scene.scene_id, { status: 'rejected', comment })}
+              onEdit={(edited, comment) => {
+                try {
+                  const parsed = JSON.parse(edited) as Scene
+                  updateScene(scene.scene_id, { ...parsed, status: 'edited', comment })
+                } catch {
+                  updateScene(scene.scene_id, { status: 'edited', comment })
+                }
+              }}
+            />
+          ))}
         </section>
       ) : null}
 
-      {workflow?.item_slug ? (
+      {storyboardScenes.length > 0 && allStoryboardScenesReady && !storyboardApproved ? (
+        <button className="rounded-xl bg-sky-500 px-4 py-2 text-slate-950" onClick={approveStoryboard} type="button">
+          Storyboard OK — passer aux prompts personnages
+        </button>
+      ) : null}
+
+      {storyboardApproved ? <div className="rounded-2xl border border-emerald-700 bg-emerald-950/40 px-4 py-3 text-emerald-200">Storyboard validé</div> : null}
+
+      {storyboardApproved ? (
         <section className="space-y-4">
           <div className="panel rounded-3xl p-6">
             <h2 className="text-lg font-semibold text-slate-50">Prompts personnages</h2>
-            {allStoryboardScenesApproved ? (
-              <button
-                className="mt-3 rounded-xl bg-sky-500 px-4 py-2 text-slate-950"
-                onClick={async () => {
-                  const response = await generateImageCharacterPrompts({
-                    item_slug: workflow.item_slug,
-                    book_slug: form.book_slug,
-                    visual_style_id: form.visual_style_id,
-                    storyboard: workflow.storyboard,
-                  })
-                  if (response.ok) setCharacterStage(response)
-                }}
-              >
-                Générer les prompts personnages
-              </button>
-            ) : (
-              <p className="mt-2 text-sm text-slate-400">Valide d’abord toutes les scènes du storyboard.</p>
-            )}
-            {characterPrompts.map((prompt: any) => <pre key={prompt.prompt_id} className="mt-3 rounded-xl border border-slate-800 bg-slate-950 p-3 text-sm">{JSON.stringify(prompt, null, 2)}</pre>)}
+            <button type="button" className="mt-3 rounded-xl bg-sky-500 px-4 py-2 text-slate-950" onClick={generateCharacterPrompts}>
+              Générer les prompts personnages
+            </button>
+            {characterPrompts.length > 0 ? <pre className="mt-3 rounded-xl border border-slate-800 bg-slate-950 p-3 text-sm">{JSON.stringify(characterPrompts, null, 2)}</pre> : null}
           </div>
 
-          <div className="panel rounded-3xl p-6">
-            <h2 className="text-lg font-semibold text-slate-50">Prompts décors</h2>
-            {allCharacterPromptsApproved ? (
-              <button
-                className="mt-3 rounded-xl bg-sky-500 px-4 py-2 text-slate-950"
-                onClick={async () => {
-                  const response = await generateImageBackgroundPrompts({
-                    item_slug: workflow.item_slug,
-                    book_slug: form.book_slug,
-                    visual_style_id: form.visual_style_id,
-                    storyboard: workflow.storyboard,
-                    character_prompts: characterPrompts,
-                  })
-                  if (response.ok) setBackgroundStage(response)
-                }}
-              >
+          {allCharacterPromptsApproved ? (
+            <div className="panel rounded-3xl p-6">
+              <h2 className="text-lg font-semibold text-slate-50">Prompts décors</h2>
+              <button type="button" className="mt-3 rounded-xl bg-sky-500 px-4 py-2 text-slate-950" onClick={generateBackgroundPrompts}>
                 Générer les prompts décors
               </button>
-            ) : (
-              <p className="mt-2 text-sm text-slate-400">Valide d’abord tous les prompts personnages.</p>
-            )}
-            {backgroundPrompts.map((prompt: any) => <pre key={prompt.prompt_id} className="mt-3 rounded-xl border border-slate-800 bg-slate-950 p-3 text-sm">{JSON.stringify(prompt, null, 2)}</pre>)}
-          </div>
+              {backgroundPrompts.length > 0 ? <pre className="mt-3 rounded-xl border border-slate-800 bg-slate-950 p-3 text-sm">{JSON.stringify(backgroundPrompts, null, 2)}</pre> : null}
+            </div>
+          ) : null}
 
-          <div className="panel rounded-3xl p-6">
-            <h2 className="text-lg font-semibold text-slate-50">Génération batch</h2>
-            {allCharacterPromptsApproved && allBackgroundPromptsApproved ? (
-              <button
-                className="mt-3 rounded-xl bg-emerald-500 px-4 py-2 text-slate-950"
-                onClick={async () => {
-                  const response = await generateImageBatch({
-                    item_slug: workflow.item_slug,
-                    storyboard: workflow.storyboard,
-                    character_prompts: characterPrompts,
-                    background_prompts: backgroundPrompts,
-                    backend: 'mock',
-                    confirm_generation: true,
-                  })
-                  if (response.ok) setBatchStage(response)
-                }}
-              >
+          {allCharacterPromptsApproved && allBackgroundPromptsApproved ? (
+            <div className="panel rounded-3xl p-6">
+              <h2 className="text-lg font-semibold text-slate-50">Génération batch</h2>
+              <button type="button" className="mt-3 rounded-xl bg-emerald-500 px-4 py-2 text-slate-950" onClick={generateBatch}>
                 Générer les images en lot
               </button>
-            ) : (
-              <p className="mt-2 text-sm text-slate-400">Tous les prompts doivent être approuvés.</p>
-            )}
-            {batchStage?.images ? <pre className="mt-3 rounded-xl border border-slate-800 bg-slate-950 p-3 text-sm">{JSON.stringify(batchStage.images, null, 2)}</pre> : null}
-          </div>
+              {batchResult ? <pre className="mt-3 rounded-xl border border-slate-800 bg-slate-950 p-3 text-sm">{JSON.stringify(batchResult.images, null, 2)}</pre> : null}
+            </div>
+          ) : null}
         </section>
       ) : null}
     </div>

@@ -76,6 +76,15 @@ export type ImageStoryboardResponse = ApiSuccess<{
   hitl: Record<string, unknown> | null
 }>
 
+export type ImageStoryboardApprovalResponse = ApiSuccess<{
+  type: 'image_storyboard_approval'
+  item_slug: string
+  book_slug: string
+  visual_style_id: string
+  storyboard_path: string
+  storyboard: Record<string, unknown>
+}>
+
 export type ImageCharacterPromptsResponse = ApiSuccess<{
   workflow: 'visual'
   stage: 'character_prompts'
@@ -189,6 +198,8 @@ export const runSong = (payload: unknown) =>
 export const listImageStyles = () => request<ImageStylesResponse>('/image/styles')
 export const generateImageStoryboard = (payload: unknown) =>
   request<ImageStoryboardResponse>('/image/storyboard', { method: 'POST', body: JSON.stringify(payload) })
+export const approveImageStoryboard = (payload: unknown) =>
+  request<ImageStoryboardApprovalResponse>('/image/storyboard/approve', { method: 'POST', body: JSON.stringify(payload) })
 export const generateImageCharacterPrompts = (payload: unknown) =>
   request<ImageCharacterPromptsResponse>('/image/prompts/characters', { method: 'POST', body: JSON.stringify(payload) })
 export const generateImageBackgroundPrompts = (payload: unknown) =>

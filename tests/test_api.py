@@ -393,6 +393,65 @@ def test_image_run_mock_includes_book_slug(tmp_path: Path, monkeypatch) -> None:
     assert body["result"]["book_context"]["book_slug"] == "alchemised"
 
 
+def test_image_storyboard_approve_rejects_empty_storyboard(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    _prepare_workspace(tmp_path)
+    client = TestClient(create_app())
+
+    response = client.post(
+        "/image/storyboard/approve",
+        json={
+            "item_slug": "mockingbird-lego-test",
+            "book_slug": "mockingbird",
+            "visual_style_id": "lego",
+            "storyboard": {"scenes": []},
+        },
+    )
+
+    body = response.json()
+    assert response.status_code == 200
+    assert body["error"]["code"] == "STORYBOARD_EMPTY"
+
+
+def test_image_storyboard_approve_accepts_valid_storyboard_and_saves_file(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    _prepare_workspace(tmp_path)
+    client = TestClient(create_app())
+
+    response = client.post(
+        "/image/storyboard/approve",
+        json={
+            "item_slug": "mockingbird-lego-test",
+            "book_slug": "mockingbird",
+            "visual_style_id": "lego",
+            "storyboard": {
+                "scenes": [
+                    {
+                        "scene_id": "scene_001",
+                        "scene_number": 1,
+                        "song_part": "Couplet 1",
+                        "lyrics_excerpt": "Extrait test",
+                        "visual_intention": "Installer la scène",
+                        "characters": ["Personnage principal"],
+                        "background": "Décor principal",
+                        "key_props": [],
+                        "camera": "Plan large",
+                        "movement": "Travelling lent",
+                        "transition": "cut",
+                        "style_notes": "Respecter le style LEGO",
+                        "status": "approved",
+                    }
+                ]
+            },
+        },
+    )
+
+    body = response.json()
+    assert response.status_code == 200
+    assert body["ok"] is True
+    assert (tmp_path / "outputs" / "visual" / "mockingbird-lego-test" / "storyboard-approved.json").exists()
+
+
 def test_song_run_mock_full_spoilers(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.chdir(tmp_path)
     _prepare_workspace(tmp_path)

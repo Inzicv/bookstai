@@ -77,6 +77,23 @@ class ImageStoryboardResponse(BaseModel):
     hitl: dict[str, Any] | None = None
 
 
+class ImageStoryboardApprovalRequest(BaseModel):
+    item_slug: str
+    book_slug: str
+    visual_style_id: str
+    storyboard: dict[str, Any]
+
+
+class ImageStoryboardApprovalResponse(BaseModel):
+    ok: bool
+    type: Literal["image_storyboard_approval"]
+    item_slug: str
+    book_slug: str
+    visual_style_id: str
+    storyboard_path: str
+    storyboard: dict[str, Any]
+
+
 class ImageCharacterPromptsRequest(BaseModel):
     item_slug: str
     book_slug: str

@@ -16,6 +16,8 @@ from ..schemas.image import (
     ImageBatchGenerationRequest,
     ImageCharacterPromptsRequest,
     ImageRunRequest,
+    ImageStoryboardApprovalRequest,
+    ImageStoryboardApprovalResponse,
     ImageStoryboardRequest,
 )
 from .shared import (
@@ -43,6 +45,48 @@ def storyboard(payload: ImageStoryboardRequest) -> dict[str, Any]:
     if result.get("hitl"):
         _merge_and_save_hitl_session("visual", result["item_slug"], result["hitl"])
     return result
+
+
+@router.post("/storyboard/approve")
+def approve_storyboard(payload: ImageStoryboardApprovalRequest) -> dict[str, Any]:
+    scenes = payload.storyboard.get("scenes")
+    if not isinstance(scenes, list) or not scenes:
+        return api_error("STORYBOARD_EMPTY", "Storyboard must contain at least one scene.")
+    for scene in scenes:
+        if not isinstance(scene, dict) or scene.get("status") not in {"approved", "edited"}:
+            return api_error(
+                "STORYBOARD_NOT_FULLY_APPROVED",
+                "All storyboard scenes must be approved or edited before continuing.",
+            )
+    storyboard_path = build_output_root() / "visual" / payload.item_slug / "storyboard-approved.json"
+    storyboard_path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        storyboard_path.write_text(
+            __import__("json").dumps(
+                {
+                    "type": "image_storyboard_approval",
+                    "item_slug": payload.item_slug,
+                    "book_slug": payload.book_slug,
+                    "visual_style_id": payload.visual_style_id,
+                    "storyboard": payload.storyboard,
+                    "approved": True,
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+    except OSError:
+        return api_error("STORYBOARD_SAVE_FAILED", "Could not save approved storyboard.")
+    return {
+        "ok": True,
+        "type": "image_storyboard_approval",
+        "item_slug": payload.item_slug,
+        "book_slug": payload.book_slug,
+        "visual_style_id": payload.visual_style_id,
+        "storyboard_path": storyboard_path.as_posix(),
+        "storyboard": payload.storyboard,
+    }
 
 
 @router.post("/prompts/characters")
