@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .routes.health import router as health_router
 from .routes.books import router as books_router
+from .routes.image import router as image_router
 from .routes.hitl import router as hitl_router
 from .routes.learning import router as learning_router
 from .routes.review import router as review_router
@@ -28,6 +29,7 @@ def create_app() -> FastAPI:
     )
     app.include_router(health_router)
     app.include_router(books_router)
+    app.include_router(image_router)
     app.include_router(review_router)
     app.include_router(song_router)
     app.include_router(social_router)

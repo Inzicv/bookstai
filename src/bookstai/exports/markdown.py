@@ -32,6 +32,8 @@ class MarkdownExporter:
             return self._build_review_content(workflow_name, item_slug, data)
         if workflow_name == "song":
             return self._build_song_content(workflow_name, item_slug, data)
+        if workflow_name == "visual":
+            return self._build_visual_content(workflow_name, item_slug, data)
         return self._build_generic_content(workflow_name, item_slug, data)
 
     def _build_review_content(self, workflow_name: str, item_slug: str, data: dict[str, Any]) -> str:
@@ -97,6 +99,38 @@ class MarkdownExporter:
             "```\n"
         )
 
+    def _build_visual_content(self, workflow_name: str, item_slug: str, data: dict[str, Any]) -> str:
+        style_selection = self._get_response(data, "style_selection")
+        storyboard = self._get_response(data, "storyboard")
+        prompts = self._get_response(data, "prompts")
+        technical_data = self._technical_data(
+            data,
+            ["workflow", "lyrics", "visual_style", "style_selection", "storyboard", "prompts"],
+        )
+
+        return (
+            "# BookstAI — Visual Export\n\n"
+            "## Métadonnées\n\n"
+            f"- Workflow : {workflow_name}\n"
+            f"- Style : {item_slug}\n"
+            "- Statut : draft_needs_human_review\n\n"
+            "## Paroles source\n\n"
+            f"{data.get('lyrics', '_Non généré_')}\n\n"
+            "## Style sélectionné\n\n"
+            f"{style_selection}\n\n"
+            "## Storyboard\n\n"
+            f"{storyboard}\n\n"
+            "## Prompts\n\n"
+            f"{prompts}\n\n"
+            "## Validation humaine\n\n"
+            "Ce contenu est un brouillon généré par BookstAI.\n"
+            "La créatrice doit le relire, corriger et valider avant publication.\n\n"
+            "## Données techniques\n\n"
+            "```text\n"
+            f"{technical_data}\n"
+            "```\n"
+        )
+
     def _build_generic_content(self, workflow_name: str, item_slug: str, data: dict[str, Any]) -> str:
         return (
             "# BookstAI Export\n\n"
@@ -111,10 +145,16 @@ class MarkdownExporter:
         )
 
     def _get_response(self, data: dict[str, Any], section: str) -> str:
-        response = self._nested_value(data, section, "response")
-        if response in (None, ""):
+        section_data = data.get(section)
+        if isinstance(section_data, dict):
+            response = section_data.get("response")
+            if response not in (None, ""):
+                return str(response)
+            if section_data:
+                return pformat(section_data)
+        if section_data in (None, ""):
             return "_Non généré_"
-        return str(response)
+        return str(section_data)
 
     def _nested_value(self, data: dict[str, Any], section: str, key: str) -> Any:
         section_data = data.get(section)

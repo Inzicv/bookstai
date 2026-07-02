@@ -35,6 +35,30 @@ export type SongRunResponse = ApiSuccess<{
   hitl_session_path: string | null
 }>
 
+export type ImageStyleItem = {
+  id: string
+  name: string
+  source_path: string
+  instructions: string
+  sections: Record<string, string>
+}
+
+export type ImageStylesResponse = ApiSuccess<{
+  styles: ImageStyleItem[]
+}>
+
+export type ImageRunResponse = ApiSuccess<{
+  type: 'visual'
+  visual_style_id: string
+  provider: 'mock' | 'openai'
+  model: string | null
+  temperature: number
+  hitl_enabled: boolean
+  result: Record<string, unknown>
+  hitl_session_path: string | null
+  export_paths: Record<string, string> | null
+}>
+
 export type HitlSessionResponse = ApiSuccess<{
   session: {
     workflow_name: string
@@ -116,6 +140,9 @@ export const runReview = (payload: unknown) =>
   request<ReviewRunResponse>('/review/run', { method: 'POST', body: JSON.stringify(payload) })
 export const runSong = (payload: unknown) =>
   request<SongRunResponse>('/song/run', { method: 'POST', body: JSON.stringify(payload) })
+export const listImageStyles = () => request<ImageStylesResponse>('/image/styles')
+export const runImage = (payload: unknown) =>
+  request<ImageRunResponse>('/image/run', { method: 'POST', body: JSON.stringify(payload) })
 export const getHitlSession = (type: string, bookSlug: string) =>
   request<HitlSessionResponse>(`/hitl/session?type=${encodeURIComponent(type)}&book_slug=${encodeURIComponent(bookSlug)}`)
 export const approveHitlStep = (payload: unknown) =>

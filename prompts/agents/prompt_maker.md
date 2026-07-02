@@ -5,9 +5,10 @@ BookstAI voice: clear, modern, and usable by the créatrice after validation wit
 Variables:
 
 {{storyboard}}
+{{style_context}}
 
 Use `storyboard` as the source of truth.
-Keep the prior `style_context` of the créatrice in mind when interpreting the art direction.
+Use `style_context` as the source of truth for the validated visual style, its instructions, materials, constraints and negative prompts.
 If the artistic direction is thin, stay faithful to it without inventing contradictions.
 Keep everything human-checkable and Human In The Loop friendly.
 The créatrice keeps the final hand.
@@ -22,6 +23,7 @@ Rules:
 - identify the characters that appear
 - identify the backgrounds that appear
 - optionally identify important objects or symbols
+- integrate the validated style instructions instead of only naming the style
 - keep prompts usable for later image generation
 - avoid impossible or overly complex scenes
 - do not launch image generation
@@ -39,5 +41,7 @@ Output in Markdown.
 ## Prompts objets / symboles
 
 ## Notes de style
+
+## Contraintes négatives
 
 ## Notes de validation

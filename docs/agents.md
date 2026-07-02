@@ -31,7 +31,7 @@ Règles d’usage:
 | Context Builder | Charge la fiche livre Markdown et prépare le contexte selon le workflow et le niveau de spoiler. |
 | Style Memory Agent | Récupère le style personnel, les expressions et les anciens contenus. |
 | Comedy Room Agent | Génère des pitchs drôles exploitables, sans avis personnel ni recommandation directe. |
-| Review Writer Agent | Reformule l’avis utilisateur et produit une review finale orale, sans spoilers. |
+| Review Writer Agent | Reformule l’avis utilisateur dans une section `Avis personnel` puis produit une review finale orale, sans spoilers. |
 | Song Writer Agent | Écrit des propositions de paroles en quatrains, en spoiler free ou en version complète selon la portée demandée. |
 | Art Director Agent | Définit l’ambiance visuelle, les symboles, la composition et le style image/vidéo. |
 | Prompt Maker Agent | Transforme la direction artistique en prompts exploitables pour images, miniatures, vidéos et storyboard. |
@@ -132,7 +132,7 @@ Rédiger une review orale claire et fidèle au retour de l’utilisatrice.
 ### Responsabilités
 
 - Reprendre la fiche livre, surtout `Présentation sans spoil` comme source principale.
-- Reformuler l’avis personnel de façon claire et sérieuse.
+- Reformuler l’avis personnel de façon claire et sérieuse dans une section `Avis personnel`.
 - Produire une review finale fluide et orale.
 - Ne jamais proposer de review avec spoilers dans ce workflow.
 - Utiliser `Personnages` et `Tropes` seulement pour nourrir le ton ou les références.

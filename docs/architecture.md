@@ -17,6 +17,7 @@ Source de vérité:
 - Human In The Loop partout où une validation humaine est utile;
 - pas de dépendance active à Langflow;
 - pas de génération d'image dans le workflow Song.
+- le workflow Image est séparé du workflow Song et repart des paroles validées.
 
 ## Références mémoire principales
 
@@ -25,6 +26,7 @@ Source de vérité:
 - `memory/humor/references.md`
 - `memory/songs/`
 - `memory/visual_style/`
+- `memory/visual_style/Prompts_visuels/`
 
 ## HITL
 
@@ -61,6 +63,16 @@ Les étapes créatives à valider sont:
 
 Song ne génère pas d'image.
 
+## HITL dans le workflow Image
+
+Les étapes créatives à valider sont:
+
+- `style_selection`
+- `storyboard`
+- `prompts`
+
+Le workflow Image repart d'une chanson existante et d'un style visuel sélectionné.
+
 ## Learning Loop
 
 La Learning Loop extrait des sessions HITL et prépare un brouillon Markdown avant toute application.
@@ -87,4 +99,3 @@ Le JSON conserve:
 - le contenu édité si disponible;
 - les commentaires éventuels;
 - les métadonnées.
-

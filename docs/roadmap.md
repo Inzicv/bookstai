@@ -13,6 +13,7 @@ Workflows Python BookstAI
 - Provider `mock` par défaut.
 - Workflow Review fonctionnel.
 - Workflow Song refondu sans génération d'image.
+- Workflow Image ajouté comme entrée séparée à partir des paroles d'une chanson.
 - HITL fonctionnel dans l'UI.
 - Learning Loop existante.
 - Exports Markdown existants.
@@ -29,7 +30,9 @@ Objectif: BookstAI V1 locale complète en `mock`.
 
 - Review UI/API.
 - Song UI/API.
+- Image UI/API.
 - HITL Review/Song.
+- HITL Image.
 - Learning UI/API.
 - exports Markdown.
 - documentation.
@@ -60,7 +63,7 @@ Important:
   - character prompts
   - background prompts
 
-Le module Image utilisera ces prompts validés plus tard.
+Le workflow Image réutilise les paroles validées, le style visuel issu de `memory/visual_style/Prompts_visuels/`, puis produit storyboard et prompts validables avant tout backend image.
 
 ## Étape 4 — Provider texte local
 
@@ -86,4 +89,3 @@ Mémoire structurée
 Dataset propre
 ↓
 Fine-tuning éventuel
-

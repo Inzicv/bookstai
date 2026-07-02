@@ -8,6 +8,7 @@ const links = [
   ['/books', 'Livres'],
   ['/review', 'Review'],
   ['/song', 'Song'],
+  ['/image', 'Image'],
   ['/social', 'Social'],
   ['/settings', 'Settings'],
 ]

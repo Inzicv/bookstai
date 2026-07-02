@@ -19,6 +19,7 @@ from .core.errors import (
 )
 from .core.types import WorkflowType, SpoilerLevel, ProviderType
 from .memory.reader import MemoryReader
+from .visual import VisualStyleReader
 from .agents.context_builder import ContextBuilder
 from .agents.comedy_room import ComedyRoomAgent
 from .agents.art_director import ArtDirectorAgent
@@ -42,6 +43,7 @@ from .learning import LearningCandidate, LearningExtraction, LearningExtractor
 from .history import HistoryEntry, HistoryStore
 from .logging import configure_logging
 from .workflows.review import ReviewWorkflow
+from .workflows.image import ImageWorkflow
 from .workflows.song import SongWorkflow
 from .precheck import REQUIRED_AGENT_PROMPTS, check_required_agent_prompts
 from .cli import main
@@ -62,6 +64,7 @@ __all__ = [
     "SpoilerLevel",
     "ProviderType",
     "MemoryReader",
+    "VisualStyleReader",
     "ContextBuilder",
     "ComedyRoomAgent",
     "ArtDirectorAgent",
@@ -75,6 +78,7 @@ __all__ = [
     "ImageBackend",
     "MockImageBackend",
     "ReviewWorkflow",
+    "ImageWorkflow",
     "SongWorkflow",
     "REQUIRED_AGENT_PROMPTS",
     "check_required_agent_prompts",

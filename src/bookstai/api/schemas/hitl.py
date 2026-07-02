@@ -8,7 +8,7 @@ from pydantic import BaseModel
 
 
 class HITLActionRequest(BaseModel):
-    type: Literal["review", "song"]
+    type: Literal["review", "song", "visual"]
     book_slug: str
     step_id: str
     comment: str | None = None
@@ -22,4 +22,3 @@ class HITLSessionResponse(BaseModel):
     ok: bool
     session: Any
     path: str
-

@@ -14,7 +14,7 @@ router = APIRouter(prefix="/hitl", tags=["hitl"])
 
 
 @router.get("/session")
-def get_session(type: Literal["review", "song"], book_slug: str) -> dict[str, Any]:
+def get_session(type: Literal["review", "song", "visual"], book_slug: str) -> dict[str, Any]:
     return load_hitl_session(type, book_slug)
 
 

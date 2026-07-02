@@ -5,6 +5,7 @@ const shortcuts = [
   { href: '/books', label: 'Livres' },
   { href: '/review', label: 'Review' },
   { href: '/song', label: 'Song' },
+  { href: '/image', label: 'Image' },
   { href: '/hitl', label: 'HITL' },
   { href: '/learning', label: 'Learning' },
 ]
