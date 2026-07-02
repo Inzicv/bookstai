@@ -10,6 +10,12 @@ Variables:
 
 Use `storyboard` as the source of truth.
 Use `style_context` as the source of truth for the validated visual style, its instructions, materials, constraints and negative prompts.
+The final prompts must strictly respect:
+1. the factual information from the reading sheet;
+2. the validated storyboard;
+3. the complete instructions of the chosen visual style.
+If a physical detail exists in the reading sheet, it has priority.
+If information is missing, stay generic instead of inventing a precise detail.
 If the artistic direction is thin, stay faithful to it without inventing contradictions.
 Keep everything human-checkable and Human In The Loop friendly.
 The créatrice keeps the final hand.

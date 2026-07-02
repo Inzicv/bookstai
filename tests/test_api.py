@@ -17,6 +17,9 @@ def _prepare_workspace(tmp_path: Path) -> None:
     memory_root = tmp_path / "memory" / "books"
     memory_root.mkdir(parents=True, exist_ok=True)
     (memory_root / "alchemised.md").write_text("# Book", encoding="utf-8")
+    style_root = tmp_path / "memory" / "visual_style" / "Prompts_visuels"
+    style_root.mkdir(parents=True, exist_ok=True)
+    (style_root / "lego.md").write_text("# Lego\nInstructions de style", encoding="utf-8")
     prompt_root = tmp_path / "prompts"
     _write_prompt(prompt_root, "comedy_room.md", "Comedy: {{book_context}}")
     _write_prompt(prompt_root, "review_writer.md", "Review: {{comedy_bank}}")
@@ -338,6 +341,56 @@ def test_song_run_reports_missing_openai_dependency(tmp_path: Path, monkeypatch)
     assert response.status_code == 200
     assert body["ok"] is False
     assert body["error"]["code"] == "OPENAI_DEPENDENCY_MISSING"
+
+
+def test_image_run_requires_book_slug(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    _prepare_workspace(tmp_path)
+    client = TestClient(create_app())
+
+    response = client.post(
+        "/image/run",
+        json={
+            "lyrics": "Paroles validées",
+            "visual_style_id": "lego",
+            "provider": "mock",
+            "model": None,
+            "temperature": 0.7,
+            "hitl_enabled": True,
+        },
+    )
+
+    assert response.status_code == 422
+
+
+def test_image_run_mock_includes_book_slug(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    _prepare_workspace(tmp_path)
+    client = TestClient(create_app())
+
+    response = client.post(
+        "/image/run",
+        json={
+            "book_slug": "alchemised",
+            "lyrics": "Paroles validées",
+            "visual_style_id": "lego",
+            "platform": "instagram",
+            "format": "4:5",
+            "brief": "Créer des visuels",
+            "provider": "mock",
+            "model": None,
+            "temperature": 0.7,
+            "hitl_enabled": False,
+            "export_formats": [],
+        },
+    )
+
+    body = response.json()
+    assert response.status_code == 200
+    assert body["ok"] is True, body
+    assert body["book_slug"] == "alchemised"
+    assert body["result"]["book_slug"] == "alchemised"
+    assert body["result"]["book_context"]["book_slug"] == "alchemised"
 
 
 def test_song_run_mock_full_spoilers(tmp_path: Path, monkeypatch) -> None:

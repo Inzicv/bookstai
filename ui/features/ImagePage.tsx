@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { approveHitlStep, editHitlStep, getHitlSession, listImageStyles, rejectHitlStep, runImage, type ImageStyleItem } from '@/lib/api'
+import { approveHitlStep, editHitlStep, getHitlSession, listBooks, listImageStyles, rejectHitlStep, runImage, type BookListItem, type ImageStyleItem } from '@/lib/api'
 import { ErrorMessage } from '@/components/ErrorMessage'
 import { LoadingButton } from '@/components/LoadingButton'
 import { FormField } from '@/components/FormField'
@@ -29,9 +29,13 @@ function getFriendlyErrorMessage(code: string, message: string) {
 
 export default function ImagePage() {
   const [styles, setStyles] = useState<ImageStyleItem[]>([])
+  const [books, setBooks] = useState<BookListItem[]>([])
   const [loadingStyles, setLoadingStyles] = useState(false)
+  const [loadingBooks, setLoadingBooks] = useState(false)
   const [styleError, setStyleError] = useState<string | null>(null)
+  const [bookError, setBookError] = useState<string | null>(null)
   const [form, setForm] = useState({
+    book_slug: '',
     lyrics: '',
     visual_style_id: '',
     platform: 'instagram' as Platform,
@@ -49,6 +53,18 @@ export default function ImagePage() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    async function loadBooks() {
+      setLoadingBooks(true)
+      setBookError(null)
+      const response = await listBooks()
+      setLoadingBooks(false)
+      if (!response.ok) {
+        setBookError(response.error.message)
+        return
+      }
+      setBooks(response.books)
+    }
+
     async function loadStyles() {
       setLoadingStyles(true)
       setStyleError(null)
@@ -65,6 +81,7 @@ export default function ImagePage() {
       }))
     }
 
+    loadBooks()
     loadStyles()
   }, [])
 
@@ -128,7 +145,7 @@ export default function ImagePage() {
       <div className="space-y-2">
         <h1 className="text-3xl font-semibold text-slate-100">Image</h1>
         <p className="max-w-3xl text-sm text-slate-400">
-          Relance la partie visuelle à partir des paroles d’une chanson déjà validée. Le style
+          Relance la partie visuelle à partir d’une fiche de lecture et des paroles validées d’une chanson. Le style
           sélectionné vient uniquement de <code className="rounded bg-slate-800 px-1.5 py-0.5 text-slate-100">memory/visual_style/Prompts_visuels</code>.
         </p>
       </div>
@@ -141,6 +158,7 @@ export default function ImagePage() {
           setError(null)
           setResult(null)
           const response = await runImage({
+            book_slug: form.book_slug,
             lyrics: form.lyrics,
             visual_style_id: form.visual_style_id,
             platform: form.platform,
@@ -163,14 +181,39 @@ export default function ImagePage() {
           setResult(response)
         }}
       >
-        <FormField label="Paroles de chanson">
-          <textarea
-            className="min-h-40 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 placeholder:text-slate-500"
-            value={form.lyrics}
-            onChange={(e) => setForm({ ...form, lyrics: e.target.value })}
-            placeholder="Colle ici les paroles finales de la chanson..."
-          />
-        </FormField>
+        <div className="grid gap-4 md:grid-cols-2">
+          <FormField label="Livre">
+            <div className="space-y-2">
+              <select
+                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100"
+                value={form.book_slug}
+                onChange={(e) => setForm({ ...form, book_slug: e.target.value })}
+                disabled={loadingBooks}
+              >
+                <option value="">Choisir un livre</option>
+                {books.map((book) => (
+                  <option key={book.slug} value={book.slug}>
+                    {book.title} ({book.slug})
+                  </option>
+                ))}
+              </select>
+              <p className="text-xs text-slate-400">
+                {loadingBooks
+                  ? 'Chargement des livres...'
+                  : 'Le livre sert à récupérer les personnages, descriptions physiques, lieux et contexte depuis la fiche de lecture.'}
+              </p>
+            </div>
+          </FormField>
+
+          <FormField label="Paroles de chanson">
+            <textarea
+              className="min-h-40 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 placeholder:text-slate-500"
+              value={form.lyrics}
+              onChange={(e) => setForm({ ...form, lyrics: e.target.value })}
+              placeholder="Colle ici les paroles finales de la chanson..."
+            />
+          </FormField>
+        </div>
 
         <div className="grid gap-4 md:grid-cols-2">
           <FormField label="Style visuel">
@@ -309,6 +352,7 @@ export default function ImagePage() {
       </form>
 
       {styleError ? <ErrorMessage message={styleError} /> : null}
+      {bookError ? <ErrorMessage message={bookError} /> : null}
       {error ? <ErrorMessage message={error} /> : null}
 
       {currentStyle ? (
@@ -346,7 +390,7 @@ export default function ImagePage() {
                 onApprove={async (comment) => {
                   await approveHitlStep({
                     type: 'visual',
-                    book_slug: result.item_slug ?? form.visual_style_id,
+                    book_slug: result.book_slug ?? form.book_slug,
                     step_id: styleStep.name,
                     comment,
                   })
@@ -355,7 +399,7 @@ export default function ImagePage() {
                 onReject={async (comment) => {
                   await rejectHitlStep({
                     type: 'visual',
-                    book_slug: result.item_slug ?? form.visual_style_id,
+                    book_slug: result.book_slug ?? form.book_slug,
                     step_id: styleStep.name,
                     comment,
                   })
@@ -364,7 +408,7 @@ export default function ImagePage() {
                 onEdit={async (editedContent, comment) => {
                   await editHitlStep({
                     type: 'visual',
-                    book_slug: result.item_slug ?? form.visual_style_id,
+                    book_slug: result.book_slug ?? form.book_slug,
                     step_id: styleStep.name,
                     edited_content: editedContent,
                     comment,
@@ -420,7 +464,7 @@ export default function ImagePage() {
                 onApprove={async (comment) => {
                   await approveHitlStep({
                     type: 'visual',
-                    book_slug: form.visual_style_id,
+                    book_slug: result.book_slug ?? form.book_slug,
                     step_id: promptsStep.name,
                     comment,
                   })
@@ -429,7 +473,7 @@ export default function ImagePage() {
                 onReject={async (comment) => {
                   await rejectHitlStep({
                     type: 'visual',
-                    book_slug: form.visual_style_id,
+                    book_slug: result.book_slug ?? form.book_slug,
                     step_id: promptsStep.name,
                     comment,
                   })
@@ -438,7 +482,7 @@ export default function ImagePage() {
                 onEdit={async (editedContent, comment) => {
                   await editHitlStep({
                     type: 'visual',
-                    book_slug: form.visual_style_id,
+                    book_slug: result.book_slug ?? form.book_slug,
                     step_id: promptsStep.name,
                     edited_content: editedContent,
                     comment,

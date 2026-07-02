@@ -20,12 +20,14 @@ class PromptMakerAgent:
         self,
         validated_storyboard: dict[str, Any] | str,
         style_context: dict[str, Any] | None = None,
+        book_context: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         prompt = self.prompt_builder.build(
             prompt_path="agents/prompt_maker.md",
             variables={
                 "storyboard": validated_storyboard,
                 "style_context": style_context or {},
+                "book_context": book_context or {},
             },
         )
         response = self.llm_client.generate(prompt)
@@ -33,6 +35,7 @@ class PromptMakerAgent:
             "agent": "prompt_maker",
             "prompt_path": "agents/prompt_maker.md",
             "style_context": style_context or {},
+            "book_context": book_context or {},
             "character_prompts": [
                 {"name": "Personnage principal", "prompt": "Portrait du personnage principal"}
             ],

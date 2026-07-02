@@ -25,11 +25,13 @@ def test_agent_loads_prompt_maker_prompt(tmp_path: Path) -> None:
 
     result = agent.generate(
         validated_storyboard="Direction storyboard validée",
+        book_context={"book_slug": "alchemised"},
     )
 
     assert result["agent"] == "prompt_maker"
     assert result["prompt_path"] == "agents/prompt_maker.md"
     assert result["response"] == "Prompts générés"
+    assert result["book_context"] == {"book_slug": "alchemised"}
     assert "character_prompts" in result
     assert "background_prompts" in result
     assert "prop_prompts" in result
@@ -48,6 +50,7 @@ def test_agent_calls_llm_mock(tmp_path: Path) -> None:
 
     result = agent.generate(
         validated_storyboard={"shots": []},
+        book_context={"book_slug": "alchemised"},
     )
 
     assert result["response"] == "Mock prompt"
@@ -88,7 +91,7 @@ def test_agent_accepts_validated_storyboard(tmp_path: Path) -> None:
                 }
             ]
         },
+        book_context={"book_slug": "alchemised"},
     )
 
     assert result["response"] == "OK"
-

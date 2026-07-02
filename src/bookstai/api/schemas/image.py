@@ -21,6 +21,7 @@ class ImageStylesResponse(BaseModel):
 
 
 class ImageRunRequest(BaseModel):
+    book_slug: str
     lyrics: str
     visual_style_id: str
     platform: Literal["instagram", "tiktok", "youtube_shorts"] = "instagram"
@@ -36,6 +37,7 @@ class ImageRunRequest(BaseModel):
 class ImageRunResponse(BaseModel):
     ok: bool
     type: Literal["visual"]
+    book_slug: str
     item_slug: str
     visual_style_id: str
     provider: Literal["mock", "openai"]

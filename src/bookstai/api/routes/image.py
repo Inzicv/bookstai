@@ -48,6 +48,7 @@ def run_image(payload: ImageRunRequest) -> dict[str, Any]:
         )
         result = (
             workflow.run_with_hitl(
+                book_slug=payload.book_slug,
                 lyrics=payload.lyrics,
                 visual_style_id=payload.visual_style_id,
                 platform=payload.platform,
@@ -56,6 +57,7 @@ def run_image(payload: ImageRunRequest) -> dict[str, Any]:
             )
             if payload.hitl_enabled
             else workflow.run(
+                book_slug=payload.book_slug,
                 lyrics=payload.lyrics,
                 visual_style_id=payload.visual_style_id,
                 platform=payload.platform,
@@ -82,6 +84,7 @@ def run_image(payload: ImageRunRequest) -> dict[str, Any]:
         return {
             "ok": True,
             "type": "visual",
+            "book_slug": payload.book_slug,
             "item_slug": result["item_slug"],
             "visual_style_id": payload.visual_style_id,
             "provider": payload.provider,
