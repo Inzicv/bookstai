@@ -40,8 +40,8 @@ Le fichier `ui/.env.example` contient la même valeur par défaut.
 - `mock` comme provider par défaut;
 - le workflow Song ne génère pas d'image;
 - le workflow Song produit contexte, comedy room et chanson;
-- le workflow Image repart des paroles d'une chanson et d'un style visuel sélectionné depuis `memory/visual_style/Prompts_visuels/`;
-- le workflow Image produit style validé, storyboard et prompts finaux avec HITL;
+- le workflow Image repart d'un livre, des paroles validées et d'un style visuel sélectionné depuis `memory/visual_style/Prompts_visuels/`;
+- le workflow Image produit d'abord la fiche de lecture, puis le storyboard et les prompts finaux avec HITL;
 - pas d'appel OpenAI par défaut;
 - aucune clé API côté frontend;
 - aucune écriture automatique dans `memory/`;

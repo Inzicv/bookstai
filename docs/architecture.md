@@ -16,8 +16,8 @@ Source de vérité:
 - ils sont consommés directement par les assistants spécialisés;
 - Human In The Loop partout où une validation humaine est utile;
 - pas de dépendance active à Langflow;
-- pas de génération d'image dans le workflow Song.
-- le workflow Image est séparé du workflow Song et repart des paroles validées.
+- pas de génération d'image dans le workflow Song;
+- le workflow Image est séparé du workflow Song et repart d'un livre, des paroles validées et du style visuel choisi.
 
 ## Références mémoire principales
 
@@ -68,7 +68,8 @@ Les étapes créatives à valider sont:
 - `storyboard`
 - `prompts`
 
-Le workflow Image repart d'une chanson existante et d'un style visuel sélectionné.
+Le workflow Image repart d'un livre, de paroles validées et d'un style visuel sélectionné.
+Le workflow Image produit d'abord storyboard puis prompts, avant toute étape de génération locale.
 
 ## Learning Loop
 

@@ -13,7 +13,7 @@ Workflows Python BookstAI
 - Provider `mock` par défaut.
 - Workflow Review fonctionnel.
 - Workflow Song refondu sans génération d'image.
-- Workflow Image ajouté comme entrée séparée à partir des paroles d'une chanson.
+- Workflow Image ajouté comme entrée séparée à partir d'un livre, de paroles validées et d'un style visuel.
 - HITL fonctionnel dans l'UI.
 - Learning Loop existante.
 - Exports Markdown existants.
@@ -62,7 +62,7 @@ Important:
   - comedy room
   - paroles validables
 
-Le workflow Image réutilise les paroles validées, le style visuel issu de `memory/visual_style/Prompts_visuels/`, puis produit storyboard et prompts validables avant tout backend image.
+Le workflow Image réutilise la fiche de lecture du livre, les paroles validées, le style visuel issu de `memory/visual_style/Prompts_visuels/`, puis produit storyboard et prompts validables avant tout backend image.
 
 ## Étape 4 — Provider texte local
 

@@ -63,10 +63,11 @@ Le HITL Song utilise uniquement les étapes `song_options` et `song`.
 
 ## Image
 
-Le workflow Image repart de paroles de chanson déjà validées ou collées manuellement.
-Il ne génère pas d’image directement.
+Le workflow Image repart d'un livre, de paroles de chanson déjà validées ou collées manuellement, et d'un style visuel sélectionné.
+Il ne génère pas d'image directement.
 Il produit:
 
+- la fiche de lecture du livre;
 - le style visuel sélectionné;
 - la direction visuelle;
 - le storyboard;
@@ -79,6 +80,7 @@ Il produit:
 
 ```json
 {
+  "book_slug": "lesheritiersdorion",
   "lyrics": "Paroles complètes de la chanson validée...",
   "visual_style_id": "diorama_carton",
   "platform": "instagram",
@@ -94,7 +96,7 @@ Il produit:
 `brief` est optionnel.
 `provider` vaut `mock` ou `openai`.
 `export_formats` est optionnel et peut contenir `markdown` et/ou `json`.
-La réponse contient aussi un `item_slug` calculé à partir des paroles et du style pour éviter les collisions HITL.
+La réponse contient aussi un `item_slug` calculé à partir du livre, des paroles et du style pour éviter les collisions HITL.
 Le HITL Image utilise les étapes `style_selection`, `storyboard` et `prompts`.
 
 ## Principes
