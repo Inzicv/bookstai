@@ -11,15 +11,14 @@ from ...core.errors import MissingAPIKeyError, UnsupportedProviderError
 from ...exports import ExportService
 from ...llm import create_llm_client
 from ...workflows.image import ImageWorkflow
-from ..schemas.image import ImageRunRequest
-from .shared import (
-    api_error,
-    build_memory_root,
-    build_output_root,
-    build_prompt_root,
-    save_hitl_session,
-    serialize_path,
+from ..schemas.image import (
+    ImageBackgroundPromptsRequest,
+    ImageBatchGenerationRequest,
+    ImageCharacterPromptsRequest,
+    ImageRunRequest,
+    ImageStoryboardRequest,
 )
+from .shared import api_error, build_memory_root, build_output_root, build_prompt_root, save_hitl_session, serialize_path
 
 router = APIRouter(prefix="/image", tags=["image"])
 
@@ -30,46 +29,68 @@ def list_styles() -> dict[str, Any]:
     return {"ok": True, "styles": workflow.list_styles()}
 
 
+@router.post("/storyboard")
+def storyboard(payload: ImageStoryboardRequest) -> dict[str, Any]:
+    return _run_storyboard(payload)
+
+
+@router.post("/prompts/characters")
+def character_prompts(payload: ImageCharacterPromptsRequest) -> dict[str, Any]:
+    workflow = _build_workflow(provider=payload.provider, model=payload.model, temperature=payload.temperature)
+    result = workflow.generate_character_prompts(
+        item_slug=payload.item_slug,
+        book_slug=payload.book_slug,
+        visual_style_id=payload.visual_style_id,
+        storyboard=payload.storyboard,
+    )
+    return {"ok": True, **result}
+
+
+@router.post("/prompts/backgrounds")
+def background_prompts(payload: ImageBackgroundPromptsRequest) -> dict[str, Any]:
+    workflow = _build_workflow(provider=payload.provider, model=payload.model, temperature=payload.temperature)
+    result = workflow.generate_background_prompts(
+        item_slug=payload.item_slug,
+        book_slug=payload.book_slug,
+        visual_style_id=payload.visual_style_id,
+        storyboard=payload.storyboard,
+        character_prompts=payload.character_prompts,
+    )
+    return {"ok": True, **result}
+
+
+@router.post("/generate-batch")
+def generate_batch(payload: ImageBatchGenerationRequest) -> dict[str, Any]:
+    workflow = _build_workflow(provider="mock", model=None, temperature=0.0)
+    result = workflow.generate_batch(
+        item_slug=payload.item_slug,
+        storyboard=payload.storyboard,
+        character_prompts=payload.character_prompts,
+        background_prompts=payload.background_prompts,
+        backend=payload.backend,
+        confirm_generation=payload.confirm_generation,
+    )
+    return {"ok": result.get("error") is None, **result}
+
+
 @router.post("/run")
 def run_image(payload: ImageRunRequest) -> dict[str, Any]:
     if payload.provider not in {"mock", "openai"}:
         return api_error("INVALID_PROVIDER", "Provider must be one of: mock, openai.")
-
     try:
         if payload.provider == "openai" and not os.getenv("OPENAI_API_KEY"):
-            return api_error(
-                "MISSING_API_KEY",
-                "OPENAI_API_KEY is required to use the openai provider.",
-            )
-        workflow = _build_workflow(
-            provider=payload.provider,
-            model=payload.model,
-            temperature=payload.temperature,
-        )
-        result = (
-            workflow.run_with_hitl(
-                book_slug=payload.book_slug,
-                lyrics=payload.lyrics,
-                visual_style_id=payload.visual_style_id,
-                platform=payload.platform,
-                format=payload.format,
-                brief=payload.brief,
-            )
-            if payload.hitl_enabled
-            else workflow.run(
-                book_slug=payload.book_slug,
-                lyrics=payload.lyrics,
-                visual_style_id=payload.visual_style_id,
-                platform=payload.platform,
-                format=payload.format,
-                brief=payload.brief,
-            )
+            return api_error("MISSING_API_KEY", "OPENAI_API_KEY is required to use the openai provider.")
+        workflow = _build_workflow(provider=payload.provider, model=payload.model, temperature=payload.temperature)
+        result = workflow.run(
+            book_slug=payload.book_slug,
+            lyrics=payload.lyrics,
+            visual_style_id=payload.visual_style_id,
+            format=payload.format,
+            brief=payload.brief,
         )
         hitl_path = None
         if payload.hitl_enabled and "hitl" in result:
-            hitl_path = serialize_path(
-                save_hitl_session(result["hitl"], "visual", result["item_slug"])
-            )
+            hitl_path = serialize_path(save_hitl_session(result["hitl"], "visual", result["item_slug"]))
         export_paths: dict[str, str] | None = None
         if payload.export_formats:
             export_paths = {
@@ -105,6 +126,18 @@ def run_image(payload: ImageRunRequest) -> dict[str, Any]:
         return api_error("STYLE_NOT_FOUND", str(exc))
     except Exception as exc:  # pragma: no cover - defensive boundary
         return api_error("WORKFLOW_ERROR", str(exc))
+
+
+def _run_storyboard(payload: ImageStoryboardRequest) -> dict[str, Any]:
+    workflow = _build_workflow(provider=payload.provider, model=payload.model, temperature=payload.temperature)
+    result = workflow.generate_storyboard(
+        book_slug=payload.book_slug,
+        lyrics=payload.lyrics,
+        visual_style_id=payload.visual_style_id,
+        format=payload.format,
+        brief=payload.brief,
+    )
+    return {"ok": True, **result}
 
 
 def _build_workflow(provider: str, model: str | None, temperature: float) -> ImageWorkflow:

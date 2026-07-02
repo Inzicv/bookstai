@@ -61,6 +61,50 @@ export type ImageRunResponse = ApiSuccess<{
   export_paths: Record<string, string> | null
 }>
 
+export type ImageStoryboardResponse = ApiSuccess<{
+  workflow: 'visual'
+  stage: 'storyboard'
+  book_slug: string
+  item_slug: string
+  visual_style_id: string
+  visual_style: Record<string, unknown>
+  book_context: Record<string, unknown>
+  lyrics: string
+  format: string
+  brief: string
+  storyboard: { scenes: Array<Record<string, unknown>> }
+  hitl: Record<string, unknown> | null
+}>
+
+export type ImageCharacterPromptsResponse = ApiSuccess<{
+  workflow: 'visual'
+  stage: 'character_prompts'
+  book_slug: string
+  item_slug: string
+  visual_style_id: string
+  character_prompts: Array<Record<string, unknown>>
+  hitl: Record<string, unknown> | null
+}>
+
+export type ImageBackgroundPromptsResponse = ApiSuccess<{
+  workflow: 'visual'
+  stage: 'background_prompts'
+  book_slug: string
+  item_slug: string
+  visual_style_id: string
+  background_prompts: Array<Record<string, unknown>>
+  hitl: Record<string, unknown> | null
+}>
+
+export type ImageBatchGenerationResponse = ApiSuccess<{
+  workflow: 'visual'
+  stage: 'batch'
+  item_slug: string
+  backend: 'mock' | 'comfyui'
+  images: Array<Record<string, unknown>>
+  error: { code: string; message: string } | null
+}>
+
 export type HitlSessionResponse = ApiSuccess<{
   session: {
     workflow_name: string
@@ -143,6 +187,14 @@ export const runReview = (payload: unknown) =>
 export const runSong = (payload: unknown) =>
   request<SongRunResponse>('/song/run', { method: 'POST', body: JSON.stringify(payload) })
 export const listImageStyles = () => request<ImageStylesResponse>('/image/styles')
+export const generateImageStoryboard = (payload: unknown) =>
+  request<ImageStoryboardResponse>('/image/storyboard', { method: 'POST', body: JSON.stringify(payload) })
+export const generateImageCharacterPrompts = (payload: unknown) =>
+  request<ImageCharacterPromptsResponse>('/image/prompts/characters', { method: 'POST', body: JSON.stringify(payload) })
+export const generateImageBackgroundPrompts = (payload: unknown) =>
+  request<ImageBackgroundPromptsResponse>('/image/prompts/backgrounds', { method: 'POST', body: JSON.stringify(payload) })
+export const generateImageBatch = (payload: unknown) =>
+  request<ImageBatchGenerationResponse>('/image/generate-batch', { method: 'POST', body: JSON.stringify(payload) })
 export const runImage = (payload: unknown) =>
   request<ImageRunResponse>('/image/run', { method: 'POST', body: JSON.stringify(payload) })
 export const getHitlSession = (type: string, bookSlug: string) =>

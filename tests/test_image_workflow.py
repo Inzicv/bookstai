@@ -41,7 +41,16 @@ class DummyArtDirector:
 
     def generate(self, **kwargs):
         self.calls.append(kwargs)
-        return {"storyboard": [{"shot_number": 1}], "response": "storyboard"}
+        return {
+            "scenes": [
+                {
+                    "scene_id": "scene_001",
+                    "scene_number": 1,
+                    "status": "pending",
+                }
+            ],
+            "response": "storyboard",
+        }
 
 
 class DummyPromptMaker:
@@ -50,7 +59,7 @@ class DummyPromptMaker:
 
     def generate(self, **kwargs):
         self.calls.append(kwargs)
-        return {"prompts": [{"name": "p1"}], "response": "prompts"}
+        return {"prompts": [{"prompt_id": "p1", "status": "pending"}], "response": "prompts"}
 
 
 def test_image_workflow_runs_with_book_context(monkeypatch, tmp_path: Path) -> None:
@@ -76,13 +85,13 @@ def test_image_workflow_runs_with_book_context(monkeypatch, tmp_path: Path) -> N
     assert result["book_slug"] == "alchemised"
     assert result["book_context"]["book_slug"] == "alchemised"
     assert result["workflow"] == "visual"
-    assert result["style_selection"]["book_slug"] == "alchemised"
     assert result["item_slug"].startswith("alchemised-lego-")
     assert art_director.calls[0]["book_context"]["book_slug"] == "alchemised"
     assert prompt_maker.calls[0]["book_context"]["book_slug"] == "alchemised"
     assert prompt_maker.calls[0]["validated_storyboard"]["response"] == "storyboard"
     assert "storyboard" in result
-    assert "prompts" in result
+    assert "character_prompts" in result
+    assert "background_prompts" in result
 
 
 def test_image_workflow_run_with_hitl_includes_steps(monkeypatch, tmp_path: Path) -> None:
@@ -104,4 +113,5 @@ def test_image_workflow_run_with_hitl_includes_steps(monkeypatch, tmp_path: Path
     )
 
     assert result["book_slug"] == "alchemised"
-    assert [step["name"] for step in result["hitl"]["steps"]] == ["style_selection", "storyboard", "prompts"]
+    assert "hitl" in result
+    assert result["hitl"]["steps"][0]["name"] == "storyboard_scene_001"
