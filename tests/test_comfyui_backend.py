@@ -55,12 +55,15 @@ def _workflow_file(tmp_path: Path, content: str = """{"6": {"class_type": "CLIPT
     return workflow_path
 
 
-def _request(prompt: str, *, workflow_path: str | Path | None = None, output_dir: str | Path = "outputs/images", negative_prompt: str = "") -> ImageGenerationRequest:
+def _request(prompt: str, *, workflow_path: str | Path | None = None, output_dir: str | Path | None = None, negative_prompt: str = "") -> ImageGenerationRequest:
     return ImageGenerationRequest(
         prompt=prompt,
         negative_prompt=negative_prompt,
         backend="comfyui",
-        params=ImageGenerationParams(workflow_path=str(workflow_path) if workflow_path is not None else None, output_dir=str(output_dir)),
+        params=ImageGenerationParams(
+            workflow_path=str(workflow_path) if workflow_path is not None else None,
+            output_dir=str(output_dir) if output_dir is not None else None,
+        ),
     )
 
 
@@ -287,3 +290,51 @@ def test_generate_supports_placeholder_injection_without_exact_node_match(tmp_pa
 
     assert result.image_path == str(tmp_path / "images" / "sub" / "image.png")
     assert fake_client.last_post_payload["prompt"]["6"]["inputs"]["text"] == "prompt"
+
+
+def test_generate_request_output_dir_overrides_backend_output_dir(tmp_path: Path) -> None:
+    workflow_path = _workflow_file(tmp_path)
+    fake_client = FakeHTTPClient(
+        post_response={"prompt_id": "abc123"},
+        get_responses=[{"abc123": {"outputs": {"9": {"images": [{"filename": "image.png", "subfolder": "", "type": "output"}]}}}}],
+        bytes_response=b"PNGDATA",
+    )
+    backend = ComfyUIImageBackend(
+        workflow_path=workflow_path,
+        output_dir=tmp_path / "backend_images",
+        http_client=fake_client,
+    )
+    request = _request(
+        "prompt",
+        output_dir=tmp_path / "request_images",
+    )
+
+    result = backend.generate(request)
+
+    assert result.image_path == str(tmp_path / "request_images" / "image.png")
+    assert (tmp_path / "request_images" / "image.png").exists()
+    assert not (tmp_path / "backend_images" / "image.png").exists()
+
+
+def test_generate_uses_backend_output_dir_when_request_output_dir_is_none(tmp_path: Path) -> None:
+    workflow_path = _workflow_file(tmp_path)
+    fake_client = FakeHTTPClient(
+        post_response={"prompt_id": "abc123"},
+        get_responses=[{"abc123": {"outputs": {"9": {"images": [{"filename": "image.png", "subfolder": "", "type": "output"}]}}}}],
+        bytes_response=b"PNGDATA",
+    )
+    backend = ComfyUIImageBackend(
+        workflow_path=workflow_path,
+        output_dir=tmp_path / "backend_images",
+        http_client=fake_client,
+    )
+    request = ImageGenerationRequest(
+        prompt="prompt",
+        backend="comfyui",
+        params=ImageGenerationParams(workflow_path=str(workflow_path)),
+    )
+
+    result = backend.generate(request)
+
+    assert result.image_path == str(tmp_path / "backend_images" / "image.png")
+    assert (tmp_path / "backend_images" / "image.png").exists()

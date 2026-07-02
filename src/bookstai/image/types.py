@@ -19,7 +19,7 @@ class ImageGenerationParams:
     sampler: str | None = None
     model: str | None = None
     workflow_path: str | None = None
-    output_dir: str = "outputs/images"
+    output_dir: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

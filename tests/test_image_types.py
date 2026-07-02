@@ -32,6 +32,7 @@ def test_image_generation_request_to_dict() -> None:
     assert data["negative_prompt"] == "blurry"
     assert data["backend"] == "comfyui"
     assert "params" in data
+    assert data["params"]["output_dir"] is None
 
 
 def test_image_generation_result_to_dict() -> None:
