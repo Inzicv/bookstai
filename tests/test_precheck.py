@@ -68,7 +68,7 @@ def test_agent_prompt_files_contain_expected_variables() -> None:
             "song_style",
         },
         "art_director.md": {"book_context", "style_context", "validated_song"},
-        "prompt_maker.md": {"storyboard"},
+        "prompt_maker.md": {"storyboard", "style_context"},
         "social_media.md": {"validated_content", "style_context", "platform"},
         "memory_manager.md": {"generated_content", "corrected_content"},
     }
@@ -84,7 +84,7 @@ def test_agent_prompt_files_contain_expected_variables() -> None:
             "song_style",
         },
         "art_director.md": {"book_context", "style_context", "validated_song"},
-        "prompt_maker.md": {"storyboard"},
+        "prompt_maker.md": {"storyboard", "style_context"},
         "social_media.md": {"validated_content", "style_context", "platform"},
         "memory_manager.md": {"generated_content", "corrected_content"},
     }
@@ -148,7 +148,7 @@ def test_project_review_workflow_can_run_with_real_prompts_and_mock(tmp_path: Pa
     assert "style" in result
     assert "comedy" in result
     assert "review" in result
-    assert "social" in result
+    assert "social" not in result
 
 
 def test_project_song_workflow_can_run_with_real_prompts_and_mock(tmp_path: Path) -> None:
@@ -178,7 +178,9 @@ def test_project_song_workflow_can_run_with_real_prompts_and_mock(tmp_path: Path
     assert "style" in result
     assert "comedy" in result
     assert "song" in result
-    assert "storyboard" in result
-    assert "prompts" in result
-    assert "social" in result
+    assert "song_options" in result
+    assert "song_final" in result
+    assert "storyboard" not in result
+    assert "prompts" not in result
     assert "image" not in result
+    assert "image_backend" not in result

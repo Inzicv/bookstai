@@ -51,7 +51,6 @@ def test_main_song_returns_zero(monkeypatch) -> None:
     monkeypatch.setattr(cli, "SongWorkflow", DummyWorkflow)
     monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
     monkeypatch.setattr(cli, "create_llm_client", lambda **kwargs: "mock-client")
-    monkeypatch.setattr(cli, "create_image_backend", lambda **kwargs: "mock-image-backend")
     monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
 
     exit_code = cli.main([
@@ -145,11 +144,10 @@ def test_cli_song_calls_workflow(monkeypatch) -> None:
     captured = {}
 
     class DummyWorkflow:
-        def __init__(self, memory_root, prompt_root, llm_client, image_backend) -> None:
+        def __init__(self, memory_root, prompt_root, llm_client) -> None:
             captured["memory_root"] = memory_root
             captured["prompt_root"] = prompt_root
             captured["llm_client"] = llm_client
-            captured["image_backend"] = image_backend
 
         def run(self, **kwargs):
             captured["run"] = kwargs
@@ -158,7 +156,6 @@ def test_cli_song_calls_workflow(monkeypatch) -> None:
     monkeypatch.setattr(cli, "SongWorkflow", DummyWorkflow)
     monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
     monkeypatch.setattr(cli, "create_llm_client", lambda **kwargs: "mock-client")
-    monkeypatch.setattr(cli, "create_image_backend", lambda **kwargs: "mock-image-backend")
     monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
 
     cli.main([
@@ -174,7 +171,6 @@ def test_cli_song_calls_workflow(monkeypatch) -> None:
     ])
 
     assert captured["llm_client"] == "mock-client"
-    assert captured["image_backend"] == "mock-image-backend"
     assert captured["run"] == {
         "book_slug": "alchemised",
         "spoiler_mode": "spoiler_free",
@@ -188,7 +184,7 @@ def test_cli_song_hitl_calls_run_with_hitl(monkeypatch) -> None:
     captured = {}
 
     class DummyWorkflow:
-        def __init__(self, memory_root, prompt_root, llm_client, image_backend) -> None:
+        def __init__(self, memory_root, prompt_root, llm_client) -> None:
             pass
 
         def run(self, **kwargs):
@@ -202,7 +198,6 @@ def test_cli_song_hitl_calls_run_with_hitl(monkeypatch) -> None:
     monkeypatch.setattr(cli, "SongWorkflow", DummyWorkflow)
     monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
     monkeypatch.setattr(cli, "create_llm_client", lambda **kwargs: "mock-client")
-    monkeypatch.setattr(cli, "create_image_backend", lambda **kwargs: "mock-image-backend")
     monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
 
     cli.main([
@@ -386,13 +381,11 @@ def test_cli_review_accepts_openai_provider_configuration(monkeypatch) -> None:
 def test_cli_song_defaults_to_mock_image_backend(monkeypatch) -> None:
     captured = {}
 
-    def fake_create_image_backend(**kwargs):
-        captured.update(kwargs)
-        return "mock-image-backend"
-
     class DummyWorkflow:
-        def __init__(self, memory_root, prompt_root, llm_client, image_backend) -> None:
-            captured["image_backend"] = image_backend
+        def __init__(self, memory_root, prompt_root, llm_client) -> None:
+            captured["memory_root"] = memory_root
+            captured["prompt_root"] = prompt_root
+            captured["llm_client"] = llm_client
 
         def run(self, **kwargs):
             return {"workflow": "song"}
@@ -400,7 +393,6 @@ def test_cli_song_defaults_to_mock_image_backend(monkeypatch) -> None:
     monkeypatch.setattr(cli, "SongWorkflow", DummyWorkflow)
     monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
     monkeypatch.setattr(cli, "create_llm_client", lambda **kwargs: "mock-client")
-    monkeypatch.setattr(cli, "create_image_backend", fake_create_image_backend)
     monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
 
     cli.main([
@@ -415,9 +407,7 @@ def test_cli_song_defaults_to_mock_image_backend(monkeypatch) -> None:
         "instagram",
     ])
 
-    assert captured["backend"] == "mock"
-    assert captured["image_path"] == "outputs/mock/image.png"
-    assert captured["image_backend"] == "mock-image-backend"
+    assert "image_backend" not in captured
 
 
 def test_cli_hitl_does_not_change_song_defaults(monkeypatch) -> None:
@@ -429,12 +419,8 @@ def test_cli_hitl_does_not_change_song_defaults(monkeypatch) -> None:
         captured["temperature"] = temperature
         return "mock-client"
 
-    def fake_create_image_backend(**kwargs):
-        captured["image_factory"] = kwargs
-        return "mock-image-backend"
-
     class DummyWorkflow:
-        def __init__(self, memory_root, prompt_root, llm_client, image_backend) -> None:
+        def __init__(self, memory_root, prompt_root, llm_client) -> None:
             pass
 
         def run_with_hitl(self, **kwargs):
@@ -444,7 +430,6 @@ def test_cli_hitl_does_not_change_song_defaults(monkeypatch) -> None:
     monkeypatch.setattr(cli, "SongWorkflow", DummyWorkflow)
     monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
     monkeypatch.setattr(cli, "create_llm_client", fake_create_llm_client)
-    monkeypatch.setattr(cli, "create_image_backend", fake_create_image_backend)
     monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
 
     cli.main([
@@ -463,19 +448,14 @@ def test_cli_hitl_does_not_change_song_defaults(monkeypatch) -> None:
     assert captured["provider"] == "mock"
     assert captured["model"] == "gpt-4o-mini"
     assert captured["temperature"] == 0.7
-    assert captured["image_factory"]["backend"] == "mock"
 
 
 def test_cli_song_accepts_custom_mock_image_path(monkeypatch) -> None:
     captured = {}
 
-    def fake_create_image_backend(**kwargs):
-        captured.update(kwargs)
-        return "mock-image-backend"
-
     class DummyWorkflow:
-        def __init__(self, memory_root, prompt_root, llm_client, image_backend) -> None:
-            captured["image_backend"] = image_backend
+        def __init__(self, memory_root, prompt_root, llm_client) -> None:
+            pass
 
         def run(self, **kwargs):
             return {"workflow": "song"}
@@ -483,7 +463,6 @@ def test_cli_song_accepts_custom_mock_image_path(monkeypatch) -> None:
     monkeypatch.setattr(cli, "SongWorkflow", DummyWorkflow)
     monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
     monkeypatch.setattr(cli, "create_llm_client", lambda **kwargs: "mock-client")
-    monkeypatch.setattr(cli, "create_image_backend", fake_create_image_backend)
     monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
 
     cli.main([
@@ -496,26 +475,17 @@ def test_cli_song_accepts_custom_mock_image_path(monkeypatch) -> None:
         "scene",
         "--platform",
         "instagram",
-        "--image-backend",
-        "mock",
-        "--image-path",
-        "outputs/mock/custom.png",
     ])
 
-    assert captured["backend"] == "mock"
-    assert captured["image_path"] == "outputs/mock/custom.png"
+    assert "image_backend" not in captured
 
 
 def test_cli_song_accepts_comfyui_image_backend_configuration(monkeypatch) -> None:
     captured = {}
 
-    def fake_create_image_backend(**kwargs):
-        captured.update(kwargs)
-        return "comfyui-backend"
-
     class DummyWorkflow:
-        def __init__(self, memory_root, prompt_root, llm_client, image_backend) -> None:
-            captured["image_backend"] = image_backend
+        def __init__(self, memory_root, prompt_root, llm_client) -> None:
+            pass
 
         def run(self, **kwargs):
             return {"workflow": "song"}
@@ -523,7 +493,6 @@ def test_cli_song_accepts_comfyui_image_backend_configuration(monkeypatch) -> No
     monkeypatch.setattr(cli, "SongWorkflow", DummyWorkflow)
     monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
     monkeypatch.setattr(cli, "create_llm_client", lambda **kwargs: "mock-client")
-    monkeypatch.setattr(cli, "create_image_backend", fake_create_image_backend)
     monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
 
     cli.main([
@@ -536,27 +505,9 @@ def test_cli_song_accepts_comfyui_image_backend_configuration(monkeypatch) -> No
         "scene",
         "--platform",
         "instagram",
-        "--image-backend",
-        "comfyui",
-        "--comfyui-url",
-        "http://127.0.0.1:8188",
-        "--comfyui-workflow-path",
-        "workflows/comfyui/bookstai.json",
-        "--image-output-dir",
-        "outputs/images",
-        "--image-timeout",
-        "30",
-        "--image-poll-interval",
-        "0.5",
     ])
 
-    assert captured["backend"] == "comfyui"
-    assert captured["comfyui_url"] == "http://127.0.0.1:8188"
-    assert captured["workflow_path"] == "workflows/comfyui/bookstai.json"
-    assert captured["output_dir"] == "outputs/images"
-    assert captured["timeout"] == 30.0
-    assert captured["poll_interval"] == 0.5
-    assert captured["image_backend"] == "comfyui-backend"
+    assert "image_backend" not in captured
 
 
 def test_cli_review_without_export_does_not_call_export_service(monkeypatch) -> None:
@@ -598,8 +549,8 @@ def test_cli_song_without_export_does_not_call_export_service(monkeypatch) -> No
     captured = {}
 
     class DummyWorkflow:
-        def __init__(self, memory_root, prompt_root, llm_client, image_backend) -> None:
-            captured["image_backend"] = image_backend
+        def __init__(self, memory_root, prompt_root, llm_client) -> None:
+            pass
 
         def run(self, **kwargs):
             captured["run"] = kwargs
@@ -613,7 +564,6 @@ def test_cli_song_without_export_does_not_call_export_service(monkeypatch) -> No
     monkeypatch.setattr(cli, "ExportService", ForbiddenExportService)
     monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
     monkeypatch.setattr(cli, "create_llm_client", lambda **kwargs: "mock-client")
-    monkeypatch.setattr(cli, "create_image_backend", lambda **kwargs: "mock-image-backend")
     monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
 
     exit_code = cli.main([
@@ -781,7 +731,7 @@ def test_cli_song_exports_json(monkeypatch) -> None:
     captured = {}
 
     class DummyWorkflow:
-        def __init__(self, memory_root, prompt_root, llm_client, image_backend) -> None:
+        def __init__(self, memory_root, prompt_root, llm_client) -> None:
             pass
 
         def run(self, **kwargs):
@@ -804,7 +754,6 @@ def test_cli_song_exports_json(monkeypatch) -> None:
     monkeypatch.setattr(cli, "ExportService", DummyExportService)
     monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
     monkeypatch.setattr(cli, "create_llm_client", lambda **kwargs: "mock-client")
-    monkeypatch.setattr(cli, "create_image_backend", lambda **kwargs: "mock-image-backend")
     monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
 
     cli.main([
@@ -836,7 +785,7 @@ def test_cli_song_exports_json_with_hitl(monkeypatch) -> None:
     captured = {}
 
     class DummyWorkflow:
-        def __init__(self, memory_root, prompt_root, llm_client, image_backend) -> None:
+        def __init__(self, memory_root, prompt_root, llm_client) -> None:
             pass
 
         def run_with_hitl(self, **kwargs):
@@ -863,7 +812,6 @@ def test_cli_song_exports_json_with_hitl(monkeypatch) -> None:
     monkeypatch.setattr(cli, "ExportService", DummyExportService)
     monkeypatch.setattr(cli, "load_settings", lambda **kwargs: DummySettings(Path("default/memory")))
     monkeypatch.setattr(cli, "create_llm_client", lambda **kwargs: "mock-client")
-    monkeypatch.setattr(cli, "create_image_backend", lambda **kwargs: "mock-image-backend")
     monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
 
     cli.main([

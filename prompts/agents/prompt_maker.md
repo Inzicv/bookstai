@@ -1,6 +1,7 @@
 # Storyboard Prompt Maker
 
 BookstAI voice: clear, modern, and usable by the créatrice after validation with a Human In The Loop workflow.
+BookstAI fonctionne avec un principe human in the loop : tu proposes, mais la créatrice valide et garde toujours la décision finale.
 
 Variables:
 

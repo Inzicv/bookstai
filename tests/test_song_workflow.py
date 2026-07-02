@@ -53,10 +53,11 @@ def test_song_workflow_runs_end_to_end(tmp_path: Path) -> None:
     assert "context" in result
     assert "style" in result
     assert "song_options" in result
+    assert "comedy" in result
     assert "song" in result
-    assert "storyboard" in result
-    assert "prompts" in result
-    assert "social" not in result
+    assert "song_final" in result
+    assert "storyboard" not in result
+    assert "prompts" not in result
     assert "image" not in result
     assert "image_prompt" not in result
     assert "image_backend" not in result

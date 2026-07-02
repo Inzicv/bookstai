@@ -255,8 +255,10 @@ def test_song_run_mock(tmp_path: Path, monkeypatch) -> None:
     assert body["hitl_session_path"] == "outputs/hitl/song/alchemised.json"
     assert "image_backend" not in body
     assert "image" not in body["result"]
-    assert "storyboard" in body["result"]
-    assert "prompts" in body["result"]
+    assert "storyboard" not in body["result"]
+    assert "prompts" not in body["result"]
+    assert "song" in body["result"]
+    assert "song_final" in body["result"]
     assert [step["name"] for step in body["result"]["hitl"]["steps"]] == ["song_options", "song"]
 
 

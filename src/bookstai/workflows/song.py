@@ -90,6 +90,7 @@ class SongWorkflow:
             "context": context,
             "style": style,
             "song_options": song_options,
+            "comedy": song_options,
             "song": song,
             "song_final": song.get("response", ""),
             "legacy": legacy_kwargs or {},

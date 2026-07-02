@@ -203,7 +203,6 @@ def test_learning_commands_do_not_use_workflows(monkeypatch, tmp_path) -> None:
     monkeypatch.setattr(cli, "ReviewWorkflow", lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("ReviewWorkflow should not be used")))
     monkeypatch.setattr(cli, "SongWorkflow", lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("SongWorkflow should not be used")))
     monkeypatch.setattr(cli, "create_llm_client", lambda **kwargs: (_ for _ in ()).throw(AssertionError("OpenAI should not be used")))
-    monkeypatch.setattr(cli, "create_image_backend", lambda **kwargs: (_ for _ in ()).throw(AssertionError("ComfyUI should not be used")))
     monkeypatch.setattr(cli, "pprint", lambda *args, **kwargs: None)
 
     assert cli.main(["learning", "extract", "--hitl-file", str(session_path)]) == 0

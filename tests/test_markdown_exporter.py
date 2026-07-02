@@ -42,8 +42,6 @@ def test_markdown_exporter_writes_readable_song_export(tmp_path: Path) -> None:
         "book_slug": "alchemised",
         "comedy": {"response": "Idées drôles"},
         "song": {"response": "Chanson générée"},
-        "storyboard": {"response": "Storyboard"},
-        "prompts": {"response": "Prompts"},
         "social": {"response": "Caption générée"},
     }
 
@@ -59,10 +57,8 @@ def test_markdown_exporter_writes_readable_song_export(tmp_path: Path) -> None:
     assert "draft_needs_human_review" in content
     assert "## Song draft" in content
     assert "Chanson générée" in content
-    assert "## Storyboard" in content
-    assert "Storyboard" in content
-    assert "## Prompts" in content
-    assert "Prompts" in content
+    assert "## Storyboard" not in content
+    assert "## Prompts" not in content
     assert "## Social media draft" in content
     assert "Caption générée" in content
     assert "## Comedy room" in content
