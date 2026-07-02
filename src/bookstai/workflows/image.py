@@ -77,7 +77,7 @@ class ImageWorkflow:
         **legacy_kwargs: Any,
     ) -> dict[str, Any]:
         validated_scenes = storyboard.get("scenes", [])
-        if not validated_scenes or not all(scene.get("status") == "approved" for scene in validated_scenes):
+        if not validated_scenes or not all(scene.get("status") in {"approved", "edited"} for scene in validated_scenes):
             raise ValueError("Storyboard scenes must be approved before generating character prompts.")
         book_context = self.context_builder.build(book_slug=book_slug, workflow_type="visual", spoiler_level="full")
         visual_style = self.visual_style_reader.read_style(visual_style_id)
@@ -111,7 +111,7 @@ class ImageWorkflow:
         **legacy_kwargs: Any,
     ) -> dict[str, Any]:
         validated_character_prompts = character_prompts or []
-        if not validated_character_prompts or not all(prompt.get("status") == "approved" for prompt in validated_character_prompts):
+        if not validated_character_prompts or not all(prompt.get("status") in {"approved", "edited"} for prompt in validated_character_prompts):
             raise ValueError("Character prompts must be approved before generating backgrounds.")
         book_context = self.context_builder.build(book_slug=book_slug, workflow_type="visual", spoiler_level="full")
         visual_style = self.visual_style_reader.read_style(visual_style_id)

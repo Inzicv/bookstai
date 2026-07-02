@@ -1,0 +1,48 @@
+{
+  "type": "image_storyboard_approval",
+  "item_slug": "mockingbird-lego-b058fc3162",
+  "book_slug": "mockingbird",
+  "visual_style_id": "lego",
+  "storyboard": {
+    "scenes": [
+      {
+        "scene_id": "scene_001",
+        "scene_number": 1,
+        "song_part": "Couplet 1",
+        "lyrics_excerpt": "Ouverture du morceau.",
+        "visual_intention": "Introduire le monde et le ton.",
+        "characters": [
+          "Personnage principal"
+        ],
+        "background": "Décor principal",
+        "key_props": [
+          "Objet symbolique"
+        ],
+        "camera": "Plan large",
+        "movement": "Travelling lent",
+        "transition": "cut",
+        "style_notes": "Respecter le style validé.",
+        "status": "approved"
+      },
+      {
+        "scene_id": "scene_002",
+        "scene_number": 2,
+        "song_part": "couplet 2",
+        "lyrics_excerpt": "Montée émotionnelle.",
+        "visual_intention": "Accentuer le rythme et l'énergie.",
+        "characters": [
+          "Personnage principal"
+        ],
+        "background": "Lieu secondaire",
+        "key_props": [],
+        "camera": "Plan rapproché",
+        "movement": "Panoramique",
+        "transition": "cut",
+        "style_notes": "Conserver la cohérence visuelle.",
+        "status": "approved",
+        "comment": ""
+      }
+    ]
+  },
+  "approved": true
+}

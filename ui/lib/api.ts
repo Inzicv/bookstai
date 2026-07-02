@@ -29,7 +29,6 @@ export type SongRunResponse = ApiSuccess<{
   song_style: 'parody'
   provider: 'mock' | 'openai'
   model: string | null
-  temperature: number
   hitl_enabled: boolean
   result: Record<string, unknown>
   hitl_session_path: string | null
@@ -54,7 +53,6 @@ export type ImageRunResponse = ApiSuccess<{
   visual_style_id: string
   provider: 'mock' | 'openai'
   model: string | null
-  temperature: number
   hitl_enabled: boolean
   result: Record<string, unknown>
   hitl_session_path: string | null
@@ -109,7 +107,10 @@ export type ImageBatchGenerationResponse = ApiSuccess<{
   workflow: 'visual'
   stage: 'batch'
   item_slug: string
-  backend: 'mock' | 'comfyui'
+  backend: 'mock' | 'openai' | 'comfyui'
+  model: string | null
+  quality: 'low' | 'medium' | 'high' | null
+  estimated_cost: { currency: string; estimated_min: number; estimated_max: number; assumptions: Record<string, unknown> } | null
   images: Array<Record<string, unknown>>
   error: { code: string; message: string } | null
 }>

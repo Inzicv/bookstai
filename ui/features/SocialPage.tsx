@@ -8,7 +8,7 @@ import { FormField } from '@/components/FormField'
 import { BookSelect } from '@/components/BookSelect'
 
 export default function SocialPage() {
-  const [form, setForm] = useState({ book_slug: 'alchemised', source_type: 'review', source_content: '', provider: 'mock', model: null as string | null, temperature: '0.7' })
+  const [form, setForm] = useState({ book_slug: 'alchemised', source_type: 'review', source_content: '', provider: 'mock', model: null as string | null })
   const [result, setResult] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)

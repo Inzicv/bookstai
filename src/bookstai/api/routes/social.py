@@ -26,7 +26,7 @@ def run_social(payload: SocialRunRequest) -> dict[str, Any]:
         workflow = SocialWorkflow(
             memory_root=build_memory_root(),
             prompt_root=build_prompt_root(),
-            llm_client=create_llm_client(provider=payload.provider, model=payload.model or "gpt-4o-mini", temperature=payload.temperature),
+            llm_client=create_llm_client(provider=payload.provider, model=payload.model or "gpt-4o-mini"),
         )
         result = workflow.run(payload.book_slug, payload.source_type, payload.source_content)
         return {"ok": True, "type": "social", "book_slug": payload.book_slug, "provider": payload.provider, "result": result}

@@ -43,7 +43,6 @@ export default function ReviewPage() {
     user_opinion: '',
     provider: 'mock' as Provider,
     model: null as OpenAIModel | null,
-    temperature: '0.7',
     hitl_enabled: true,
   })
   const [loading, setLoading] = useState(false)
@@ -106,7 +105,6 @@ export default function ReviewPage() {
           setResult(null)
           const response = await runReview({
             ...form,
-            temperature: Number(form.temperature),
             model: form.provider === 'openai' ? form.model : null,
           })
           setLoading(false)
@@ -161,15 +159,6 @@ export default function ReviewPage() {
               <p className="text-xs text-slate-400">
                 Pour commencer, utilise GPT-5.4 mini : bon compromis entre qualité, vitesse et coût.
               </p>
-            </FormField>
-            <FormField label="Température">
-              <input
-                type="number"
-                step="0.1"
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 placeholder:text-slate-500"
-                value={form.temperature}
-                onChange={(e) => setForm({ ...form, temperature: e.target.value })}
-              />
             </FormField>
           </div>
         ) : (

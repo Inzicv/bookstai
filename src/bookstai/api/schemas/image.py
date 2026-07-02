@@ -28,7 +28,6 @@ class ImageRunRequest(BaseModel):
     brief: str | None = None
     provider: Literal["mock", "openai"] = "mock"
     model: str | None = None
-    temperature: float = 0.7
     hitl_enabled: bool = True
     export_formats: list[Literal["markdown", "json"]] = Field(default_factory=list)
 
@@ -41,7 +40,6 @@ class ImageRunResponse(BaseModel):
     visual_style_id: str
     provider: Literal["mock", "openai"]
     model: str | None = None
-    temperature: float
     hitl_enabled: bool
     result: dict[str, Any]
     hitl_session_path: str | None = None
@@ -54,9 +52,8 @@ class ImageStoryboardRequest(BaseModel):
     visual_style_id: str
     format: str = "4:5"
     brief: str | None = None
-    provider: Literal["mock", "openai"] = "mock"
-    model: str | None = None
-    temperature: float = 0.7
+    storyboard_provider: Literal["mock", "openai"] = "mock"
+    storyboard_model: str | None = None
     hitl_enabled: bool = True
     export_formats: list[Literal["markdown", "json"]] = Field(default_factory=list)
 
@@ -99,9 +96,8 @@ class ImageCharacterPromptsRequest(BaseModel):
     book_slug: str
     visual_style_id: str
     storyboard: dict[str, Any]
-    provider: Literal["mock", "openai"] = "mock"
-    model: str | None = None
-    temperature: float = 0.7
+    storyboard_provider: Literal["mock", "openai"] = "mock"
+    storyboard_model: str | None = None
     hitl_enabled: bool = True
     export_formats: list[Literal["markdown", "json"]] = Field(default_factory=list)
 
@@ -123,9 +119,8 @@ class ImageBackgroundPromptsRequest(BaseModel):
     visual_style_id: str
     storyboard: dict[str, Any]
     character_prompts: list[dict[str, Any]] = Field(default_factory=list)
-    provider: Literal["mock", "openai"] = "mock"
-    model: str | None = None
-    temperature: float = 0.7
+    storyboard_provider: Literal["mock", "openai"] = "mock"
+    storyboard_model: str | None = None
     hitl_enabled: bool = True
     export_formats: list[Literal["markdown", "json"]] = Field(default_factory=list)
 
@@ -143,10 +138,13 @@ class ImageBackgroundPromptsResponse(BaseModel):
 
 class ImageBatchGenerationRequest(BaseModel):
     item_slug: str
-    backend: Literal["mock", "comfyui"] = "mock"
+    image_backend: Literal["mock", "openai", "comfyui"] = "mock"
+    image_model: str | None = None
+    image_quality: Literal["low", "medium", "high"] | None = "medium"
     storyboard: dict[str, Any]
     character_prompts: list[dict[str, Any]]
     background_prompts: list[dict[str, Any]]
+    format: str = "4:5"
     width: int = 1024
     height: int = 1280
     steps: int = 25
@@ -160,6 +158,9 @@ class ImageBatchGenerationResponse(BaseModel):
     workflow: Literal["visual"]
     stage: Literal["batch"]
     item_slug: str
-    backend: Literal["mock", "comfyui"]
+    backend: Literal["mock", "openai", "comfyui"]
+    model: str | None = None
+    quality: Literal["low", "medium", "high"] | None = None
+    estimated_cost: dict[str, Any] | None = None
     images: list[dict[str, Any]] = Field(default_factory=list)
     error: dict[str, Any] | None = None

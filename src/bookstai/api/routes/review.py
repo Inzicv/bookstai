@@ -30,7 +30,7 @@ def run_review(payload: ReviewRunRequest) -> dict[str, Any]:
         workflow = ReviewWorkflow(
             memory_root=build_memory_root(),
             prompt_root=build_prompt_root(),
-            llm_client=create_llm_client(provider=payload.provider, model=payload.model or "gpt-4o-mini", temperature=payload.temperature),
+            llm_client=create_llm_client(provider=payload.provider, model=payload.model or "gpt-4o-mini"),
         )
         result = workflow.run_with_hitl(payload.book_slug, payload.user_opinion) if payload.hitl_enabled else workflow.run(payload.book_slug, payload.user_opinion)
         hitl_path = None

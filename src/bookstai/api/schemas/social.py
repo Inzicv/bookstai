@@ -13,7 +13,6 @@ class SocialRunRequest(BaseModel):
     source_content: str | None = None
     provider: Literal["mock", "openai"] = "mock"
     model: str | None = None
-    temperature: float = 0.7
 
 
 class SocialRunResponse(BaseModel):

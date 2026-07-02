@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import os
+import json
 from typing import Any
 
 from fastapi import APIRouter
 
-from ...core.errors import MissingAPIKeyError, UnsupportedProviderError
+from ...core.errors import ImageGenerationError, MissingAPIKeyError, UnsupportedImageBackendError, UnsupportedProviderError
 from ...exports import ExportService
+from ...image_generation.factory import create_image_backend
+from ...image_generation.types import ImageGenerationRequest
 from ...llm import create_llm_client
 from ...workflows.image import ImageWorkflow
 from ..schemas.image import (
@@ -35,7 +38,7 @@ router = APIRouter(prefix="/image", tags=["image"])
 
 @router.get("/styles")
 def list_styles() -> dict[str, Any]:
-    workflow = _build_workflow(provider="mock", model=None, temperature=0.0)
+    workflow = _build_workflow(provider="mock", model=None)
     return {"ok": True, "styles": workflow.list_styles()}
 
 
@@ -62,7 +65,7 @@ def approve_storyboard(payload: ImageStoryboardApprovalRequest) -> dict[str, Any
     storyboard_path.parent.mkdir(parents=True, exist_ok=True)
     try:
         storyboard_path.write_text(
-            __import__("json").dumps(
+            json.dumps(
                 {
                     "type": "image_storyboard_approval",
                     "item_slug": payload.item_slug,
@@ -91,7 +94,10 @@ def approve_storyboard(payload: ImageStoryboardApprovalRequest) -> dict[str, Any
 
 @router.post("/prompts/characters")
 def character_prompts(payload: ImageCharacterPromptsRequest) -> dict[str, Any]:
-    workflow = _build_workflow(provider=payload.provider, model=payload.model, temperature=payload.temperature)
+    workflow = _build_workflow(
+        provider=payload.storyboard_provider,
+        model=payload.storyboard_model,
+    )
     result = workflow.generate_character_prompts(
         item_slug=payload.item_slug,
         book_slug=payload.book_slug,
@@ -105,7 +111,10 @@ def character_prompts(payload: ImageCharacterPromptsRequest) -> dict[str, Any]:
 
 @router.post("/prompts/backgrounds")
 def background_prompts(payload: ImageBackgroundPromptsRequest) -> dict[str, Any]:
-    workflow = _build_workflow(provider=payload.provider, model=payload.model, temperature=payload.temperature)
+    workflow = _build_workflow(
+        provider=payload.storyboard_provider,
+        model=payload.storyboard_model,
+    )
     result = workflow.generate_background_prompts(
         item_slug=payload.item_slug,
         book_slug=payload.book_slug,
@@ -120,16 +129,56 @@ def background_prompts(payload: ImageBackgroundPromptsRequest) -> dict[str, Any]
 
 @router.post("/generate-batch")
 def generate_batch(payload: ImageBatchGenerationRequest) -> dict[str, Any]:
-    workflow = _build_workflow(provider="mock", model=None, temperature=0.0)
-    result = workflow.generate_batch(
-        item_slug=payload.item_slug,
-        storyboard=payload.storyboard,
-        character_prompts=payload.character_prompts,
-        background_prompts=payload.background_prompts,
-        backend=payload.backend,
-        confirm_generation=payload.confirm_generation,
-    )
-    return {"ok": result.get("error") is None, **result}
+    if not payload.confirm_generation:
+        return api_error("GENERATION_NOT_CONFIRMED", "Generation must be confirmed before batch generation.")
+    if not payload.character_prompts or not payload.background_prompts:
+        return api_error("PROMPTS_NOT_FULLY_APPROVED", "All prompts must be approved before batch generation.")
+    if any(prompt.get("status") not in {"approved", "edited"} for prompt in payload.character_prompts + payload.background_prompts):
+        return api_error("PROMPTS_NOT_FULLY_APPROVED", "All prompts must be approved before batch generation.")
+    try:
+        backend = create_image_backend(
+            backend=payload.image_backend,
+            model=payload.image_model,
+            quality=payload.image_quality,
+        )
+    except UnsupportedImageBackendError as exc:
+        code = str(exc) if str(exc) in {"IMAGE_BACKEND_NOT_READY", "UNSUPPORTED_IMAGE_BACKEND"} else "UNSUPPORTED_IMAGE_BACKEND"
+        return api_error(code, str(exc))
+    try:
+        result = backend.generate_batch(
+            ImageGenerationRequest(
+                item_slug=payload.item_slug,
+                backend=payload.image_backend,
+                model=payload.image_model,
+                quality=payload.image_quality,
+                storyboard=payload.storyboard,
+                character_prompts=payload.character_prompts,
+                background_prompts=payload.background_prompts,
+                format=payload.format,
+                width=payload.width,
+                height=payload.height,
+                steps=payload.steps,
+                cfg=payload.cfg,
+                seed=payload.seed,
+                confirm_generation=payload.confirm_generation,
+            )
+        )
+    except MissingAPIKeyError:
+        return api_error("MISSING_API_KEY", "OPENAI_API_KEY is required to use the openai image backend.")
+    except ImageGenerationError as exc:
+        return api_error("OPENAI_IMAGE_ERROR", str(exc))
+    return {
+        "ok": True,
+        "workflow": "visual",
+        "stage": "batch",
+        "item_slug": payload.item_slug,
+        "backend": result.backend,
+        "model": result.model,
+        "quality": result.quality,
+        "estimated_cost": None if result.estimated_cost is None else result.estimated_cost.to_dict(),
+        "images": [image.to_dict() for image in result.images],
+        "error": None,
+    }
 
 
 @router.post("/run")
@@ -139,7 +188,7 @@ def run_image(payload: ImageRunRequest) -> dict[str, Any]:
     try:
         if payload.provider == "openai" and not os.getenv("OPENAI_API_KEY"):
             return api_error("MISSING_API_KEY", "OPENAI_API_KEY is required to use the openai provider.")
-        workflow = _build_workflow(provider=payload.provider, model=payload.model, temperature=payload.temperature)
+        workflow = _build_workflow(provider=payload.provider, model=payload.model)
         result = workflow.run(
             book_slug=payload.book_slug,
             lyrics=payload.lyrics,
@@ -169,7 +218,6 @@ def run_image(payload: ImageRunRequest) -> dict[str, Any]:
             "visual_style_id": payload.visual_style_id,
             "provider": payload.provider,
             "model": payload.model,
-            "temperature": payload.temperature,
             "hitl_enabled": payload.hitl_enabled,
             "result": result,
             "hitl_session_path": hitl_path,
@@ -188,7 +236,10 @@ def run_image(payload: ImageRunRequest) -> dict[str, Any]:
 
 
 def _run_storyboard(payload: ImageStoryboardRequest) -> dict[str, Any]:
-    workflow = _build_workflow(provider=payload.provider, model=payload.model, temperature=payload.temperature)
+    workflow = _build_workflow(
+        provider=payload.storyboard_provider,
+        model=payload.storyboard_model,
+    )
     result = workflow.generate_storyboard(
         book_slug=payload.book_slug,
         lyrics=payload.lyrics,
@@ -224,9 +275,9 @@ def _merge_and_save_hitl_session(workflow_type: str, item_slug: str, session_dat
     save_hitl_session(session_data, workflow_type, item_slug)
 
 
-def _build_workflow(provider: str, model: str | None, temperature: float) -> ImageWorkflow:
+def _build_workflow(provider: str, model: str | None) -> ImageWorkflow:
     return ImageWorkflow(
         memory_root=build_memory_root(),
         prompt_root=build_prompt_root(),
-        llm_client=create_llm_client(provider=provider, model=model or "gpt-4o-mini", temperature=temperature),
+        llm_client=create_llm_client(provider=provider, model=model or "gpt-4o-mini"),
     )

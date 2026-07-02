@@ -13,7 +13,6 @@ class SongRunRequest(BaseModel):
     song_style: Literal["parody"] = "parody"
     provider: Literal["mock", "openai"] = "mock"
     model: str | None = None
-    temperature: float = 0.7
     hitl_enabled: bool = True
 
 
@@ -25,7 +24,6 @@ class SongRunResponse(BaseModel):
     song_style: Literal["parody"]
     provider: Literal["mock", "openai"]
     model: str | None = None
-    temperature: float
     result: dict[str, Any]
     hitl_enabled: bool
     hitl_session_path: str | None = None

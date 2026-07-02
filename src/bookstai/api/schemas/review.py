@@ -12,7 +12,6 @@ class ReviewRunRequest(BaseModel):
     user_opinion: str
     provider: Literal["mock", "openai"] = "mock"
     model: str | None = None
-    temperature: float = 0.7
     hitl_enabled: bool = True
 
 

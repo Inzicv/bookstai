@@ -33,7 +33,6 @@ def run_song(payload: SongRunRequest) -> dict[str, Any]:
             llm_client=create_llm_client(
                 provider=payload.provider,
                 model=payload.model or "gpt-4o-mini",
-                temperature=payload.temperature,
             ),
         )
         result = workflow.run_with_hitl(payload.book_slug, payload.story_scope, payload.song_style) if payload.hitl_enabled else workflow.run(payload.book_slug, payload.story_scope, payload.song_style)
@@ -48,7 +47,6 @@ def run_song(payload: SongRunRequest) -> dict[str, Any]:
             "song_style": payload.song_style,
             "provider": payload.provider,
             "model": payload.model,
-            "temperature": payload.temperature,
             "hitl_enabled": payload.hitl_enabled,
             "result": result,
             "hitl_session_path": hitl_path,

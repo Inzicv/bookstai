@@ -20,7 +20,6 @@ type SongFormState = {
   song_style: 'parody'
   provider: 'mock' | 'openai'
   model: string | null
-  temperature: string
   hitl_enabled: boolean
 }
 
@@ -54,7 +53,6 @@ export default function SongPage() {
     song_style: 'parody',
     provider: 'mock' as Provider,
     model: null,
-    temperature: '0.7',
     hitl_enabled: true,
   })
   const [loading, setLoading] = useState(false)
@@ -121,7 +119,6 @@ export default function SongPage() {
             song_style: form.song_style,
             provider: form.provider,
             model: form.provider === 'openai' ? form.model : null,
-            temperature: Number(form.temperature),
             hitl_enabled: form.hitl_enabled,
           })
           setLoading(false)
@@ -194,15 +191,6 @@ export default function SongPage() {
               <p className="text-xs text-slate-400">
                 Pour commencer, utilise GPT-5.4 mini : bon compromis entre qualité, vitesse et coût.
               </p>
-            </FormField>
-            <FormField label="Température">
-              <input
-                type="number"
-                step="0.1"
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 placeholder:text-slate-500"
-                value={form.temperature}
-                onChange={(e) => setForm({ ...form, temperature: e.target.value })}
-              />
             </FormField>
           </div>
         ) : (
