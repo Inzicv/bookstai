@@ -15,14 +15,14 @@ def test_create_image_backend_can_be_imported() -> None:
 
 
 def test_create_image_backend_returns_mock_backend() -> None:
-    backend = create_image_backend(backend="mock")
+    backend = create_image_backend(image_backend="mock")
 
     assert isinstance(backend, MockImageBackend)
     assert backend.image_path == "outputs/mock/image.png"
 
 
 def test_create_image_backend_returns_mock_backend_with_custom_image_path() -> None:
-    backend = create_image_backend(backend="mock", image_path="outputs/mock/custom.png")
+    backend = create_image_backend(image_backend="mock", image_path="outputs/mock/custom.png")
 
     assert isinstance(backend, MockImageBackend)
     assert backend.image_path == "outputs/mock/custom.png"
@@ -49,7 +49,7 @@ def test_create_image_backend_returns_comfyui_backend(monkeypatch, tmp_path: Pat
     monkeypatch.setattr("bookstai.image.factory.ComfyUIImageBackend", DummyComfyUIImageBackend)
 
     backend = create_image_backend(
-        backend="comfyui",
+        image_backend="comfyui",
         comfyui_url="http://127.0.0.1:8188",
         workflow_path="workflows/comfyui/book_cover.json",
         output_dir=tmp_path / "images",
@@ -67,6 +67,6 @@ def test_create_image_backend_returns_comfyui_backend(monkeypatch, tmp_path: Pat
 
 def test_create_image_backend_rejects_unknown_backend() -> None:
     with pytest.raises(UnsupportedImageBackendError) as exc_info:
-        create_image_backend(backend="whatever")  # type: ignore[arg-type]
+        create_image_backend(image_backend="whatever")  # type: ignore[arg-type]
 
     assert "whatever" in str(exc_info.value)

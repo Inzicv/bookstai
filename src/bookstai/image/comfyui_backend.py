@@ -16,6 +16,7 @@ from ..core.errors import (
     ImageGenerationError,
 )
 from .backend import ImageBackend
+from .types import ImageBackendHealthResult, ImageGenerationRequest, ImageGenerationResult
 
 BOOKSTAI_PROMPT_PLACEHOLDER = "__BOOKSTAI_PROMPT__"
 
@@ -89,14 +90,19 @@ class ComfyUIImageBackend(ImageBackend):
         self.http_client = http_client or ComfyUIHTTPClient()
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
-    def generate(self, prompt: str) -> str:
+    def generate(self, request: ImageGenerationRequest) -> ImageGenerationResult:
+        prompt = request.prompt
         if not prompt or not prompt.strip():
             raise EmptyPromptError("Prompt must not be empty.")
 
-        if self.workflow_path is None:
-            return self._generate_compatibility_path(prompt)
+        workflow_path = Path(request.params.workflow_path) if request.params.workflow_path is not None else self.workflow_path
+        output_dir = Path(request.params.output_dir) if request.params.output_dir else self.output_dir
+        output_dir.mkdir(parents=True, exist_ok=True)
 
-        workflow = self._load_workflow()
+        if workflow_path is None:
+            return self._generate_compatibility_path(request)
+
+        workflow = self._load_workflow(workflow_path)
         workflow_with_prompt = self._inject_prompt(workflow, prompt)
         response = self.http_client.post_json(
             f"{self.comfyui_url}/prompt",
@@ -108,7 +114,14 @@ class ComfyUIImageBackend(ImageBackend):
         if not isinstance(prompt_id, str) or not prompt_id.strip():
             image_path = response.get("image_path")
             if isinstance(image_path, str) and image_path.strip():
-                return image_path
+                return ImageGenerationResult(
+                    ok=True,
+                    backend="comfyui",
+                    image_path=image_path,
+                    prompt=prompt,
+                    negative_prompt=request.negative_prompt,
+                    params=request.params.to_dict(),
+                )
             raise ImageGenerationError("ComfyUI response did not contain a prompt id.")
 
         deadline = time.monotonic() + self.timeout
@@ -119,35 +132,50 @@ class ComfyUIImageBackend(ImageBackend):
             )
             image_reference = self._extract_image_reference_from_history(history, prompt_id)
             if image_reference:
-                return self._download_image(image_reference)
+                image_path = self._download_image(image_reference, output_dir)
+                return ImageGenerationResult(
+                    ok=True,
+                    backend="comfyui",
+                    image_path=image_path,
+                    prompt=prompt,
+                    negative_prompt=request.negative_prompt,
+                    params=request.params.to_dict(),
+                )
             if time.monotonic() > deadline:
                 break
             time.sleep(self.poll_interval)
 
         raise ImageGenerationError("ComfyUI image generation timed out.")
 
-    def _generate_compatibility_path(self, prompt: str) -> str:
+    def _generate_compatibility_path(self, request: ImageGenerationRequest) -> ImageGenerationResult:
         response = self.http_client.post_json(
             f"{self.comfyui_url}/prompt",
-            {"prompt": prompt},
+            {"prompt": request.prompt},
             timeout=self.timeout,
         )
 
         image_path = response.get("image_path")
         if isinstance(image_path, str) and image_path.strip():
-            return image_path
+            return ImageGenerationResult(
+                ok=True,
+                backend="comfyui",
+                image_path=image_path,
+                prompt=request.prompt,
+                negative_prompt=request.negative_prompt,
+                params=request.params.to_dict(),
+            )
 
         raise ImageGenerationError("ComfyUI response did not contain an image path.")
 
-    def _load_workflow(self) -> dict[str, Any]:
-        if self.workflow_path is None:
+    def _load_workflow(self, workflow_path: Path) -> dict[str, Any]:
+        if workflow_path is None:
             raise ImageGenerationError("ComfyUI workflow file not found.")
 
-        if not self.workflow_path.exists():
+        if not workflow_path.exists():
             raise ImageGenerationError("ComfyUI workflow file not found.")
 
         try:
-            raw_workflow = self.workflow_path.read_text(encoding="utf-8")
+            raw_workflow = workflow_path.read_text(encoding="utf-8")
             parsed = json.loads(raw_workflow)
         except json.JSONDecodeError as exc:
             raise ImageGenerationError("ComfyUI workflow file is invalid JSON.") from exc
@@ -191,7 +219,7 @@ class ComfyUIImageBackend(ImageBackend):
                 return True
         return False
 
-    def _download_image(self, image_reference: dict[str, str]) -> str:
+    def _download_image(self, image_reference: dict[str, str], output_dir: Path) -> str:
         filename = image_reference["filename"]
         subfolder = image_reference["subfolder"]
         image_type = image_reference["type"]
@@ -205,12 +233,12 @@ class ComfyUIImageBackend(ImageBackend):
         url = f"{self.comfyui_url}/view?{query}"
         image_bytes = self.http_client.get_bytes(url, timeout=self.timeout)
 
-        target_path = self._resolve_output_path(filename, subfolder)
+        target_path = self._resolve_output_path(filename, subfolder, output_dir)
         target_path.parent.mkdir(parents=True, exist_ok=True)
         target_path.write_bytes(image_bytes)
         return str(target_path)
 
-    def _resolve_output_path(self, filename: str, subfolder: str) -> Path:
+    def _resolve_output_path(self, filename: str, subfolder: str, output_dir: Path) -> Path:
         if self._is_dangerous_path_component(filename):
             raise ImageGenerationError("ComfyUI history contained an invalid image reference.")
 
@@ -226,8 +254,8 @@ class ComfyUIImageBackend(ImageBackend):
             raise ImageGenerationError("ComfyUI history contained an invalid image reference.")
 
         relative_target = safe_subfolder / safe_filename
-        target_path = self.output_dir / relative_target
-        resolved_root = self.output_dir.resolve()
+        target_path = output_dir / relative_target
+        resolved_root = output_dir.resolve()
         resolved_target = target_path.resolve()
         if resolved_root not in resolved_target.parents and resolved_target != resolved_root / safe_filename:
             raise ImageGenerationError("ComfyUI history contained an invalid image reference.")
@@ -271,3 +299,12 @@ class ComfyUIImageBackend(ImageBackend):
                     "type": image_type if isinstance(image_type, str) and image_type.strip() else "output",
                 }
         return None
+
+    def healthcheck(self) -> ImageBackendHealthResult:
+        try:
+            self.http_client.get_json(f"{self.comfyui_url}/system_stats", timeout=2.0)
+        except ImageBackendConnectionError as exc:
+            return ImageBackendHealthResult(ok=False, backend="comfyui", message=str(exc))
+        except Exception as exc:  # pragma: no cover - defensive
+            return ImageBackendHealthResult(ok=False, backend="comfyui", message=str(exc))
+        return ImageBackendHealthResult(ok=True, backend="comfyui", message="ComfyUI backend is reachable.")
