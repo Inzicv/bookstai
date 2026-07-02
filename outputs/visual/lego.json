@@ -1,0 +1,266 @@
+{
+  "workflow": "visual",
+  "lyrics": "Hazel, c'est pas l'genre de meuf qui reste en place longtemps\nFuir ses problèmes, ça c'est son domaine depuis longtemps\nQuand son plan cul lui a dit qu'il jouait à GTA\nElle croyait à la Play, pas dans la vraie vie tu vois\n\nPuis un soir elle l'a surpris dans un cul de sac\nEn train d'envoyer un gars faire un feat avec Tupac\nElle panique, faut disparaitre de cette ville et cette rue \nComme un daron parti chercher des clopes (Jamais je ne l'ai revu)\n\nCourage fuyons elle sait pas quoi faire ni ou aller\nElle appelle sa bestie pour l'aider a court d'idée\nElle lui propose un plan (vreuuumennnntttt)\nAdler, célibataire, sa famille le lui reproche tout le temps\n\nLui il veut de l'ordre, la paix et le silence complet\nMais ptet une fake girlfriend ca pourrait l'arranger\nil aurait la paix, et hazel serait assurée\nDe ne pas finir dans faites entrer l'accusé\n\nLe deal parait ok mais pour combien de temps ?\nHazel a zappé un ptit detail qui pourrait être génant\nElle voit un inconnu, lui revoit les années passées\nEt ptet qu'il a d'excellentes raisons de la détester…",
+  "visual_style_id": "lego",
+  "visual_style": {
+    "id": "lego",
+    "name": "Lego",
+    "source_path": "memory/visual_style/Prompts_visuels/lego.md",
+    "instructions": "## personnages\nCreate an authentic LEGO minifigure of [character_name].\n\nGender: [gender]\nAge appearance: [age]\nSkin color: [skin_color]\nEye color: [eye_color]\n\nHair:\n- Hair style: [haircut]\n- Hair color: [hair_color]\n\nClothing:\n- Top: [top_clothes]\n- Bottom: [bottom_clothes]\n- Shoes: [shoes]\n- Outerwear: [jacket_or_coat]\n- Accessories: [accessories]\n\nExpression:\n[facial_expression]\n\nTransform this character into an authentic LEGO minifigure while preserving their appearance and personality.\n\nOfficial LEGO minifigure proportions only. Use realistic molded LEGO hair pieces, detailed printed torso and leg elements, authentic accessories and colors matching the character description.\n\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic plastic materials with subtle reflections and visible texture.\n\nLooks like a real physical LEGO minifigure photographed in a professional studio.\n\nVisible LEGO joints and hands. Authentic LEGO parts only. No smooth CGI surfaces. No cartoon style. No Funko Pop proportions.\n## personnage si reference fournie\nTransform the character from the reference image into an authentic LEGO minifigure while preserving the original clothing style, colors, hairstyle, accessories, expression and personality.\nOfficial LEGO minifigure proportions only. Realistic molded hair pieces, printed torso details, articulated arms and hands, authentic LEGO materials with subtle reflections and visible plastic texture.\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic, macro lens, official LEGO quality, looks like a real physical minifigure photographed in a studio.\nVisible LEGO joints and hands, authentic LEGO pieces only, no smooth CGI surfaces, no cartoon style, no Funko Pop proportions.\n## background\nTransform the reference image into an authentic LEGO diorama while preserving the original architecture, furniture, vegetation, colors and atmosphere.\nEverything must be built entirely from real LEGO bricks using believable construction techniques. Visible studs, plates, tiles, slopes and brick details. No smooth surfaces.\nPhotorealistic LEGO materials with subtle reflections and realistic imperfections. Cinematic lighting, volumetric light, shallow depth of field, ultra detailed macro photography.\nLooks like a professionally photographed LEGO display model or LEGO Ideas set. Authentic LEGO colors, realistic scale, physical brick construction, highly detailed, no illustration, no cartoon style.",
+    "sections": {
+      "personnages": "Create an authentic LEGO minifigure of [character_name].\n\nGender: [gender]\nAge appearance: [age]\nSkin color: [skin_color]\nEye color: [eye_color]\n\nHair:\n- Hair style: [haircut]\n- Hair color: [hair_color]\n\nClothing:\n- Top: [top_clothes]\n- Bottom: [bottom_clothes]\n- Shoes: [shoes]\n- Outerwear: [jacket_or_coat]\n- Accessories: [accessories]\n\nExpression:\n[facial_expression]\n\nTransform this character into an authentic LEGO minifigure while preserving their appearance and personality.\n\nOfficial LEGO minifigure proportions only. Use realistic molded LEGO hair pieces, detailed printed torso and leg elements, authentic accessories and colors matching the character description.\n\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic plastic materials with subtle reflections and visible texture.\n\nLooks like a real physical LEGO minifigure photographed in a professional studio.\n\nVisible LEGO joints and hands. Authentic LEGO parts only. No smooth CGI surfaces. No cartoon style. No Funko Pop proportions.",
+      "personnage si reference fournie": "Transform the character from the reference image into an authentic LEGO minifigure while preserving the original clothing style, colors, hairstyle, accessories, expression and personality.\nOfficial LEGO minifigure proportions only. Realistic molded hair pieces, printed torso details, articulated arms and hands, authentic LEGO materials with subtle reflections and visible plastic texture.\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic, macro lens, official LEGO quality, looks like a real physical minifigure photographed in a studio.\nVisible LEGO joints and hands, authentic LEGO pieces only, no smooth CGI surfaces, no cartoon style, no Funko Pop proportions.",
+      "background": "Transform the reference image into an authentic LEGO diorama while preserving the original architecture, furniture, vegetation, colors and atmosphere.\nEverything must be built entirely from real LEGO bricks using believable construction techniques. Visible studs, plates, tiles, slopes and brick details. No smooth surfaces.\nPhotorealistic LEGO materials with subtle reflections and realistic imperfections. Cinematic lighting, volumetric light, shallow depth of field, ultra detailed macro photography.\nLooks like a professionally photographed LEGO display model or LEGO Ideas set. Authentic LEGO colors, realistic scale, physical brick construction, highly detailed, no illustration, no cartoon style."
+    }
+  },
+  "style_selection": {
+    "visual_style_id": "lego",
+    "visual_style": {
+      "id": "lego",
+      "name": "Lego",
+      "source_path": "memory/visual_style/Prompts_visuels/lego.md",
+      "instructions": "## personnages\nCreate an authentic LEGO minifigure of [character_name].\n\nGender: [gender]\nAge appearance: [age]\nSkin color: [skin_color]\nEye color: [eye_color]\n\nHair:\n- Hair style: [haircut]\n- Hair color: [hair_color]\n\nClothing:\n- Top: [top_clothes]\n- Bottom: [bottom_clothes]\n- Shoes: [shoes]\n- Outerwear: [jacket_or_coat]\n- Accessories: [accessories]\n\nExpression:\n[facial_expression]\n\nTransform this character into an authentic LEGO minifigure while preserving their appearance and personality.\n\nOfficial LEGO minifigure proportions only. Use realistic molded LEGO hair pieces, detailed printed torso and leg elements, authentic accessories and colors matching the character description.\n\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic plastic materials with subtle reflections and visible texture.\n\nLooks like a real physical LEGO minifigure photographed in a professional studio.\n\nVisible LEGO joints and hands. Authentic LEGO parts only. No smooth CGI surfaces. No cartoon style. No Funko Pop proportions.\n## personnage si reference fournie\nTransform the character from the reference image into an authentic LEGO minifigure while preserving the original clothing style, colors, hairstyle, accessories, expression and personality.\nOfficial LEGO minifigure proportions only. Realistic molded hair pieces, printed torso details, articulated arms and hands, authentic LEGO materials with subtle reflections and visible plastic texture.\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic, macro lens, official LEGO quality, looks like a real physical minifigure photographed in a studio.\nVisible LEGO joints and hands, authentic LEGO pieces only, no smooth CGI surfaces, no cartoon style, no Funko Pop proportions.\n## background\nTransform the reference image into an authentic LEGO diorama while preserving the original architecture, furniture, vegetation, colors and atmosphere.\nEverything must be built entirely from real LEGO bricks using believable construction techniques. Visible studs, plates, tiles, slopes and brick details. No smooth surfaces.\nPhotorealistic LEGO materials with subtle reflections and realistic imperfections. Cinematic lighting, volumetric light, shallow depth of field, ultra detailed macro photography.\nLooks like a professionally photographed LEGO display model or LEGO Ideas set. Authentic LEGO colors, realistic scale, physical brick construction, highly detailed, no illustration, no cartoon style.",
+      "sections": {
+        "personnages": "Create an authentic LEGO minifigure of [character_name].\n\nGender: [gender]\nAge appearance: [age]\nSkin color: [skin_color]\nEye color: [eye_color]\n\nHair:\n- Hair style: [haircut]\n- Hair color: [hair_color]\n\nClothing:\n- Top: [top_clothes]\n- Bottom: [bottom_clothes]\n- Shoes: [shoes]\n- Outerwear: [jacket_or_coat]\n- Accessories: [accessories]\n\nExpression:\n[facial_expression]\n\nTransform this character into an authentic LEGO minifigure while preserving their appearance and personality.\n\nOfficial LEGO minifigure proportions only. Use realistic molded LEGO hair pieces, detailed printed torso and leg elements, authentic accessories and colors matching the character description.\n\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic plastic materials with subtle reflections and visible texture.\n\nLooks like a real physical LEGO minifigure photographed in a professional studio.\n\nVisible LEGO joints and hands. Authentic LEGO parts only. No smooth CGI surfaces. No cartoon style. No Funko Pop proportions.",
+        "personnage si reference fournie": "Transform the character from the reference image into an authentic LEGO minifigure while preserving the original clothing style, colors, hairstyle, accessories, expression and personality.\nOfficial LEGO minifigure proportions only. Realistic molded hair pieces, printed torso details, articulated arms and hands, authentic LEGO materials with subtle reflections and visible plastic texture.\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic, macro lens, official LEGO quality, looks like a real physical minifigure photographed in a studio.\nVisible LEGO joints and hands, authentic LEGO pieces only, no smooth CGI surfaces, no cartoon style, no Funko Pop proportions.",
+        "background": "Transform the reference image into an authentic LEGO diorama while preserving the original architecture, furniture, vegetation, colors and atmosphere.\nEverything must be built entirely from real LEGO bricks using believable construction techniques. Visible studs, plates, tiles, slopes and brick details. No smooth surfaces.\nPhotorealistic LEGO materials with subtle reflections and realistic imperfections. Cinematic lighting, volumetric light, shallow depth of field, ultra detailed macro photography.\nLooks like a professionally photographed LEGO display model or LEGO Ideas set. Authentic LEGO colors, realistic scale, physical brick construction, highly detailed, no illustration, no cartoon style."
+      }
+    },
+    "brief": "",
+    "platform": "instagram",
+    "format": "4:5"
+  },
+  "storyboard": {
+    "agent": "art_director",
+    "prompt_path": "agents/art_director.md",
+    "storyboard": [
+      {
+        "shot_number": 1,
+        "lyrics_reference": "Ouverture",
+        "visual_intention": "Installer l'univers du livre en version parodique.",
+        "entry_image_idea": "Plan large sur le décor principal.",
+        "exit_image_idea": "Le décor se transforme pour la scène suivante.",
+        "characters": [
+          "Personnage principal"
+        ],
+        "background": "Décor principal",
+        "movement": "Panoramique lent",
+        "transition": "cut",
+        "difficulty": "simple"
+      }
+    ],
+    "response": "Mock response"
+  },
+  "prompts": {
+    "agent": "prompt_maker",
+    "prompt_path": "agents/prompt_maker.md",
+    "style_context": {
+      "visual_style": {
+        "id": "lego",
+        "name": "Lego",
+        "source_path": "memory/visual_style/Prompts_visuels/lego.md",
+        "instructions": "## personnages\nCreate an authentic LEGO minifigure of [character_name].\n\nGender: [gender]\nAge appearance: [age]\nSkin color: [skin_color]\nEye color: [eye_color]\n\nHair:\n- Hair style: [haircut]\n- Hair color: [hair_color]\n\nClothing:\n- Top: [top_clothes]\n- Bottom: [bottom_clothes]\n- Shoes: [shoes]\n- Outerwear: [jacket_or_coat]\n- Accessories: [accessories]\n\nExpression:\n[facial_expression]\n\nTransform this character into an authentic LEGO minifigure while preserving their appearance and personality.\n\nOfficial LEGO minifigure proportions only. Use realistic molded LEGO hair pieces, detailed printed torso and leg elements, authentic accessories and colors matching the character description.\n\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic plastic materials with subtle reflections and visible texture.\n\nLooks like a real physical LEGO minifigure photographed in a professional studio.\n\nVisible LEGO joints and hands. Authentic LEGO parts only. No smooth CGI surfaces. No cartoon style. No Funko Pop proportions.\n## personnage si reference fournie\nTransform the character from the reference image into an authentic LEGO minifigure while preserving the original clothing style, colors, hairstyle, accessories, expression and personality.\nOfficial LEGO minifigure proportions only. Realistic molded hair pieces, printed torso details, articulated arms and hands, authentic LEGO materials with subtle reflections and visible plastic texture.\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic, macro lens, official LEGO quality, looks like a real physical minifigure photographed in a studio.\nVisible LEGO joints and hands, authentic LEGO pieces only, no smooth CGI surfaces, no cartoon style, no Funko Pop proportions.\n## background\nTransform the reference image into an authentic LEGO diorama while preserving the original architecture, furniture, vegetation, colors and atmosphere.\nEverything must be built entirely from real LEGO bricks using believable construction techniques. Visible studs, plates, tiles, slopes and brick details. No smooth surfaces.\nPhotorealistic LEGO materials with subtle reflections and realistic imperfections. Cinematic lighting, volumetric light, shallow depth of field, ultra detailed macro photography.\nLooks like a professionally photographed LEGO display model or LEGO Ideas set. Authentic LEGO colors, realistic scale, physical brick construction, highly detailed, no illustration, no cartoon style.",
+        "sections": {
+          "personnages": "Create an authentic LEGO minifigure of [character_name].\n\nGender: [gender]\nAge appearance: [age]\nSkin color: [skin_color]\nEye color: [eye_color]\n\nHair:\n- Hair style: [haircut]\n- Hair color: [hair_color]\n\nClothing:\n- Top: [top_clothes]\n- Bottom: [bottom_clothes]\n- Shoes: [shoes]\n- Outerwear: [jacket_or_coat]\n- Accessories: [accessories]\n\nExpression:\n[facial_expression]\n\nTransform this character into an authentic LEGO minifigure while preserving their appearance and personality.\n\nOfficial LEGO minifigure proportions only. Use realistic molded LEGO hair pieces, detailed printed torso and leg elements, authentic accessories and colors matching the character description.\n\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic plastic materials with subtle reflections and visible texture.\n\nLooks like a real physical LEGO minifigure photographed in a professional studio.\n\nVisible LEGO joints and hands. Authentic LEGO parts only. No smooth CGI surfaces. No cartoon style. No Funko Pop proportions.",
+          "personnage si reference fournie": "Transform the character from the reference image into an authentic LEGO minifigure while preserving the original clothing style, colors, hairstyle, accessories, expression and personality.\nOfficial LEGO minifigure proportions only. Realistic molded hair pieces, printed torso details, articulated arms and hands, authentic LEGO materials with subtle reflections and visible plastic texture.\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic, macro lens, official LEGO quality, looks like a real physical minifigure photographed in a studio.\nVisible LEGO joints and hands, authentic LEGO pieces only, no smooth CGI surfaces, no cartoon style, no Funko Pop proportions.",
+          "background": "Transform the reference image into an authentic LEGO diorama while preserving the original architecture, furniture, vegetation, colors and atmosphere.\nEverything must be built entirely from real LEGO bricks using believable construction techniques. Visible studs, plates, tiles, slopes and brick details. No smooth surfaces.\nPhotorealistic LEGO materials with subtle reflections and realistic imperfections. Cinematic lighting, volumetric light, shallow depth of field, ultra detailed macro photography.\nLooks like a professionally photographed LEGO display model or LEGO Ideas set. Authentic LEGO colors, realistic scale, physical brick construction, highly detailed, no illustration, no cartoon style."
+        }
+      },
+      "brief": "",
+      "platform": "instagram",
+      "format": "4:5"
+    },
+    "character_prompts": [
+      {
+        "name": "Personnage principal",
+        "prompt": "Portrait du personnage principal"
+      }
+    ],
+    "background_prompts": [
+      {
+        "name": "Décor principal",
+        "prompt": "Décor principal du livre"
+      }
+    ],
+    "prop_prompts": [],
+    "style_notes": "Prompts compatibles storyboard.",
+    "response": "Mock response"
+  },
+  "brief": "",
+  "platform": "instagram",
+  "format": "4:5",
+  "legacy": {},
+  "hitl": {
+    "workflow_name": "visual",
+    "item_slug": "lego",
+    "steps": [
+      {
+        "name": "style_selection",
+        "status": "pending",
+        "content": {
+          "visual_style_id": "lego",
+          "visual_style": {
+            "id": "lego",
+            "name": "Lego",
+            "source_path": "memory/visual_style/Prompts_visuels/lego.md",
+            "instructions": "## personnages\nCreate an authentic LEGO minifigure of [character_name].\n\nGender: [gender]\nAge appearance: [age]\nSkin color: [skin_color]\nEye color: [eye_color]\n\nHair:\n- Hair style: [haircut]\n- Hair color: [hair_color]\n\nClothing:\n- Top: [top_clothes]\n- Bottom: [bottom_clothes]\n- Shoes: [shoes]\n- Outerwear: [jacket_or_coat]\n- Accessories: [accessories]\n\nExpression:\n[facial_expression]\n\nTransform this character into an authentic LEGO minifigure while preserving their appearance and personality.\n\nOfficial LEGO minifigure proportions only. Use realistic molded LEGO hair pieces, detailed printed torso and leg elements, authentic accessories and colors matching the character description.\n\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic plastic materials with subtle reflections and visible texture.\n\nLooks like a real physical LEGO minifigure photographed in a professional studio.\n\nVisible LEGO joints and hands. Authentic LEGO parts only. No smooth CGI surfaces. No cartoon style. No Funko Pop proportions.\n## personnage si reference fournie\nTransform the character from the reference image into an authentic LEGO minifigure while preserving the original clothing style, colors, hairstyle, accessories, expression and personality.\nOfficial LEGO minifigure proportions only. Realistic molded hair pieces, printed torso details, articulated arms and hands, authentic LEGO materials with subtle reflections and visible plastic texture.\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic, macro lens, official LEGO quality, looks like a real physical minifigure photographed in a studio.\nVisible LEGO joints and hands, authentic LEGO pieces only, no smooth CGI surfaces, no cartoon style, no Funko Pop proportions.\n## background\nTransform the reference image into an authentic LEGO diorama while preserving the original architecture, furniture, vegetation, colors and atmosphere.\nEverything must be built entirely from real LEGO bricks using believable construction techniques. Visible studs, plates, tiles, slopes and brick details. No smooth surfaces.\nPhotorealistic LEGO materials with subtle reflections and realistic imperfections. Cinematic lighting, volumetric light, shallow depth of field, ultra detailed macro photography.\nLooks like a professionally photographed LEGO display model or LEGO Ideas set. Authentic LEGO colors, realistic scale, physical brick construction, highly detailed, no illustration, no cartoon style.",
+            "sections": {
+              "personnages": "Create an authentic LEGO minifigure of [character_name].\n\nGender: [gender]\nAge appearance: [age]\nSkin color: [skin_color]\nEye color: [eye_color]\n\nHair:\n- Hair style: [haircut]\n- Hair color: [hair_color]\n\nClothing:\n- Top: [top_clothes]\n- Bottom: [bottom_clothes]\n- Shoes: [shoes]\n- Outerwear: [jacket_or_coat]\n- Accessories: [accessories]\n\nExpression:\n[facial_expression]\n\nTransform this character into an authentic LEGO minifigure while preserving their appearance and personality.\n\nOfficial LEGO minifigure proportions only. Use realistic molded LEGO hair pieces, detailed printed torso and leg elements, authentic accessories and colors matching the character description.\n\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic plastic materials with subtle reflections and visible texture.\n\nLooks like a real physical LEGO minifigure photographed in a professional studio.\n\nVisible LEGO joints and hands. Authentic LEGO parts only. No smooth CGI surfaces. No cartoon style. No Funko Pop proportions.",
+              "personnage si reference fournie": "Transform the character from the reference image into an authentic LEGO minifigure while preserving the original clothing style, colors, hairstyle, accessories, expression and personality.\nOfficial LEGO minifigure proportions only. Realistic molded hair pieces, printed torso details, articulated arms and hands, authentic LEGO materials with subtle reflections and visible plastic texture.\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic, macro lens, official LEGO quality, looks like a real physical minifigure photographed in a studio.\nVisible LEGO joints and hands, authentic LEGO pieces only, no smooth CGI surfaces, no cartoon style, no Funko Pop proportions.",
+              "background": "Transform the reference image into an authentic LEGO diorama while preserving the original architecture, furniture, vegetation, colors and atmosphere.\nEverything must be built entirely from real LEGO bricks using believable construction techniques. Visible studs, plates, tiles, slopes and brick details. No smooth surfaces.\nPhotorealistic LEGO materials with subtle reflections and realistic imperfections. Cinematic lighting, volumetric light, shallow depth of field, ultra detailed macro photography.\nLooks like a professionally photographed LEGO display model or LEGO Ideas set. Authentic LEGO colors, realistic scale, physical brick construction, highly detailed, no illustration, no cartoon style."
+            }
+          },
+          "brief": "",
+          "platform": "instagram",
+          "format": "4:5"
+        },
+        "edited_content": null,
+        "validated_content": {
+          "visual_style_id": "lego",
+          "visual_style": {
+            "id": "lego",
+            "name": "Lego",
+            "source_path": "memory/visual_style/Prompts_visuels/lego.md",
+            "instructions": "## personnages\nCreate an authentic LEGO minifigure of [character_name].\n\nGender: [gender]\nAge appearance: [age]\nSkin color: [skin_color]\nEye color: [eye_color]\n\nHair:\n- Hair style: [haircut]\n- Hair color: [hair_color]\n\nClothing:\n- Top: [top_clothes]\n- Bottom: [bottom_clothes]\n- Shoes: [shoes]\n- Outerwear: [jacket_or_coat]\n- Accessories: [accessories]\n\nExpression:\n[facial_expression]\n\nTransform this character into an authentic LEGO minifigure while preserving their appearance and personality.\n\nOfficial LEGO minifigure proportions only. Use realistic molded LEGO hair pieces, detailed printed torso and leg elements, authentic accessories and colors matching the character description.\n\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic plastic materials with subtle reflections and visible texture.\n\nLooks like a real physical LEGO minifigure photographed in a professional studio.\n\nVisible LEGO joints and hands. Authentic LEGO parts only. No smooth CGI surfaces. No cartoon style. No Funko Pop proportions.\n## personnage si reference fournie\nTransform the character from the reference image into an authentic LEGO minifigure while preserving the original clothing style, colors, hairstyle, accessories, expression and personality.\nOfficial LEGO minifigure proportions only. Realistic molded hair pieces, printed torso details, articulated arms and hands, authentic LEGO materials with subtle reflections and visible plastic texture.\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic, macro lens, official LEGO quality, looks like a real physical minifigure photographed in a studio.\nVisible LEGO joints and hands, authentic LEGO pieces only, no smooth CGI surfaces, no cartoon style, no Funko Pop proportions.\n## background\nTransform the reference image into an authentic LEGO diorama while preserving the original architecture, furniture, vegetation, colors and atmosphere.\nEverything must be built entirely from real LEGO bricks using believable construction techniques. Visible studs, plates, tiles, slopes and brick details. No smooth surfaces.\nPhotorealistic LEGO materials with subtle reflections and realistic imperfections. Cinematic lighting, volumetric light, shallow depth of field, ultra detailed macro photography.\nLooks like a professionally photographed LEGO display model or LEGO Ideas set. Authentic LEGO colors, realistic scale, physical brick construction, highly detailed, no illustration, no cartoon style.",
+            "sections": {
+              "personnages": "Create an authentic LEGO minifigure of [character_name].\n\nGender: [gender]\nAge appearance: [age]\nSkin color: [skin_color]\nEye color: [eye_color]\n\nHair:\n- Hair style: [haircut]\n- Hair color: [hair_color]\n\nClothing:\n- Top: [top_clothes]\n- Bottom: [bottom_clothes]\n- Shoes: [shoes]\n- Outerwear: [jacket_or_coat]\n- Accessories: [accessories]\n\nExpression:\n[facial_expression]\n\nTransform this character into an authentic LEGO minifigure while preserving their appearance and personality.\n\nOfficial LEGO minifigure proportions only. Use realistic molded LEGO hair pieces, detailed printed torso and leg elements, authentic accessories and colors matching the character description.\n\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic plastic materials with subtle reflections and visible texture.\n\nLooks like a real physical LEGO minifigure photographed in a professional studio.\n\nVisible LEGO joints and hands. Authentic LEGO parts only. No smooth CGI surfaces. No cartoon style. No Funko Pop proportions.",
+              "personnage si reference fournie": "Transform the character from the reference image into an authentic LEGO minifigure while preserving the original clothing style, colors, hairstyle, accessories, expression and personality.\nOfficial LEGO minifigure proportions only. Realistic molded hair pieces, printed torso details, articulated arms and hands, authentic LEGO materials with subtle reflections and visible plastic texture.\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic, macro lens, official LEGO quality, looks like a real physical minifigure photographed in a studio.\nVisible LEGO joints and hands, authentic LEGO pieces only, no smooth CGI surfaces, no cartoon style, no Funko Pop proportions.",
+              "background": "Transform the reference image into an authentic LEGO diorama while preserving the original architecture, furniture, vegetation, colors and atmosphere.\nEverything must be built entirely from real LEGO bricks using believable construction techniques. Visible studs, plates, tiles, slopes and brick details. No smooth surfaces.\nPhotorealistic LEGO materials with subtle reflections and realistic imperfections. Cinematic lighting, volumetric light, shallow depth of field, ultra detailed macro photography.\nLooks like a professionally photographed LEGO display model or LEGO Ideas set. Authentic LEGO colors, realistic scale, physical brick construction, highly detailed, no illustration, no cartoon style."
+            }
+          },
+          "brief": "",
+          "platform": "instagram",
+          "format": "4:5"
+        },
+        "comment": null,
+        "metadata": {}
+      },
+      {
+        "name": "storyboard",
+        "status": "pending",
+        "content": {
+          "agent": "art_director",
+          "prompt_path": "agents/art_director.md",
+          "storyboard": [
+            {
+              "shot_number": 1,
+              "lyrics_reference": "Ouverture",
+              "visual_intention": "Installer l'univers du livre en version parodique.",
+              "entry_image_idea": "Plan large sur le décor principal.",
+              "exit_image_idea": "Le décor se transforme pour la scène suivante.",
+              "characters": [
+                "Personnage principal"
+              ],
+              "background": "Décor principal",
+              "movement": "Panoramique lent",
+              "transition": "cut",
+              "difficulty": "simple"
+            }
+          ],
+          "response": "Mock response"
+        },
+        "edited_content": null,
+        "validated_content": {
+          "agent": "art_director",
+          "prompt_path": "agents/art_director.md",
+          "storyboard": [
+            {
+              "shot_number": 1,
+              "lyrics_reference": "Ouverture",
+              "visual_intention": "Installer l'univers du livre en version parodique.",
+              "entry_image_idea": "Plan large sur le décor principal.",
+              "exit_image_idea": "Le décor se transforme pour la scène suivante.",
+              "characters": [
+                "Personnage principal"
+              ],
+              "background": "Décor principal",
+              "movement": "Panoramique lent",
+              "transition": "cut",
+              "difficulty": "simple"
+            }
+          ],
+          "response": "Mock response"
+        },
+        "comment": null,
+        "metadata": {}
+      },
+      {
+        "name": "prompts",
+        "status": "pending",
+        "content": {
+          "agent": "prompt_maker",
+          "prompt_path": "agents/prompt_maker.md",
+          "style_context": {
+            "visual_style": {
+              "id": "lego",
+              "name": "Lego",
+              "source_path": "memory/visual_style/Prompts_visuels/lego.md",
+              "instructions": "## personnages\nCreate an authentic LEGO minifigure of [character_name].\n\nGender: [gender]\nAge appearance: [age]\nSkin color: [skin_color]\nEye color: [eye_color]\n\nHair:\n- Hair style: [haircut]\n- Hair color: [hair_color]\n\nClothing:\n- Top: [top_clothes]\n- Bottom: [bottom_clothes]\n- Shoes: [shoes]\n- Outerwear: [jacket_or_coat]\n- Accessories: [accessories]\n\nExpression:\n[facial_expression]\n\nTransform this character into an authentic LEGO minifigure while preserving their appearance and personality.\n\nOfficial LEGO minifigure proportions only. Use realistic molded LEGO hair pieces, detailed printed torso and leg elements, authentic accessories and colors matching the character description.\n\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic plastic materials with subtle reflections and visible texture.\n\nLooks like a real physical LEGO minifigure photographed in a professional studio.\n\nVisible LEGO joints and hands. Authentic LEGO parts only. No smooth CGI surfaces. No cartoon style. No Funko Pop proportions.\n## personnage si reference fournie\nTransform the character from the reference image into an authentic LEGO minifigure while preserving the original clothing style, colors, hairstyle, accessories, expression and personality.\nOfficial LEGO minifigure proportions only. Realistic molded hair pieces, printed torso details, articulated arms and hands, authentic LEGO materials with subtle reflections and visible plastic texture.\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic, macro lens, official LEGO quality, looks like a real physical minifigure photographed in a studio.\nVisible LEGO joints and hands, authentic LEGO pieces only, no smooth CGI surfaces, no cartoon style, no Funko Pop proportions.\n## background\nTransform the reference image into an authentic LEGO diorama while preserving the original architecture, furniture, vegetation, colors and atmosphere.\nEverything must be built entirely from real LEGO bricks using believable construction techniques. Visible studs, plates, tiles, slopes and brick details. No smooth surfaces.\nPhotorealistic LEGO materials with subtle reflections and realistic imperfections. Cinematic lighting, volumetric light, shallow depth of field, ultra detailed macro photography.\nLooks like a professionally photographed LEGO display model or LEGO Ideas set. Authentic LEGO colors, realistic scale, physical brick construction, highly detailed, no illustration, no cartoon style.",
+              "sections": {
+                "personnages": "Create an authentic LEGO minifigure of [character_name].\n\nGender: [gender]\nAge appearance: [age]\nSkin color: [skin_color]\nEye color: [eye_color]\n\nHair:\n- Hair style: [haircut]\n- Hair color: [hair_color]\n\nClothing:\n- Top: [top_clothes]\n- Bottom: [bottom_clothes]\n- Shoes: [shoes]\n- Outerwear: [jacket_or_coat]\n- Accessories: [accessories]\n\nExpression:\n[facial_expression]\n\nTransform this character into an authentic LEGO minifigure while preserving their appearance and personality.\n\nOfficial LEGO minifigure proportions only. Use realistic molded LEGO hair pieces, detailed printed torso and leg elements, authentic accessories and colors matching the character description.\n\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic plastic materials with subtle reflections and visible texture.\n\nLooks like a real physical LEGO minifigure photographed in a professional studio.\n\nVisible LEGO joints and hands. Authentic LEGO parts only. No smooth CGI surfaces. No cartoon style. No Funko Pop proportions.",
+                "personnage si reference fournie": "Transform the character from the reference image into an authentic LEGO minifigure while preserving the original clothing style, colors, hairstyle, accessories, expression and personality.\nOfficial LEGO minifigure proportions only. Realistic molded hair pieces, printed torso details, articulated arms and hands, authentic LEGO materials with subtle reflections and visible plastic texture.\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic, macro lens, official LEGO quality, looks like a real physical minifigure photographed in a studio.\nVisible LEGO joints and hands, authentic LEGO pieces only, no smooth CGI surfaces, no cartoon style, no Funko Pop proportions.",
+                "background": "Transform the reference image into an authentic LEGO diorama while preserving the original architecture, furniture, vegetation, colors and atmosphere.\nEverything must be built entirely from real LEGO bricks using believable construction techniques. Visible studs, plates, tiles, slopes and brick details. No smooth surfaces.\nPhotorealistic LEGO materials with subtle reflections and realistic imperfections. Cinematic lighting, volumetric light, shallow depth of field, ultra detailed macro photography.\nLooks like a professionally photographed LEGO display model or LEGO Ideas set. Authentic LEGO colors, realistic scale, physical brick construction, highly detailed, no illustration, no cartoon style."
+              }
+            },
+            "brief": "",
+            "platform": "instagram",
+            "format": "4:5"
+          },
+          "character_prompts": [
+            {
+              "name": "Personnage principal",
+              "prompt": "Portrait du personnage principal"
+            }
+          ],
+          "background_prompts": [
+            {
+              "name": "Décor principal",
+              "prompt": "Décor principal du livre"
+            }
+          ],
+          "prop_prompts": [],
+          "style_notes": "Prompts compatibles storyboard.",
+          "response": "Mock response"
+        },
+        "edited_content": null,
+        "validated_content": {
+          "agent": "prompt_maker",
+          "prompt_path": "agents/prompt_maker.md",
+          "style_context": {
+            "visual_style": {
+              "id": "lego",
+              "name": "Lego",
+              "source_path": "memory/visual_style/Prompts_visuels/lego.md",
+              "instructions": "## personnages\nCreate an authentic LEGO minifigure of [character_name].\n\nGender: [gender]\nAge appearance: [age]\nSkin color: [skin_color]\nEye color: [eye_color]\n\nHair:\n- Hair style: [haircut]\n- Hair color: [hair_color]\n\nClothing:\n- Top: [top_clothes]\n- Bottom: [bottom_clothes]\n- Shoes: [shoes]\n- Outerwear: [jacket_or_coat]\n- Accessories: [accessories]\n\nExpression:\n[facial_expression]\n\nTransform this character into an authentic LEGO minifigure while preserving their appearance and personality.\n\nOfficial LEGO minifigure proportions only. Use realistic molded LEGO hair pieces, detailed printed torso and leg elements, authentic accessories and colors matching the character description.\n\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic plastic materials with subtle reflections and visible texture.\n\nLooks like a real physical LEGO minifigure photographed in a professional studio.\n\nVisible LEGO joints and hands. Authentic LEGO parts only. No smooth CGI surfaces. No cartoon style. No Funko Pop proportions.\n## personnage si reference fournie\nTransform the character from the reference image into an authentic LEGO minifigure while preserving the original clothing style, colors, hairstyle, accessories, expression and personality.\nOfficial LEGO minifigure proportions only. Realistic molded hair pieces, printed torso details, articulated arms and hands, authentic LEGO materials with subtle reflections and visible plastic texture.\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic, macro lens, official LEGO quality, looks like a real physical minifigure photographed in a studio.\nVisible LEGO joints and hands, authentic LEGO pieces only, no smooth CGI surfaces, no cartoon style, no Funko Pop proportions.\n## background\nTransform the reference image into an authentic LEGO diorama while preserving the original architecture, furniture, vegetation, colors and atmosphere.\nEverything must be built entirely from real LEGO bricks using believable construction techniques. Visible studs, plates, tiles, slopes and brick details. No smooth surfaces.\nPhotorealistic LEGO materials with subtle reflections and realistic imperfections. Cinematic lighting, volumetric light, shallow depth of field, ultra detailed macro photography.\nLooks like a professionally photographed LEGO display model or LEGO Ideas set. Authentic LEGO colors, realistic scale, physical brick construction, highly detailed, no illustration, no cartoon style.",
+              "sections": {
+                "personnages": "Create an authentic LEGO minifigure of [character_name].\n\nGender: [gender]\nAge appearance: [age]\nSkin color: [skin_color]\nEye color: [eye_color]\n\nHair:\n- Hair style: [haircut]\n- Hair color: [hair_color]\n\nClothing:\n- Top: [top_clothes]\n- Bottom: [bottom_clothes]\n- Shoes: [shoes]\n- Outerwear: [jacket_or_coat]\n- Accessories: [accessories]\n\nExpression:\n[facial_expression]\n\nTransform this character into an authentic LEGO minifigure while preserving their appearance and personality.\n\nOfficial LEGO minifigure proportions only. Use realistic molded LEGO hair pieces, detailed printed torso and leg elements, authentic accessories and colors matching the character description.\n\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic plastic materials with subtle reflections and visible texture.\n\nLooks like a real physical LEGO minifigure photographed in a professional studio.\n\nVisible LEGO joints and hands. Authentic LEGO parts only. No smooth CGI surfaces. No cartoon style. No Funko Pop proportions.",
+                "personnage si reference fournie": "Transform the character from the reference image into an authentic LEGO minifigure while preserving the original clothing style, colors, hairstyle, accessories, expression and personality.\nOfficial LEGO minifigure proportions only. Realistic molded hair pieces, printed torso details, articulated arms and hands, authentic LEGO materials with subtle reflections and visible plastic texture.\nHighly detailed product photography, studio lighting, shallow depth of field, ultra realistic, macro lens, official LEGO quality, looks like a real physical minifigure photographed in a studio.\nVisible LEGO joints and hands, authentic LEGO pieces only, no smooth CGI surfaces, no cartoon style, no Funko Pop proportions.",
+                "background": "Transform the reference image into an authentic LEGO diorama while preserving the original architecture, furniture, vegetation, colors and atmosphere.\nEverything must be built entirely from real LEGO bricks using believable construction techniques. Visible studs, plates, tiles, slopes and brick details. No smooth surfaces.\nPhotorealistic LEGO materials with subtle reflections and realistic imperfections. Cinematic lighting, volumetric light, shallow depth of field, ultra detailed macro photography.\nLooks like a professionally photographed LEGO display model or LEGO Ideas set. Authentic LEGO colors, realistic scale, physical brick construction, highly detailed, no illustration, no cartoon style."
+              }
+            },
+            "brief": "",
+            "platform": "instagram",
+            "format": "4:5"
+          },
+          "character_prompts": [
+            {
+              "name": "Personnage principal",
+              "prompt": "Portrait du personnage principal"
+            }
+          ],
+          "background_prompts": [
+            {
+              "name": "Décor principal",
+              "prompt": "Décor principal du livre"
+            }
+          ],
+          "prop_prompts": [],
+          "style_notes": "Prompts compatibles storyboard.",
+          "response": "Mock response"
+        },
+        "comment": null,
+        "metadata": {}
+      }
+    ]
+  }
+}
