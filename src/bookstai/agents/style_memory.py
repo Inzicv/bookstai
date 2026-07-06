@@ -26,6 +26,10 @@ class StyleMemoryAgent:
         if humor_path.exists():
             context["humor"] = self.reader.read_sections(humor_path)
 
+        pitchs_path = self.memory_root / "pitchs" / "output" / "pitchs.md"
+        if pitchs_path.exists():
+            context["review_pitchs"] = self.reader.read_sections(pitchs_path)
+
         songs_root = self.memory_root / "songs"
         if songs_root.exists():
             songs: dict[str, Any] = {}

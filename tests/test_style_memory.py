@@ -31,6 +31,26 @@ def test_loads_humor_memory(tmp_path: Path) -> None:
     assert context["humor"] == {"Jokes": "Playful and sharp"}
 
 
+def test_loads_review_pitchs_memory(tmp_path: Path) -> None:
+    memory_root = tmp_path / "memory"
+    pitchs_file = memory_root / "pitchs" / "output" / "pitchs.md"
+    pitchs_file.parent.mkdir(parents=True)
+    pitchs_file.write_text(
+        "# CASTEL BOY de Eny heli\nLe pitch d'ouverture\n\n# AUTRE PITCH\nDu style",
+        encoding="utf-8",
+    )
+
+    agent = StyleMemoryAgent(memory_root=memory_root)
+
+    context = agent.build()
+
+    assert "review_pitchs" in context
+    assert context["review_pitchs"] == {
+        "CASTEL BOY de Eny heli": "Le pitch d'ouverture",
+        "AUTRE PITCH": "Du style",
+    }
+
+
 def test_loads_multiple_songs(tmp_path: Path) -> None:
     memory_root = tmp_path / "memory"
     songs_root = memory_root / "songs"
@@ -85,6 +105,20 @@ def test_ignores_missing_humor_directory(tmp_path: Path) -> None:
 
     assert context["reviews"] == {"Reviews": "Only reviews"}
     assert "humor" not in context
+
+
+def test_ignores_missing_review_pitchs_file(tmp_path: Path) -> None:
+    memory_root = tmp_path / "memory"
+    reviews_file = memory_root / "reviews" / "reviews.md"
+    reviews_file.parent.mkdir(parents=True)
+    reviews_file.write_text("# Reviews\nOnly reviews", encoding="utf-8")
+
+    agent = StyleMemoryAgent(memory_root=memory_root)
+
+    context = agent.build()
+
+    assert context["reviews"] == {"Reviews": "Only reviews"}
+    assert "review_pitchs" not in context
 
 
 def test_returns_empty_dict_when_no_memory_exists(tmp_path: Path) -> None:

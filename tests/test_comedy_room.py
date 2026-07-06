@@ -80,3 +80,26 @@ def test_agent_works_with_dict_contexts(tmp_path: Path) -> None:
         "prompt_path": "agents/comedy_room.md",
         "response": "OK",
     }
+
+
+def test_prompt_mentions_review_pitchs_guidance(tmp_path: Path) -> None:
+    prompt_root = tmp_path / "prompts"
+    prompt_file = prompt_root / "agents" / "comedy_room.md"
+    prompt_file.parent.mkdir(parents=True)
+    prompt_file.write_text(
+        (
+            "Si `style_context` contient `review_pitchs`, utilise ces pitchs comme exemples de style.\n"
+            "Ne copie jamais un ancien pitch.\n"
+            "Pour le contenu du livre en cours, `book_context` reste la seule source de verite."
+        ),
+        encoding="utf-8",
+    )
+
+    agent = ComedyRoomAgent(
+        prompt_root=prompt_root,
+        llm_client=MockLLMClient(response="OK"),
+    )
+
+    result = agent.generate(book_context={"book": "ctx"}, style_context={"review_pitchs": {"A": "B"}})
+
+    assert result["response"] == "OK"

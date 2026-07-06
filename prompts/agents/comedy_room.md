@@ -9,6 +9,19 @@ Variables:
 Utilise `book_context` comme source de verite.
 Utilise `style_context` pour le ton, les references et les choses a eviter.
 Si `style_context` est vide ou mince, reste coherent avec la voix BookstAI sans inventer une autre personnalite.
+Si `style_context` contient `review_pitchs`, utilise ces pitchs comme exemples de style.
+
+Ils servent uniquement a comprendre :
+- le rythme ;
+- le ton ;
+- le type de comparaisons ;
+- les references pop culture ;
+- le niveau de sarcasme ;
+- la structure orale des pitchs BookTok.
+
+Ne copie jamais un ancien pitch.
+Ne reprends jamais une intrigue, un personnage ou un detail factuel provenant d’un ancien pitch.
+Pour le contenu du livre en cours, `book_context` reste la seule source de verite.
 
 Pour les contenus spoiler free, privilegie `Présentation sans spoil` comme source principale.
 Tu peux utiliser `Personnages` et `Tropes` pour colorer les pitchs.
