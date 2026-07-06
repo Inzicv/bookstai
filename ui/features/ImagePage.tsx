@@ -129,7 +129,14 @@ export default function ImagePage() {
 
   useEffect(() => {
     listBooks().then((response) => response.ok && setBooks(response.books))
-    listImageStyles().then((response) => response.ok && setStyles(response.styles))
+    listImageStyles().then((response) => {
+      if (!response.ok) return
+      setStyles(response.styles)
+      setForm((current) => ({
+        ...current,
+        visual_style_id: current.visual_style_id || response.styles[0]?.id || '',
+      }))
+    })
   }, [])
 
   const currentStyle = useMemo(() => styles.find((style) => style.id === form.visual_style_id) ?? null, [form.visual_style_id, styles])
@@ -279,6 +286,26 @@ export default function ImagePage() {
               <option value="gpt-5.4-nano">gpt-5.4-nano</option>
             </select>
           </FormField>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <FormField label="Style visuel">
+            <select
+              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100"
+              value={form.visual_style_id}
+              onChange={(e) => setForm({ ...form, visual_style_id: e.target.value })}
+            >
+              <option value="">Choisir un style</option>
+              {styles.map((style) => (
+                <option key={style.id} value={style.id}>
+                  {style.name} ({style.id})
+                </option>
+              ))}
+            </select>
+          </FormField>
+          <div className="rounded-2xl border border-slate-800 bg-slate-950/60 px-4 py-3 text-sm text-slate-300">
+            Le style visuel est lu depuis <code className="rounded bg-slate-800 px-1.5 py-0.5 text-slate-100">memory/visual_style/Prompts_visuels/</code>.
+          </div>
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
