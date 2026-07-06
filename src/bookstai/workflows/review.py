@@ -5,16 +5,12 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from ..agents.comedy_room import ComedyRoomAgent
-from ..agents.context_builder import ContextBuilder
-from ..hitl import HITLSession
-from ..agents.review_writer import ReviewWriterAgent
-from ..agents.style_memory import StyleMemoryAgent
 from ..llm.client import LLMClient
+from .pitch import PitchWorkflow
 
 
 class ReviewWorkflow:
-    """Orchestrate the review generation workflow."""
+    """Compatibility wrapper around the pitch workflow."""
 
     def __init__(
         self,
@@ -22,80 +18,32 @@ class ReviewWorkflow:
         prompt_root: Path,
         llm_client: LLMClient,
     ) -> None:
-        self.context_builder = ContextBuilder(memory_root=memory_root)
-        self.style_memory_agent = StyleMemoryAgent(memory_root=memory_root)
-        self.comedy_room_agent = ComedyRoomAgent(
-            prompt_root=prompt_root,
-            llm_client=llm_client,
-        )
-        self.review_writer_agent = ReviewWriterAgent(
+        self.pitch_workflow = PitchWorkflow(
+            memory_root=memory_root,
             prompt_root=prompt_root,
             llm_client=llm_client,
         )
 
     def run(
         self,
-        book_slug: str,
-        user_opinion: str,
+        book_slug: str | None = None,
+        user_opinion: str | None = None,
         **legacy_kwargs: Any,
     ) -> dict[str, Any]:
-        return self._run_steps(
-            book_slug=book_slug,
-            user_opinion=user_opinion,
-            legacy_kwargs=legacy_kwargs,
-        )
+        item_slug = legacy_kwargs.pop("item_slug", None) or book_slug
+        summary = legacy_kwargs.pop("summary", None) or user_opinion or ""
+        return self.pitch_workflow.run(item_slug=item_slug or "", summary=summary, **legacy_kwargs)
 
     def run_with_hitl(
         self,
-        book_slug: str,
-        user_opinion: str,
+        book_slug: str | None = None,
+        user_opinion: str | None = None,
         **legacy_kwargs: Any,
     ) -> dict[str, Any]:
-        result = self._run_steps(
-            book_slug=book_slug,
-            user_opinion=user_opinion,
-            legacy_kwargs=legacy_kwargs,
+        item_slug = legacy_kwargs.pop("item_slug", None) or book_slug
+        summary = legacy_kwargs.pop("summary", None) or user_opinion or ""
+        return self.pitch_workflow.run_with_hitl(
+            item_slug=item_slug or "",
+            summary=summary,
+            **legacy_kwargs,
         )
-        session = HITLSession(
-            workflow_name="review",
-            item_slug=book_slug,
-        )
-        session.add_step(name="pitch_options", content=result["pitch_options"])
-        session.add_step(name="review", content=result["review"])
-        result["hitl"] = session.to_dict()
-        return result
-
-    def _run_steps(
-        self,
-        book_slug: str,
-        user_opinion: str,
-        legacy_kwargs: dict[str, Any] | None = None,
-    ) -> dict[str, Any]:
-        context = self.context_builder.build(
-            book_slug=book_slug,
-            workflow_type="review",
-            spoiler_level="none",
-        )
-        style = self.style_memory_agent.build()
-        pitch_options = self.comedy_room_agent.generate(
-            book_context=context,
-            style_context=style,
-        )
-        review = self.review_writer_agent.generate(
-            book_context=context,
-            style_context=style,
-            comedy_bank=pitch_options,
-            user_opinion=user_opinion,
-        )
-
-        return {
-            "workflow": "review",
-            "book_slug": book_slug,
-            "context": context,
-            "style": style,
-            "comedy": pitch_options,
-            "review": review,
-            "pitch_options": pitch_options,
-            "review_final": review["response"],
-            "legacy": legacy_kwargs or {},
-        }

@@ -21,6 +21,7 @@ from .learning import (
 from .logging import configure_logging
 from .llm import create_llm_client
 from .workflows.review import ReviewWorkflow
+from .workflows.pitch import PitchWorkflow
 from .workflows.song import SongWorkflow
 
 
@@ -29,9 +30,11 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     review_parser = subparsers.add_parser("review")
-    review_parser.add_argument("--book", required=True)
-    review_parser.add_argument("--opinion", required=True)
-    review_parser.add_argument("--platform", required=True)
+    review_parser.add_argument("--item")
+    review_parser.add_argument("--book")
+    review_parser.add_argument("--summary")
+    review_parser.add_argument("--opinion")
+    review_parser.add_argument("--platform")
     review_parser.add_argument("--memory-root")
     review_parser.add_argument("--prompt-root")
     review_parser.add_argument("--provider", default="mock")
@@ -174,24 +177,44 @@ def main(argv: Sequence[str] | None = None) -> int:
             temperature=args.temperature,
         )
 
-        if args.command == "review":
-            workflow = ReviewWorkflow(
-                memory_root=memory_root,
-                prompt_root=prompt_root,
-                llm_client=llm_client,
+        if args.command in {"review", "pitch"}:
+            workflow = (
+                ReviewWorkflow(
+                    memory_root=memory_root,
+                    prompt_root=prompt_root,
+                    llm_client=llm_client,
+                )
+                if args.command == "review"
+                else PitchWorkflow(
+                    memory_root=memory_root,
+                    prompt_root=prompt_root,
+                    llm_client=llm_client,
+                )
             )
+            item_slug = getattr(args, "item", None) or getattr(args, "book", None)
+            summary = getattr(args, "summary", None) or getattr(args, "opinion", None) or ""
             if args.hitl:
-                result = workflow.run_with_hitl(
-                    book_slug=args.book,
-                    user_opinion=args.opinion,
-                    platform=args.platform,
-                )
+                if args.command == "review":
+                    result = workflow.run_with_hitl(
+                        book_slug=item_slug,
+                        user_opinion=summary,
+                        item_slug=item_slug,
+                        summary=summary,
+                        platform=getattr(args, "platform", None),
+                    )
+                else:
+                    result = workflow.run_with_hitl(item_slug=item_slug, summary=summary)
             else:
-                result = workflow.run(
-                    book_slug=args.book,
-                    user_opinion=args.opinion,
-                    platform=args.platform,
-                )
+                if args.command == "review":
+                    result = workflow.run(
+                        book_slug=item_slug,
+                        user_opinion=summary,
+                        item_slug=item_slug,
+                        summary=summary,
+                        platform=getattr(args, "platform", None),
+                    )
+                else:
+                    result = workflow.run(item_slug=item_slug, summary=summary)
         else:
             workflow = SongWorkflow(
                 memory_root=memory_root,
@@ -218,7 +241,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.export:
             exported_paths = ExportService(output_root=Path(args.output_root)).export(
                 workflow_name=args.command,
-                item_slug=args.book,
+                item_slug=getattr(args, "item", None) or getattr(args, "book", None),
                 data=result,
                 formats=args.export,
             )
@@ -228,8 +251,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                 HistoryEntry(
                     command=args.command,
                     status="success",
-                    workflow_name=args.command,
-                    item_slug=args.book,
+                    workflow_name=args.command if args.command != "review" else "pitch",
+                    item_slug=getattr(args, "item", None) or getattr(args, "book", None),
                     hitl_enabled=args.hitl,
                     provider=args.provider,
                     artifacts={
@@ -246,8 +269,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                 HistoryEntry(
                     command=args.command,
                     status="failed",
-                    workflow_name=getattr(args, "command", None) if args.command in {"review", "song"} else None,
-                    item_slug=getattr(args, "book", None),
+                    workflow_name=getattr(args, "command", None) if args.command in {"review", "song", "pitch"} else None,
+                    item_slug=getattr(args, "item", None) or getattr(args, "book", None),
                     hitl_enabled=getattr(args, "hitl", False),
                     provider=getattr(args, "provider", None),
                     error=str(exc),
@@ -327,3 +350,16 @@ def _run_history_command(args: argparse.Namespace) -> int:
 
 if __name__ == "__main__":  # pragma: no cover
     raise SystemExit(main())
+    pitch_parser = subparsers.add_parser("pitch")
+    pitch_parser.add_argument("--item", required=True)
+    pitch_parser.add_argument("--summary", required=True)
+    pitch_parser.add_argument("--memory-root")
+    pitch_parser.add_argument("--prompt-root")
+    pitch_parser.add_argument("--provider", default="mock")
+    pitch_parser.add_argument("--model", default="gpt-4o-mini")
+    pitch_parser.add_argument("--temperature", type=float, default=0.7)
+    pitch_parser.add_argument("--hitl", action="store_true")
+    pitch_parser.add_argument("--verbose", action="store_true")
+    pitch_parser.add_argument("--no-history", action="store_true")
+    pitch_parser.add_argument("--export", nargs="+", choices=["markdown", "json"])
+    pitch_parser.add_argument("--output-root", default="outputs")

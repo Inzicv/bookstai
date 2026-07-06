@@ -43,6 +43,7 @@ from .learning import LearningCandidate, LearningExtraction, LearningExtractor
 from .history import HistoryEntry, HistoryStore
 from .logging import configure_logging
 from .workflows.review import ReviewWorkflow
+from .workflows.pitch import PitchWorkflow
 from .workflows.image import ImageWorkflow
 from .workflows.song import SongWorkflow
 from .precheck import REQUIRED_AGENT_PROMPTS, check_required_agent_prompts
@@ -78,6 +79,7 @@ __all__ = [
     "ImageBackend",
     "MockImageBackend",
     "ReviewWorkflow",
+    "PitchWorkflow",
     "ImageWorkflow",
     "SongWorkflow",
     "REQUIRED_AGENT_PROMPTS",

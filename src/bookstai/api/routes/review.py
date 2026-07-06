@@ -9,7 +9,7 @@ from fastapi import APIRouter
 
 from ...core.errors import MissingAPIKeyError, UnsupportedProviderError
 from ...llm import create_llm_client
-from ...workflows.review import ReviewWorkflow
+from ...workflows.pitch import PitchWorkflow
 from ..schemas.review import ReviewRunRequest
 from .shared import api_error, build_memory_root, build_prompt_root, save_hitl_session, serialize_path
 
@@ -27,19 +27,25 @@ def run_review(payload: ReviewRunRequest) -> dict[str, Any]:
                 "MISSING_API_KEY",
                 "OPENAI_API_KEY is required to use the openai provider.",
             )
-        workflow = ReviewWorkflow(
+        workflow = PitchWorkflow(
             memory_root=build_memory_root(),
             prompt_root=build_prompt_root(),
             llm_client=create_llm_client(provider=payload.provider, model=payload.model or "gpt-4o-mini"),
         )
-        result = workflow.run_with_hitl(payload.book_slug, payload.user_opinion) if payload.hitl_enabled else workflow.run(payload.book_slug, payload.user_opinion)
+        item_slug = payload.item_slug or payload.book_slug
+        summary = payload.summary or payload.user_opinion
+        if not item_slug:
+            return api_error("INVALID_REQUEST", "item_slug or book_slug is required.")
+        if not summary:
+            return api_error("INVALID_REQUEST", "summary or user_opinion is required.")
+        result = workflow.run_with_hitl(item_slug, summary) if payload.hitl_enabled else workflow.run(item_slug, summary)
         hitl_path = None
         if payload.hitl_enabled and "hitl" in result:
-            hitl_path = serialize_path(save_hitl_session(result["hitl"], "review", payload.book_slug))
+            hitl_path = serialize_path(save_hitl_session(result["hitl"], "pitch", item_slug))
         return {
             "ok": True,
-            "type": "review",
-            "book_slug": payload.book_slug,
+            "type": "pitch",
+            "item_slug": item_slug,
             "provider": payload.provider,
             "hitl_enabled": payload.hitl_enabled,
             "result": result,

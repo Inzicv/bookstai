@@ -8,8 +8,10 @@ from pydantic import BaseModel
 
 
 class ReviewRunRequest(BaseModel):
-    book_slug: str
-    user_opinion: str
+    item_slug: str | None = None
+    book_slug: str | None = None
+    summary: str | None = None
+    user_opinion: str | None = None
     provider: Literal["mock", "openai"] = "mock"
     model: str | None = None
     hitl_enabled: bool = True
@@ -17,8 +19,8 @@ class ReviewRunRequest(BaseModel):
 
 class ReviewRunResponse(BaseModel):
     ok: bool
-    type: Literal["review"]
-    book_slug: str
+    type: Literal["pitch"]
+    item_slug: str
     provider: Literal["mock", "openai"]
     hitl_enabled: bool
     result: dict[str, Any]
